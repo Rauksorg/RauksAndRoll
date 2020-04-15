@@ -1,0 +1,25 @@
+{
+  "name": "example-simple",
+  "version": "0.0.1",
+  "dependencies": {
+    "@material-ui/core": "latest",
+    "@material-ui/icons": "latest",
+    "firebase": "latest",
+    "firebase-tools": "latest",
+    "gatsby": "latest",
+    "gatsby-plugin-firebase": "latest",
+    "gatsby-plugin-layout": "latest",
+    "gatsby-theme-material-ui": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-firebase-hooks": "latest",
+    "react-helmet": "latest"
+  },
+  "scripts": {
+    "start": "gatsby develop",
+    "build": "gatsby build",
+    "serve": "gatsby serve",
+    "deploy": "gatsby build & firebase deploy",
+    "init": "firebase init"
+  }
+}
