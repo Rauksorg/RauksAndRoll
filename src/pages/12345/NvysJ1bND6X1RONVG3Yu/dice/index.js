@@ -1,8 +1,7 @@
 import React from 'react';
-import { Link } from "gatsby-theme-material-ui";
 import { withStyles } from '@material-ui/core/styles';
 import { blue, orange, red, grey } from '@material-ui/core/colors';
-import Button from '@material-ui/core/Button';
+import {Button} from "gatsby-theme-material-ui";
 import CasinoOutlinedIcon from '@material-ui/icons/CasinoOutlined';
 
 
@@ -54,28 +53,23 @@ const GreyButton = withStyles((theme) => ({
   },
 }))(Button);
 
-
-const LinkButton = React.forwardRef((props, ref) => <Link {...props} ref={ref} />)
-// index.js:2177 Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?
-
-
 export default function Dice() {
 
   return (
     <div >
       <div>
-        <BlueButton size="large" variant="contained" color="primary" component={LinkButton} to="/12345/NvysJ1bND6X1RONVG3Yu/dice/blue/">
+        <BlueButton size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/blue/">
           <CasinoOutlinedIcon />
         </BlueButton>
-        <OrangeButton size="large" variant="contained" color="primary" component={LinkButton} to="/12345/NvysJ1bND6X1RONVG3Yu/dice/orange/">
+        <OrangeButton size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/orange/">
           <CasinoOutlinedIcon />
         </OrangeButton>
       </div>
       <div>
-        <RedButton size="large" variant="contained" color="primary" component={LinkButton} to="/12345/NvysJ1bND6X1RONVG3Yu/dice/red/">
+        <RedButton size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/red/">
           <CasinoOutlinedIcon />
         </RedButton>
-        <GreyButton size="large" variant="contained" color="primary" component={LinkButton} to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/">
+        <GreyButton size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/">
           <CasinoOutlinedIcon />
         </GreyButton>
       </div>
