@@ -12,11 +12,11 @@ export default function Dice() {
   const results = blueDice[randomNumber(0, 5)]
   return (
     <div>
-      <div>{results}</div>
-      <Fab>
+      <div style={{ fontSize: '200px' }}>{results}</div>
+      {/* <Fab>
         <AutorenewIcon />
         <div>8</div>
-      </Fab>
+      </Fab> */}
     </div>
   );
 }

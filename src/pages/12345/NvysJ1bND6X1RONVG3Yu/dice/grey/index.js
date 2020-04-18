@@ -27,18 +27,18 @@ export default function Dice() {
   return (
     <div >
       <div>
-        <GreyButton size="large" variant="contained" color="primary" component={LinkButton} to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/-2/">
+        <GreyButton size="large" variant="contained" color="primary" component={LinkButton} to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D2A/">
           -2
         </GreyButton>
-        <GreyButton size="large" variant="contained" color="primary" component={LinkButton} to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/">
+        <GreyButton size="large" variant="contained" color="primary" component={LinkButton} to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D1/">
           1
         </GreyButton>
       </div>
       <div>
-        <GreyButton size="large" variant="contained" color="primary" component={LinkButton} to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/">
+        <GreyButton size="large" variant="contained" color="primary" component={LinkButton} to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D2/">
           2
         </GreyButton>
-        <GreyButton size="large" variant="contained" color="primary" component={LinkButton} to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/">
+        <GreyButton size="large" variant="contained" color="primary" component={LinkButton} to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D3/">
           3
         </GreyButton>
       </div>

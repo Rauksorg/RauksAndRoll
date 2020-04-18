@@ -7,16 +7,16 @@ const randomNumber = (min, max) => {
 }
 
 const allEqualTo = (arr, target) => arr.every(v => v === target)
-const takeWorst = arr => arr.sort()[0]
+const takeFirst = arr => arr[0]
 
-const takeWorstCrit = (arr) => {
+const takeFirstCrit = (arr) => {
   if (allEqualTo(arr, 5)) return 6
-  return takeWorst(arr)
+  return takeFirst(arr)
 
 }
-export default function Dice() {
+export default function GreyDice1() {
   const roll = [randomNumber(0, 5), randomNumber(0, 5)]
-  const results = greyDice0[takeWorstCrit(roll)]
+  const results = greyDice0[takeFirstCrit(roll)]
   return (
     <div>
       <div style={{ fontSize: '200px' }}>{results}</div>

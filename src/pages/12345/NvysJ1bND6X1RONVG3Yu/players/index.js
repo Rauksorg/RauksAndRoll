@@ -12,7 +12,9 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     backgroundColor: theme.palette.background.paper,
   },
+  removeBlue: { color: "#757575" },
 }));
+
 
 const LinkButton = React.forwardRef((props, ref) => <Link {...props} ref={ref} />)
 // index.js:2177 Warning: Function components cannot be given refs. Attempts to access this ref will fail. Did you mean to use React.forwardRef()?
@@ -22,12 +24,11 @@ export default function SimpleList() {
   return (
     <div className={classes.root}>
       <List >
-        <ListItem button component={LinkButton} to="/12345/NvysJ1bND6X1RONVG3Yu/players/NvysJ1bND6X1RONVG3Yu/">
-        <ListItemIcon>
+        <ListItem className={classes.removeBlue} button component={LinkButton} to="/12345/NvysJ1bND6X1RONVG3Yu/players/NvysJ1bND6X1RONVG3Yu/">
+          <ListItemIcon>
             <InboxIcon />
           </ListItemIcon>
           <ListItemText primary="Günther Olsen" />
-
         </ListItem>
       </List>
     </div>

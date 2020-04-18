@@ -10,7 +10,7 @@ export default function Dice() {
   const results = blueDice[randomNumber(0, 5)]
   return (
     <div>
-      <div>{results}</div>
+      <div style={{ fontSize: '200px' }}>{results}</div>
     </div>
   );
 }
