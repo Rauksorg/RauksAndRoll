@@ -55,7 +55,6 @@ export default function MultilineTextFields() {
   const classes = useStyles();
   const [data, setData] = React.useState({ inventory: null, reroll: null })
 
-  // realtime Version
   React.useEffect(() => {
     firebase
       .firestore()

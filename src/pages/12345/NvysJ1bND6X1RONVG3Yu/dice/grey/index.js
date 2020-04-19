@@ -7,11 +7,9 @@ import {Button} from "gatsby-theme-material-ui";
 const GreyButton = withStyles((theme) => ({
   root: {
     color: theme.palette.getContrastText(grey[800]),
-    boxShadow: 'none',
     backgroundColor: grey[800],
     '&:hover': {
       backgroundColor: grey[900],
-      boxShadow: 'none',
     },
   },
 }))(Button);
@@ -21,18 +19,18 @@ export default function Dice() {
   return (
     <div >
       <div>
-        <GreyButton size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D2A/">
+        <GreyButton disableElevation size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D2A/">
           -2
         </GreyButton>
-        <GreyButton size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D1/">
+        <GreyButton disableElevation size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D1/">
           1
         </GreyButton>
       </div>
       <div>
-        <GreyButton size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D2/">
+        <GreyButton disableElevation size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D2/">
           2
         </GreyButton>
-        <GreyButton size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D3/">
+        <GreyButton disableElevation size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D3/">
           3
         </GreyButton>
       </div>
