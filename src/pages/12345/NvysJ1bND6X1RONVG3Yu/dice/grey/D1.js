@@ -1,4 +1,5 @@
 import React from "react";
+import firebase from "gatsby-plugin-firebase"
 
 const greyDice0 = ['💀', '💀', '☯', '☯', '🍀', '🍀', '💥']
 
@@ -17,9 +18,22 @@ const takeFirstCrit = (arr) => {
 export default function GreyDice1() {
   const roll = [randomNumber(0, 5), randomNumber(0, 5)]
   const results = greyDice0[takeFirstCrit(roll)]
+  const [data, setData] = React.useState(results)
+
+  React.useEffect(() => {
+    firebase
+      .firestore()
+      .doc("players/NvysJ1bND6X1RONVG3Yu")
+      .update({
+        diceResult: data,
+        dice: 'black'
+      })
+  }, [])
+
+
   return (
     <div>
-      <div style={{ fontSize: '200px' }}>{results}</div>
+      <div style={{ fontSize: '200px' }}>{data}</div>
     </div>
   );
 }
