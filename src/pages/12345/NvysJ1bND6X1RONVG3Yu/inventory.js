@@ -66,12 +66,13 @@ export default function MultilineTextFields() {
   //     })
   // }, [])
 
-  // realtime Version :
+  // realtime Version
   React.useEffect(() => {
     firebase
       .firestore()
       .doc("players/NvysJ1bND6X1RONVG3Yu")
       .onSnapshot(doc => {
+        // check if changes are local
         if (!doc.metadata.hasPendingWrites) setData(doc.data().inventory)
 
       });
