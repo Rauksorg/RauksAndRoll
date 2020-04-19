@@ -1,6 +1,7 @@
 import React from "react";
-import Fab from '@material-ui/core/Fab';
-import AutorenewIcon from '@material-ui/icons/Autorenew';
+import firebase from "gatsby-plugin-firebase"
+// import Fab from '@material-ui/core/Fab';
+// import AutorenewIcon from '@material-ui/icons/Autorenew';
 
 const blueDice = ['✓', '2', '3!', '4', 'S', '✘!']
 
@@ -9,10 +10,21 @@ const randomNumber = (min, max) => {
 }
 
 export default function Dice() {
-  const results = blueDice[randomNumber(0, 5)]
+  const [data, setData] = React.useState(blueDice[randomNumber(0, 5)])
+
+  React.useEffect(() => {
+    firebase
+      .firestore()
+      .doc("players/NvysJ1bND6X1RONVG3Yu")
+      .update({
+        diceResult: data,
+        dice: 'blue'
+      })
+  }, [])
+
   return (
     <div>
-      <div style={{ fontSize: '200px' }}>{results}</div>
+      <div style={{ fontSize: '200px' }}>{data}</div>
       {/* <Fab>
         <AutorenewIcon />
         <div>8</div>

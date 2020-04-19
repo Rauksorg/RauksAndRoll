@@ -3,9 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
-
-
-import firebase from "gatsby-plugin-firebase"
+import firebase from "gatsby-plugin-firebase";
 
 const useStyles = makeStyles({
   root: {
@@ -55,16 +53,7 @@ const marks = [
 
 export default function MultilineTextFields() {
   const classes = useStyles();
-  const [data, setData] = React.useState(null)
-
-  // React.useEffect(() => {
-  //   firebase
-  //     .firestore()
-  //     .doc("players/NvysJ1bND6X1RONVG3Yu")
-  //     .get().then(snapshot => {
-  //       setData(snapshot.data().inventory)
-  //     })
-  // }, [])
+  const [data, setData] = React.useState({ inventory: null, reroll: null })
 
   // realtime Version
   React.useEffect(() => {
@@ -72,14 +61,15 @@ export default function MultilineTextFields() {
       .firestore()
       .doc("players/NvysJ1bND6X1RONVG3Yu")
       .onSnapshot(doc => {
+        const data = doc.data()
         // check if changes are local
-        if (!doc.metadata.hasPendingWrites) setData(doc.data().inventory)
+        if (!doc.metadata.hasPendingWrites) setData({ inventory: data.inventory, reroll: data.reroll })
 
       });
   }, [])
 
   const handleChange = (event) => {
-    setData(event.target.value);
+    setData({ ...data, inventory: event.target.value });
     firebase
       .firestore()
       .doc("players/NvysJ1bND6X1RONVG3Yu")
@@ -88,6 +78,17 @@ export default function MultilineTextFields() {
       })
   };
 
+  const handleChange2 = (_, newValue) => {
+    setData({ ...data, reroll: newValue });
+    firebase
+      .firestore()
+      .doc("players/NvysJ1bND6X1RONVG3Yu")
+      .update({
+        reroll: newValue
+      })
+  };
+
+
   return (
     <form noValidate autoComplete="off">
       <div>
@@ -95,7 +96,8 @@ export default function MultilineTextFields() {
           Relances
       </Typography>
         <Slider
-          defaultValue={8}
+          value={data.reroll!=null ? data.reroll : 5}
+          onChange={handleChange2}
           aria-labelledby="discrete-slider-custom"
           step={1}
           valueLabelDisplay="auto"
@@ -107,7 +109,7 @@ export default function MultilineTextFields() {
           id="standard-multiline-flexible"
           label="Multiline"
           multiline
-          value={data ? data : "Loading..."}
+          value={data.inventory ? data.inventory : "Loading..."}
           onChange={handleChange}
           variant="outlined"
           className={classes.root}
