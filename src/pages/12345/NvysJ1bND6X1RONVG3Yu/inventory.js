@@ -48,7 +48,7 @@ const marks = [
     label: '8',
   },
   {
-    value: 9, 
+    value: 9,
     label: '9',
   },
 ];
@@ -57,39 +57,50 @@ export default function MultilineTextFields() {
   const classes = useStyles();
   const [data, setData] = React.useState(null)
 
+  // React.useEffect(() => {
+  //   firebase
+  //     .firestore()
+  //     .doc("players/NvysJ1bND6X1RONVG3Yu")
+  //     .get().then(snapshot => {
+  //       setData(snapshot.data().inventory)
+  //     })
+  // }, [])
+
+  // realtime Version :
   React.useEffect(() => {
     firebase
-        .firestore()
-        .doc("players/NvysJ1bND6X1RONVG3Yu")
-        .get().then(snapshot => {
-            setData(snapshot.data().inventory)
-        })
-}, [])
+      .firestore()
+      .doc("players/NvysJ1bND6X1RONVG3Yu")
+      .onSnapshot(doc => {
+        if (!doc.metadata.hasPendingWrites) setData(doc.data().inventory)
+
+      });
+  }, [])
 
   const handleChange = (event) => {
     setData(event.target.value);
     firebase
-        .firestore()
-        .doc("players/NvysJ1bND6X1RONVG3Yu")
-        .update({
-          inventory: event.target.value
+      .firestore()
+      .doc("players/NvysJ1bND6X1RONVG3Yu")
+      .update({
+        inventory: event.target.value
       })
   };
 
   return (
     <form noValidate autoComplete="off">
       <div>
-      <Typography id="discrete-slider-custom" gutterBottom>
-        Relances
+        <Typography id="discrete-slider-custom" gutterBottom>
+          Relances
       </Typography>
-      <Slider
-        defaultValue={8}
-        aria-labelledby="discrete-slider-custom"
-        step={1}
-        valueLabelDisplay="auto"
-        marks={marks}
-        max={9}
-      />
+        <Slider
+          defaultValue={8}
+          aria-labelledby="discrete-slider-custom"
+          step={1}
+          valueLabelDisplay="auto"
+          marks={marks}
+          max={9}
+        />
 
         <TextField
           id="standard-multiline-flexible"
