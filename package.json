@@ -12,7 +12,6 @@
     "gatsby-theme-material-ui": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "react-firebase-hooks": "latest",
     "react-helmet": "latest"
   },
   "scripts": {

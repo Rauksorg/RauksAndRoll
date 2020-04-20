@@ -1,9 +1,9 @@
 import React from 'react';
+import firebase from "gatsby-plugin-firebase";
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
-import firebase from "gatsby-plugin-firebase";
 
 const useStyles = makeStyles({
   root: {

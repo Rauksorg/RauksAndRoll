@@ -8,7 +8,7 @@ const randomNumber = (min, max) => {
 }
 
 const bestTwoEqualTo = (arr, target) => arr.slice().sort().slice(-2).every(v => v === target)
-const takeBest = arr => arr.slice().sort().slice(-1)[0] 
+const takeBest = arr => arr.slice().sort().slice(-1)[0]
 
 const takeBestCrit = (arr) => {
   if (bestTwoEqualTo(arr, 5)) return 6
@@ -16,6 +16,6 @@ const takeBestCrit = (arr) => {
 }
 
 const rollDark2A = () => greyDice[takeBestCrit([randomNumber(0, 5), randomNumber(0, 5), randomNumber(0, 5)])]
-const DarkDice2A = ({location}) => <DiceResult location={location} diceFormula={rollDark2A} diceProperties={{color:'dimgray'}}/>
+const DarkDice2A = ({ location }) => <DiceResult location={location} diceFormula={rollDark2A} diceProperties={{ color: 'dimgray' }} rerollable={false} />
 
 export default DarkDice2A
