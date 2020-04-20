@@ -8,7 +8,7 @@ const randomNumber = (min, max) => {
 }
 
 const allEqualTo = (arr, target) => arr.every(v => v === target)
-const takeWorst = arr => arr.sort()[0]
+const takeWorst = arr => arr.slice().sort()[0]
 
 const takeWorstCrit = (arr) => {
   if (allEqualTo(arr, 5)) return 6

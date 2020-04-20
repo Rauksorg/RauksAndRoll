@@ -15,7 +15,7 @@ const takeBestCrit = (arr) => {
   return takeBest(arr)
 }
 
-const rollDark2A = () => greyDice[takeBestCrit([randomNumber(0, 5), randomNumber(0, 5), randomNumber(0, 5)])]
-const DarkDice2A = ({ location }) => <DiceResult location={location} diceFormula={rollDark2A} diceProperties={{ color: 'dimgray' }} rerollable={false} />
+const rollDark3 = () => greyDice[takeBestCrit([randomNumber(0, 5), randomNumber(0, 5), randomNumber(0, 5)])]
+const DarkDice3 = ({ location }) => <DiceResult location={location} diceFormula={rollDark3} diceProperties={{ color: 'dimgray' }} rerollable={false} />
 
-export default DarkDice2A
+export default DarkDice3
