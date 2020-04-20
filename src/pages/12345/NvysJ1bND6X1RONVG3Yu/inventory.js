@@ -15,7 +15,8 @@ const marks = [
   { value: 0, label: '0', }, { value: 1, }, { value: 2, label: '2', }, { value: 3, }, { value: 4, label: '4', }, { value: 5, }, { value: 6, label: '6', }, { value: 7, }, { value: 8, label: '8', }, { value: 9, label: '9', },
 ];
 
-export default function MultilineTextFields() {
+export default function MultilineTextFields({location}) {
+  const playerId = location.pathname.split("/")[2]
   const classes = useStyles();
   const [inventory, setInventory] = React.useState(null)
   const [reroll, setReroll] = React.useState(null)
@@ -23,20 +24,20 @@ export default function MultilineTextFields() {
   React.useEffect(() => {
     const unsubscribe = firebase
       .firestore()
-      .doc("players/NvysJ1bND6X1RONVG3Yu")
+      .doc(`players/${playerId}`)
       .onSnapshot(doc => {
         const data = doc.data()
         if (!doc.metadata.hasPendingWrites) setInventory(data.inventory)
         setReroll(data.reroll)
       });
-    return unsubscribe
-  }, [])
+    return unsubscribe;
+  }, [playerId])
 
   const handleInventoryChange = (event) => {
     setInventory(event.target.value)
     firebase
       .firestore()
-      .doc("players/NvysJ1bND6X1RONVG3Yu")
+      .doc(`players/${playerId}`)
       .update({
         inventory: event.target.value
       })
@@ -45,7 +46,7 @@ export default function MultilineTextFields() {
   const handleRerollChange = (_, newValue) => {
     firebase
       .firestore()
-      .doc("players/NvysJ1bND6X1RONVG3Yu")
+      .doc(`players/${playerId}`)
       .update({
         reroll: newValue
       })

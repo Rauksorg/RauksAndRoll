@@ -15,28 +15,29 @@ const ListItemPatched = patchBaseButtonComponent(ListItem)
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
-    // backgroundColor: theme.palette.background.paper,
   },
 }));
 
-export default function SimpleList() {
+export default function SimpleList({location}) {
+  const playerId = location.pathname.split("/")[2]
   const classes = useStyles();
 
   const [data, setData] = React.useState({ dice: null, diceResult: null })
   React.useEffect(() => {
-    firebase
+    const unsubscribe = firebase
       .firestore()
-      .doc("players/NvysJ1bND6X1RONVG3Yu")
+      .doc(`players/NvysJ1bND6X1RONVG3Yu`)
       .onSnapshot(doc => {
         const serveurData = doc.data()
         setData({ diceResult: serveurData.diceResult, dice: serveurData.dice })
       });
+      return unsubscribe;
   }, [])
 
   return (
     <div className={classes.root}>
       <List >
-        <ListItemPatched button to="/12345/NvysJ1bND6X1RONVG3Yu/players/NvysJ1bND6X1RONVG3Yu/">
+        <ListItemPatched button to={`/12345/${playerId}/players/NvysJ1bND6X1RONVG3Yu/`}>
           <ListItemAvatar>
             <Avatar>G</Avatar>
           </ListItemAvatar>

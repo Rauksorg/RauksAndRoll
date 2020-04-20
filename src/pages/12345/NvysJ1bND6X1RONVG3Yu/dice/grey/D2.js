@@ -1,7 +1,7 @@
 import React from "react";
-import firebase from "gatsby-plugin-firebase"
+import DiceResult from '../../../../../components/dice'
 
-const greyDice0 = ['💀', '💀', '☯', '☯', '🍀', '🍀', '💥']
+const greyDice = ['💀', '💀', '☯', '☯', '🍀', '🍀', '💥']
 
 const randomNumber = (min, max) => {
   return Math.floor(Math.random() * (max - min + 1) + min);
@@ -13,27 +13,10 @@ const takeBest = arr => arr.sort().slice(-1)[0]
 const takeBestCrit = (arr) => {
   if (allEqualTo(arr, 5)) return 6
   return takeBest(arr)
-  
-
 }
-export default function GreyDice2() {
-  const roll = [randomNumber(0, 5), randomNumber(0, 5)]
-  const results = greyDice0[takeBestCrit(roll)]
-  const [data, setData] = React.useState(results)
 
-  React.useEffect(() => {
-    firebase
-      .firestore()
-      .doc("players/NvysJ1bND6X1RONVG3Yu")
-      .update({
-        diceResult: data,
-        dice: 'black'
-      })
-  }, [])
+const rollDark2 = () => greyDice[takeBestCrit([randomNumber(0, 5), randomNumber(0, 5)])]
 
-  return (
-    <div>
-      <div style={{ fontSize: '200px' }}>{data}</div>
-    </div>
-  );
-}
+const DarkDice2 = ({location}) => <DiceResult location={location} diceFormula={rollDark2} diceProperties={{color:'dimgray'}}/>
+
+export default DarkDice2
