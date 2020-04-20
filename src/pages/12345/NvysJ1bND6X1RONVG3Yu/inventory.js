@@ -8,67 +8,32 @@ import firebase from "gatsby-plugin-firebase";
 const useStyles = makeStyles({
   root: {
     width: '100%',
-    height: '100%'
   },
 });
 
 const marks = [
-  {
-    value: 0,
-    label: '0',
-  },
-  {
-    value: 1,
-  },
-  {
-    value: 2,
-    label: '2',
-  },
-  {
-    value: 3,
-  },
-  {
-    value: 4,
-    label: '4',
-  },
-  {
-    value: 5,
-  },
-  {
-    value: 6,
-    label: '6',
-  },
-  {
-    value: 7,
-  },
-  {
-    value: 8,
-    label: '8',
-  },
-  {
-    value: 9,
-    label: '9',
-  },
+  { value: 0, label: '0', }, { value: 1, }, { value: 2, label: '2', }, { value: 3, }, { value: 4, label: '4', }, { value: 5, }, { value: 6, label: '6', }, { value: 7, }, { value: 8, label: '8', }, { value: 9, label: '9', },
 ];
 
 export default function MultilineTextFields() {
   const classes = useStyles();
-  const [data, setData] = React.useState({ inventory: null, reroll: null })
+  const [inventory, setInventory] = React.useState(null)
+  const [reroll, setReroll] = React.useState(null)
 
   React.useEffect(() => {
-    firebase
+    const unsubscribe = firebase
       .firestore()
       .doc("players/NvysJ1bND6X1RONVG3Yu")
       .onSnapshot(doc => {
         const data = doc.data()
-        // check if changes are local
-        if (!doc.metadata.hasPendingWrites) setData({ inventory: data.inventory, reroll: data.reroll })
-
+        if (!doc.metadata.hasPendingWrites) setInventory(data.inventory)
+        setReroll(data.reroll)
       });
+    return unsubscribe
   }, [])
 
-  const handleChange = (event) => {
-    setData({ ...data, inventory: event.target.value });
+  const handleInventoryChange = (event) => {
+    setInventory(event.target.value)
     firebase
       .firestore()
       .doc("players/NvysJ1bND6X1RONVG3Yu")
@@ -77,8 +42,7 @@ export default function MultilineTextFields() {
       })
   };
 
-  const handleChange2 = (_, newValue) => {
-    setData({ ...data, reroll: newValue });
+  const handleRerollChange = (_, newValue) => {
     firebase
       .firestore()
       .doc("players/NvysJ1bND6X1RONVG3Yu")
@@ -87,7 +51,6 @@ export default function MultilineTextFields() {
       })
   };
 
-
   return (
     <form noValidate autoComplete="off">
       <div>
@@ -95,24 +58,22 @@ export default function MultilineTextFields() {
           Relances
       </Typography>
         <Slider
-          value={data.reroll!=null ? data.reroll : 5}
-          onChange={handleChange2}
+          value={reroll != null ? reroll : 5}
+          onChange={handleRerollChange}
           aria-labelledby="discrete-slider-custom"
           step={1}
           valueLabelDisplay="auto"
           marks={marks}
           max={9}
         />
-
         <TextField
           id="standard-multiline-flexible"
-          label="Multiline"
+          label="Character sheet"
           multiline
-          value={data.inventory ? data.inventory : "Loading..."}
-          onChange={handleChange}
+          value={inventory ? inventory : "Loading..."}
+          onChange={handleInventoryChange}
           variant="outlined"
           className={classes.root}
-
         />
       </div>
     </form>
