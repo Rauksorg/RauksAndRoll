@@ -17,8 +17,9 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
 }));
+const playersIdList = ['NvysJ1bND6X1RONVG3Yu', '0Ujzu57VXWwJTB5erTUp', 'GpBYQ4vqkiEImQrbkkHv', 'yhSG30Rf9lB0Me9sLoRS']
 
-export default function SimpleList({location}) {
+export default function SimpleList({ location }) {
   const playerId = location.pathname.split("/")[2]
   const classes = useStyles();
 
@@ -31,7 +32,7 @@ export default function SimpleList({location}) {
         const serveurData = doc.data()
         setData({ diceResult: serveurData.diceResult, dice: serveurData.dice })
       });
-      return unsubscribe;
+    return unsubscribe;
   }, [])
 
   return (
