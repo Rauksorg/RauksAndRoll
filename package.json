@@ -2,17 +2,17 @@
   "name": "example-simple",
   "version": "0.0.1",
   "dependencies": {
-    "@material-ui/core": "latest",
-    "@material-ui/icons": "latest",
-    "firebase": "latest",
-    "firebase-tools": "latest",
-    "gatsby": "latest",
-    "gatsby-plugin-firebase": "latest",
-    "gatsby-plugin-layout": "latest",
-    "gatsby-theme-material-ui": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "react-helmet": "latest"
+    "@material-ui/core": "^4.9.11",
+    "@material-ui/icons": "^4.9.1",
+    "firebase": "^7.14.1",
+    "firebase-tools": "^8.1.1",
+    "gatsby": "^2.20.29",
+    "gatsby-plugin-firebase": "^0.2.0-beta.4",
+    "gatsby-plugin-layout": "^1.2.3",
+    "gatsby-theme-material-ui": "^1.0.8",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-helmet": "^6.0.0"
   },
   "scripts": {
     "start": "gatsby develop",
