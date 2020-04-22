@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
 }));
-const playersIdList = ['NvysJ1bND6X1RONVG3Yu', '0Ujzu57VXWwJTB5erTUp', 'GpBYQ4vqkiEImQrbkkHv', 'yhSG30Rf9lB0Me9sLoRS']
+// const playersIdList = ['NvysJ1bND6X1RONVG3Yu', '0Ujzu57VXWwJTB5erTUp', 'GpBYQ4vqkiEImQrbkkHv', 'yhSG30Rf9lB0Me9sLoRS']
 
 export default function SimpleList({ location }) {
   const playerId = location.pathname.split("/")[2]
@@ -25,12 +25,16 @@ export default function SimpleList({ location }) {
 
   const [data, setData] = React.useState({ dice: null, diceResult: null })
   React.useEffect(() => {
+
     const unsubscribe = firebase
       .firestore()
-      .doc(`players/NvysJ1bND6X1RONVG3Yu`)
-      .onSnapshot(doc => {
-        const serveurData = doc.data()
-        setData({ diceResult: serveurData.diceResult, dice: serveurData.dice })
+      .collection(`players`)
+      .onSnapshot(querySnapshot => {
+        var playersList = {};
+        querySnapshot.forEach(function (doc) {
+          playersList[doc.id] = doc.data()
+        });
+        setData({ diceResult: playersList.NvysJ1bND6X1RONVG3Yu.diceResult, dice: playersList.NvysJ1bND6X1RONVG3Yu.dice })
       });
     return unsubscribe;
   }, [])

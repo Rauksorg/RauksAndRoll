@@ -21,7 +21,7 @@ function Sheet({ location }) {
         setData(snapshot.data().inventory)
       });
     return unsubscribe;
-  }, [])
+  }, [sheetId])
   return <div className={classes.preserveLineBreak}>{data ? data : "Loading..."}</div>
 }
 export default Sheet
