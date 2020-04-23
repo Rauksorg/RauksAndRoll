@@ -3,8 +3,18 @@ module.exports = {
   siteMetadata: {
     title: `Gatsby Theme Material-UI`,
   },
-  plugins: [`gatsby-theme-material-ui`,
-  `gatsby-plugin-layout`,
+  plugins: [
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `images`,
+        path: `${__dirname}/src/images/`,
+      },
+    }
+    ,`gatsby-theme-material-ui`
+    , `gatsby-transformer-sharp`
+    , `gatsby-plugin-sharp`
+    , `gatsby-plugin-layout`,
     {
       resolve: "gatsby-plugin-firebase",
       options: {
