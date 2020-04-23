@@ -4,7 +4,6 @@ import { blue, orange, red, grey } from '@material-ui/core/colors';
 import {Button} from "gatsby-theme-material-ui";
 import CasinoOutlinedIcon from '@material-ui/icons/CasinoOutlined';
 
-
 const BlueButton = withStyles((theme) => ({
   root: {
     color: theme.palette.getContrastText(blue[600]),
@@ -45,23 +44,23 @@ const GreyButton = withStyles((theme) => ({
   },
 }))(Button);
 
-export default function Dice() {
-
+export default ({location}) => {
+  const playerId = location.pathname.split("/")[2]
   return (
     <div >
       <div>
-        <BlueButton disableElevation size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/blue/">
+        <BlueButton disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/blue/`}>
           <CasinoOutlinedIcon />
         </BlueButton>
-        <OrangeButton disableElevation size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/orange/">
+        <OrangeButton disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/orange/`}>
           <CasinoOutlinedIcon />
         </OrangeButton>
       </div>
       <div>
-        <RedButton disableElevation size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/red/">
+        <RedButton disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/red/`}>
           <CasinoOutlinedIcon />
         </RedButton>
-        <GreyButton disableElevation size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/">
+        <GreyButton disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/grey/`}>
           <CasinoOutlinedIcon />
         </GreyButton>
       </div>

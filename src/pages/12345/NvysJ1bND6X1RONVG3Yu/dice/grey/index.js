@@ -14,23 +14,23 @@ const GreyButton = withStyles((theme) => ({
   },
 }))(Button);
 
-export default function Dice() {
-
+export default ({location}) => {
+  const playerId = location.pathname.split("/")[2]
   return (
     <div >
       <div>
-        <GreyButton disableElevation size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D2A/">
+        <GreyButton disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/grey/D2A/`}>
           -2
         </GreyButton>
-        <GreyButton disableElevation size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D1/">
+        <GreyButton disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/grey/D1/`}>
           1
         </GreyButton>
       </div>
       <div>
-        <GreyButton disableElevation size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D2/">
+        <GreyButton disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/grey/D2/`}>
           2
         </GreyButton>
-        <GreyButton disableElevation size="large" variant="contained" color="primary" to="/12345/NvysJ1bND6X1RONVG3Yu/dice/grey/D3/">
+        <GreyButton disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/grey/D3/`}>
           3
         </GreyButton>
       </div>
