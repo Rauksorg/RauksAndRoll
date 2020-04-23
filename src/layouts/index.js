@@ -34,7 +34,7 @@ export default function Layout({ children, location }) {
       <AppBar component={'div'} position="fixed" style={{ top: "auto", bottom: 0 }}>
         <BottomNavigation value={value} onChange={handleChange}>
           <BottomNavigationAction to={`/12345/${playerId}/players`} label="Players" value="players" icon={<FormatListBulletedIcon />} />
-          <BottomNavigationAction to={`/12345/${playerId}/inventory`} label="Inventory" value="inventory" icon={<DescriptionIcon />} />
+          <BottomNavigationAction to={`/12345/${playerId}/mycharacter`} label="my Character" value="mycharacter" icon={<DescriptionIcon />} />
           <BottomNavigationAction to={`/12345/${playerId}/map`} label="Maps" value="map" icon={<RoomIcon />} />
           <BottomNavigationAction to={`/12345/${playerId}/dice`} label="Dice" value="dice" icon={<PlayArrowIcon />} />
         </BottomNavigation>
