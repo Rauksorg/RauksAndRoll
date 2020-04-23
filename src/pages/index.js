@@ -21,7 +21,7 @@ import { Link } from "gatsby-theme-material-ui";
 export default function App() {
   return (
     <div>
-      <Link to="/12345/NvysJ1bND6X1RONVG3Yu/players">
+      <Link to="/12345/">
         Go to game 12345
       </Link>
     </div>

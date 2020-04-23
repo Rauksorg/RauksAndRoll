@@ -16,8 +16,10 @@ const useStyles = makeStyles({
 });
 
 export default function Layout({ children, location }) {
-  const navLocation = location.pathname.split("/")[3]
+
   const classes = useStyles();
+  const navLocation = location.pathname.split("/")[3]
+  const playerId = location.pathname.split("/")[2]
   const [value, setValue] = React.useState(navLocation);
   const handleChange = (_, newValue) => {
     setValue(newValue);
@@ -26,14 +28,15 @@ export default function Layout({ children, location }) {
   return (
     <div>
       <Container className={classes.paper} maxWidth="sm">
-        {children}
+        {/* pass props to children */}
+        {React.cloneElement(children, { test: "hello" })}
       </Container>
-      <AppBar component={'nav'} position="fixed" color="primary" style={{ top: "auto", bottom: 0 }}>
+      <AppBar component={'div'} position="fixed" style={{ top: "auto", bottom: 0 }}>
         <BottomNavigation value={value} onChange={handleChange}>
-          <BottomNavigationAction to="/12345/NvysJ1bND6X1RONVG3Yu/players" label="Players" value="players" icon={<FormatListBulletedIcon />} />
-          <BottomNavigationAction to="/12345/NvysJ1bND6X1RONVG3Yu/inventory" label="Inventory" value="inventory" icon={<DescriptionIcon />} />
-          <BottomNavigationAction to="/12345/NvysJ1bND6X1RONVG3Yu/map" label="Maps" value="map" icon={<RoomIcon />} />
-          <BottomNavigationAction to="/12345/NvysJ1bND6X1RONVG3Yu/dice" label="Dice" value="dice" icon={<PlayArrowIcon />} />
+          <BottomNavigationAction to={`/12345/${playerId}/players`} label="Players" value="players" icon={<FormatListBulletedIcon />} />
+          <BottomNavigationAction to={`/12345/${playerId}/inventory`} label="Inventory" value="inventory" icon={<DescriptionIcon />} />
+          <BottomNavigationAction to={`/12345/${playerId}/map`} label="Maps" value="map" icon={<RoomIcon />} />
+          <BottomNavigationAction to={`/12345/${playerId}/dice`} label="Dice" value="dice" icon={<PlayArrowIcon />} />
         </BottomNavigation>
       </AppBar>
     </div>
