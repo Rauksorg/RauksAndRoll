@@ -1,8 +1,15 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles, makeStyles } from '@material-ui/core/styles';
 import { blue, orange, red, grey } from '@material-ui/core/colors';
-import {Button} from "gatsby-theme-material-ui";
+import { Button } from "gatsby-theme-material-ui";
 import CasinoOutlinedIcon from '@material-ui/icons/CasinoOutlined';
+
+const useStyles = makeStyles({
+  diceButton: {
+    width: '50%',
+    height: '300px'
+  }
+});
 
 const BlueButton = withStyles((theme) => ({
   root: {
@@ -44,23 +51,24 @@ const GreyButton = withStyles((theme) => ({
   },
 }))(Button);
 
-export default ({location}) => {
+export default ({ location }) => {
   const playerId = location.pathname.split("/")[2]
+  const classes = useStyles();
   return (
-    <div >
+    <div>
       <div>
-        <BlueButton disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/blue/`}>
+        <BlueButton className={classes.diceButton} disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/blue/`}>
           <CasinoOutlinedIcon />
         </BlueButton>
-        <OrangeButton disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/orange/`}>
+        <OrangeButton className={classes.diceButton} disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/orange/`}>
           <CasinoOutlinedIcon />
         </OrangeButton>
       </div>
       <div>
-        <RedButton disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/red/`}>
+        <RedButton className={classes.diceButton} disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/red/`}>
           <CasinoOutlinedIcon />
         </RedButton>
-        <GreyButton disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/grey/`}>
+        <GreyButton className={classes.diceButton} disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/grey/`}>
           <CasinoOutlinedIcon />
         </GreyButton>
       </div>
