@@ -35,7 +35,7 @@ export default ({ location, players, results }) => {
           return (
             <ListItemPatched key={key} button to={`/12345/${playerId}/players/${player.id}`}>
               <ListItemAvatar>
-                <Avatar>G</Avatar>
+                <Avatar>{player.name.charAt(0)}</Avatar>
               </ListItemAvatar>
               <ListItemText primary={player.name} />
               <ListItemSecondaryAction>
