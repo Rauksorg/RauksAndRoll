@@ -71,7 +71,7 @@ export default function MultilineTextFields({location}) {
           id="standard-multiline-flexible"
           label="Character sheet"
           multiline
-          value={inventory ? inventory : "Loading..."}
+          value={inventory != null ? inventory : "Loading..."}
           onChange={handleInventoryChange}
           variant="outlined"
           className={classes.root}

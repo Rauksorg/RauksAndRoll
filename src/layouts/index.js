@@ -15,7 +15,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Layout({ children, location }) {
+export default function Layout({ children, location, pageContext  }) {
 
   const classes = useStyles();
   const navLocation = location.pathname.split("/")[3]
@@ -24,6 +24,10 @@ export default function Layout({ children, location }) {
   const handleChange = (_, newValue) => {
     setValue(newValue);
   };
+
+  if (pageContext.layout === "noLayout") {
+    return <div><Container  maxWidth="sm">{children}</Container></div>
+  }
 
   return (
     <div>
