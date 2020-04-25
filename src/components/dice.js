@@ -14,6 +14,7 @@ export default function Dice({ diceFormula, diceProperties, location, rerollable
   const playerId = location.pathname.split("/")[2]
   const [result, setResult] = React.useState(diceFormula())
   const [reroll, setReroll] = React.useState(null)
+  const [rerolled, setRerolled] = React.useState(false)
 
   React.useEffect(() => {
     const unsubscribe = firebase
@@ -28,10 +29,11 @@ export default function Dice({ diceFormula, diceProperties, location, rerollable
       .doc(`players/${playerId}`)
       .update({
         diceResult: result,
-        dice: diceProperties.color
+        dice: diceProperties.color,
+        rerolled: rerolled
       });
     return unsubscribe
-  }, [diceProperties, playerId, result])
+  }, [diceProperties, playerId, result, rerolled])
 
   const rerollDice = () => {
     if (reroll > 0) {
@@ -39,13 +41,15 @@ export default function Dice({ diceFormula, diceProperties, location, rerollable
       const newResult = diceFormula()
       setResult(newResult)
       setReroll(newRerollCount)
+      setRerolled(true)
       firebase
         .firestore()
         .doc(`players/${playerId}`)
         .update({
           reroll: newRerollCount,
           diceResult: newResult,
-          dice: diceProperties.color
+          dice: diceProperties.color,
+          rerolled: true
         })
     }
   }

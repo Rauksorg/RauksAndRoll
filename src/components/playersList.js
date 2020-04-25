@@ -17,7 +17,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const results = { NvysJ1bND6X1RONVG3Yu: { diceResult: "3", dice: "blue" } }
+// Results structure
+// const results = { NvysJ1bND6X1RONVG3Yu: { diceResult: "3", dice: "blue",rerolled:false } }
 
 export default ({ location, players, results }) => {
 
@@ -30,6 +31,7 @@ export default ({ location, players, results }) => {
         {players.map((player, key) => {
           const playerDice = results[player.id].dice
           const playerResult = results[player.id].diceResult
+          const playerRerolled = results[player.id].rerolled
           return (
             <ListItemPatched key={key} button to={`/12345/${playerId}/players/${player.id}`}>
               <ListItemAvatar>
@@ -37,7 +39,7 @@ export default ({ location, players, results }) => {
               </ListItemAvatar>
               <ListItemText primary={player.name} />
               <ListItemSecondaryAction>
-                <Avatar style={{ backgroundColor: playerDice ? playerDice : "grey" }}>{playerResult ? playerResult : "."}</Avatar>
+                <Avatar style={{ border: playerRerolled ? '2px dotted' : 'none', backgroundColor: playerDice ? playerDice : "grey" }}>{playerResult ? playerResult : "."}</Avatar>
               </ListItemSecondaryAction>
             </ListItemPatched>
           )
