@@ -11,7 +11,8 @@ const Map = () => {
   const layerRef = React.useRef(null);
 
   const onMapClick = (e) => {
-    console.log(e.latlng)
+    console.log('clicloc', e.latlng)
+    console.log('narkloc', markRef.current.getLatLng())
   }
 
   React.useEffect(() => {
@@ -30,6 +31,8 @@ const Map = () => {
       zoom: 10,
       layers: [L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png')]
     });
+
+    
     mapRef.current.on('click', onMapClick);
     return () => {
       // Cleanup the map
