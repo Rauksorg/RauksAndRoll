@@ -14,6 +14,7 @@ const MyMap = () => {
   const markerRef = useRef([]);
   const popupsRef = useRef([])
   const [popups, setReactPopups] = useState([])
+  const [docSize, setdocSize] = useState(null)
 
   const handleChange = (id, event) => {
     // is there a betterway to update array of State ?
@@ -23,16 +24,23 @@ const MyMap = () => {
   };
 
   const saveMarkers = () => {
+
     markerRef.current.forEach((element, i) => {
-      const {lng,lat} = element.getLngLat()
+      const { lng, lat } = element.getLngLat()
       firebase.firestore().collection("markers").doc(i.toString()).set({
         name: popups[i],
-        LngLat: [lng,lat]
+        LngLat: [lng, lat]
       })
         .catch(function (error) {
           console.error("Error writing document: ", error);
         });
     })
+    // delete extra Markers
+    if (markerRef.current.length < docSize) {
+      for (let i = markerRef.current.length; i < docSize; i++) {
+        firebase.firestore().collection("markers").doc(i.toString()).delete()
+      }
+    }
   }
 
   const addMarker = () => {
@@ -73,8 +81,10 @@ const MyMap = () => {
     firebase.firestore().collection("markers")
       .get()
       .then((querySnapshot) => {
+        setdocSize(querySnapshot.size)
         querySnapshot.forEach((element) => {
           const elementData = element.data()
+
           markerRef.current[element.id] = new Marker({ draggable: true })
             .setLngLat(elementData.LngLat)
             .addTo(mapRef.current);
