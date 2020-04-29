@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "gatsby-theme-material-ui";
 
-export const players = [{ id: 'NvysJ1bND6X1RONVG3Yu', name: 'MJ' }, { id: '0Ujzu57VXWwJTB5erTUp', name: 'Günther Olsen' }, { id: 'GpBYQ4vqkiEImQrbkkHv', name: 'Arakel Sarif' }, { id: 'yhSG30Rf9lB0Me9sLoRS', name: 'Jean Test' }]
+export const players = [{ id: 'NvysJ1bND6X1RONVG3Yu', name: 'MJ' }, { id: '0Ujzu57VXWwJTB5erTUp', name: 'Baurice Maltheiser-Targu' }, { id: 'GpBYQ4vqkiEImQrbkkHv', name: 'Arakel Sarif' }, { id: 'yhSG30Rf9lB0Me9sLoRS', name: 'Francis Dubourg' }]
 
 export default () => {
   return (
