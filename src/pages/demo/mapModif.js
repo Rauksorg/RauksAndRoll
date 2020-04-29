@@ -9,7 +9,7 @@ import { Map, Popup, Marker } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 // Is it possible to consolidate ref of markers and popup while separating them in different useEffect ?
-const MyMap = () => {
+const MyMapModif = () => {
   const mapRef = useRef(null);
   const markerRef = useRef([]);
   const popupsRef = useRef([])
@@ -35,7 +35,8 @@ const MyMap = () => {
           console.error("Error writing document: ", error);
         });
     })
-    // delete extra Markers
+
+    // Delete extra Markers
     if (markerRef.current.length < docSize) {
       for (let i = markerRef.current.length; i < docSize; i++) {
         firebase.firestore().collection("markers").doc(i.toString()).delete()
@@ -77,7 +78,7 @@ const MyMap = () => {
   }, []);
 
   useEffect(() => {
-    // add markers
+    // Add markers
     firebase.firestore().collection("markers")
       .get()
       .then((querySnapshot) => {
@@ -100,7 +101,7 @@ const MyMap = () => {
 
   useEffect(() => {
     // Add popups to markers
-    // Need to separate popups from markers to change popus name without recreating the markers and saving their positions
+    // Need to separate popups from markers to change popus name without recreating the markers or having to savie their positions
     markerRef.current.forEach((element, i) => {
       element.setPopup(popupsRef.current[i] = new Popup().setText(popups[i]).addTo(mapRef.current))
     })
@@ -116,15 +117,15 @@ const MyMap = () => {
       <div>
         {popups.map((element, i) => (
           <div key={i}>
-            <TextField key={i} label={`Marker ${i + 1}`} value={element}
+            <TextField key={i} label={`Marker ${i + 1}`} value={element} onChange={(e) => handleChange(i, e)}
               InputProps={{
                 endAdornment: <InputAdornment position="end"><IconButton onClick={() => { deleteMarker(i) }}><DeleteIcon /></IconButton></InputAdornment>,
               }}
-              onChange={(e) => handleChange(i, e)} />
+            />
           </div>))}
       </div>
     </div>
   )
 }
 
-export default MyMap
+export default MyMapModif
