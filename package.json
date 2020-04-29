@@ -24,7 +24,7 @@
     "start": "gatsby develop",
     "build": "gatsby build",
     "serve": "gatsby serve",
-    "deploy": "replicatePlayers & gatsby build & firebase deploy",
+    "deploy": "replicatePlayers && gatsby clean $$ gatsby build && firebase deploy",
     "init": "firebase init"
   }
 }

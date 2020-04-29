@@ -68,13 +68,13 @@ const MyMap = () => {
 
   return (
     <div>
-      <div style={{ width: '100%', height: '400px' }} id='map'></div>
+      <div style={{ width: '100%', height: '600px' }} id='map'></div>
       <div>
         <Button onClick={addMarker} variant="contained">Add</Button>
         <Button onClick={saveMarkers} variant="contained">Save</Button>
       </div>
       <div>
-        {popups.map((element, i) => <TextField key={i} label="Marker Name" value={element} onChange={(e) => handleChange(i, e)} />)}
+        {popups.map((element, i) => <div key={i}><TextField key={i} label={`Marker ${i+1}`} value={element} onChange={(e) => handleChange(i, e)} /></div>)}
       </div>
     </div>
   )
