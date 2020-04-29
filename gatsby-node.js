@@ -12,10 +12,6 @@ exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
       module: {
         rules: [
           {
-            test: /leaflet/,
-            use: loaders.null(),
-          },
-          {
             test: /mapbox-gl/,
             use: loaders.null(),
           },
