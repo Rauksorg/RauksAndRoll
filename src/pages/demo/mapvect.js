@@ -1,13 +1,21 @@
 import React, { useEffect, useRef, useState } from "react";
 import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import { Map, Popup, Marker } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
+// Is it possible to consolidate ref of markers and popup while separating them in different useEffect ?
 const MyMap = () => {
   const mapRef = useRef(null);
   const markerRef = useRef([]);
   const popupsRef = useRef([])
   const [popups, setPopups] = useState([])
+
+  const handleChange = (id, event) => {
+    let newValue = [...popups]
+    newValue[id] = event.target.value
+    setPopups(newValue);
+  };
 
   const saveMarkers = () => {
     markerRef.current.forEach((element, i) => {
@@ -17,7 +25,7 @@ const MyMap = () => {
 
   const addMarker = () => {
     markerRef.current.push(new Marker({ draggable: true })
-      .setLngLat([11.47435, 53.09155])
+      .setLngLat(mapRef.current.getCenter())
       .addTo(mapRef.current)
     )
     setPopups([...popups, 'hello'])
@@ -33,7 +41,7 @@ const MyMap = () => {
       zoom: 15
     });
 
-    // Need to separate popups from markers to change popus name without recreating the markers
+
     markersList.forEach((element, i) => {
       markerRef.current[i] = new Marker({ draggable: true })
         .setLngLat(element.LngLat)
@@ -47,12 +55,13 @@ const MyMap = () => {
       mapRef.current.remove();
     }
   }, []);
-  
+
 
   useEffect(() => {
     // Add popups to markers
+    // Need to separate popups from markers to change popus name without recreating the markers and saving theur positions
     markerRef.current.forEach((element, i) => {
-      element.setPopup(popupsRef.current[i] = new Popup().setHTML(`<h1>${popups[i]}</h1>`))
+      element.setPopup(popupsRef.current[i] = new Popup().setText(popups[i]))
     })
 
   }, [popups]);
@@ -60,8 +69,13 @@ const MyMap = () => {
   return (
     <div>
       <div style={{ width: '100%', height: '400px' }} id='map'></div>
-      <Button onClick={addMarker} variant="contained">Add</Button>
-      <Button onClick={saveMarkers} variant="contained">Save</Button>
+      <div>
+        <Button onClick={addMarker} variant="contained">Add</Button>
+        <Button onClick={saveMarkers} variant="contained">Save</Button>
+      </div>
+      <div>
+        {popups.map((element, i) => <TextField key={i} label="Marker Name" value={element} onChange={(e) => handleChange(i, e)} />)}
+      </div>
     </div>
   )
 }
