@@ -15,6 +15,8 @@ const MyMapModif = () => {
 
   const handleChange = (id, event) => {
     // Perf problem if deleting fast or typing fast because textfiel are recreated on markerchanges and/or updated twice
+
+
     firebase
       .firestore()
       .doc(`markers/${id}`)
@@ -45,11 +47,17 @@ const MyMapModif = () => {
     const { lng, lat } = e.target.getLngLat()
     const payload = { name: name, LngLat: [lng, lat] }
 
-    firebase.firestore().collection("markers").doc(key.toString()).update(payload)
+
+    firebase.firestore().collection("markers").doc(key.toString()).set(payload)
       .catch(function (error) {
         console.error("Error writing document: ", error);
       });
   }
+
+
+  // const saveMarkers = () => {
+
+  // }
 
   useEffect(() => {
     mapRef.current = new Map({
@@ -102,6 +110,7 @@ const MyMapModif = () => {
       <div style={{ width: '100%', height: '600px' }} id='map'></div>
       <div>
         <Button onClick={addMarker} variant="contained">Add</Button>
+        {/* <Button onClick={saveMarkers} variant="contained">Save</Button> */}
       </div>
       <div>
         {/* Perf problem if deleting fast or typing fast because textfiel are recreated on markerchanges */}

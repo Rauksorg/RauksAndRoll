@@ -15,7 +15,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function Layout({ children, location, pageContext  }) {
+export default function Layout({ children, location, pageContext }) {
 
   const classes = useStyles();
   const navLocation = location.pathname.split("/")[3]
@@ -26,7 +26,10 @@ export default function Layout({ children, location, pageContext  }) {
   };
 
   if (pageContext.layout === "noLayout") {
-    return <div><Container  maxWidth="sm">{children}</Container></div>
+    return <div><Container maxWidth="sm">{children}</Container></div>
+  }
+  if (pageContext.layout === "admin") {
+    return <div><Container maxWidth="xl">{children}</Container></div>
   }
 
   return (
