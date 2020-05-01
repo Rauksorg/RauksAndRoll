@@ -26,7 +26,7 @@ const MyMapModif = () => {
   const addMarker = () => {
     const { lng, lat } = mapRef.current.getCenter()
     const key = markersReact.length
-    console.log( markersReact)
+    console.log(markersReact)
     const payload = { name: "", LngLat: [lng, lat] }
 
     firebase.firestore().collection("markers").doc(key.toString()).set(payload)
@@ -44,7 +44,7 @@ const MyMapModif = () => {
     const { lng, lat } = e.target.getLngLat()
 
 
-    firebase.firestore().collection("markers").doc(key.toString()).update({LngLat: [lng, lat] })
+    firebase.firestore().collection("markers").doc(key.toString()).update({ LngLat: [lng, lat] })
       .catch(function (error) {
         console.error("Error writing document: ", error);
       });
@@ -73,9 +73,7 @@ const MyMapModif = () => {
       .collection(`markers`)
       .onSnapshot(querySnapshot => {
         // Delete Previous Markers and refs  
-        markerRef.current.forEach(((element) => {
-          element.remove()
-        }))
+        markerRef.current.forEach(((element) => { element.remove() }))
         markerRef.current = []
         const markers = []
 
