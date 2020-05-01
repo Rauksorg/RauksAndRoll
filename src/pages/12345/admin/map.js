@@ -41,11 +41,10 @@ const MyMapModif = () => {
 
   const savePosition = (e) => {
     const key = e.target.feature.id
-    const name = e.target.feature.title
     const { lng, lat } = e.target.getLngLat()
-    const payload = { name: name, LngLat: [lng, lat] }
 
-    firebase.firestore().collection("markers").doc(key.toString()).update(payload)
+
+    firebase.firestore().collection("markers").doc(key.toString()).update({LngLat: [lng, lat] })
       .catch(function (error) {
         console.error("Error writing document: ", error);
       });
