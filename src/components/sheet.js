@@ -8,8 +8,8 @@ const useStyles = makeStyles({
   },
 });
 
-function Sheet({ location }) {
-  const sheetId = location.pathname.split("/")[4]
+function Sheet({ sheetId }) {
+  // const sheetId = location.pathname.split("/")[4]
   const classes = useStyles();
   const [inventory, setInventory] = React.useState(null)
   const [reroll, setReroll] = React.useState(null)

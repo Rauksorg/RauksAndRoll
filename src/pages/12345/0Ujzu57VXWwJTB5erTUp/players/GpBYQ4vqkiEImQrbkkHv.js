@@ -1,4 +1,8 @@
 import React from "react"
 import Sheet from '../../../../components/sheet'
 
-export default ({location})=> <Sheet location={location}/>
+const PlayerSheet = ({ location }) => {
+  const sheetId = location.pathname.split("/")[4]
+  return <Sheet sheetId={sheetId} />
+}
+export default PlayerSheet

@@ -26,7 +26,7 @@ export default function Layout({ children, location, pageContext }) {
   };
 
   if (pageContext.layout === "noLayout") {
-    return <div><Container maxWidth="sm">{children}</Container></div>
+    return <div><Container maxWidth="md">{children}</Container></div>
   }
   if (pageContext.layout === "admin") {
     return <div><Container maxWidth="xl">{children}</Container></div>
@@ -34,7 +34,7 @@ export default function Layout({ children, location, pageContext }) {
 
   return (
     <div>
-      <Container className={classes.paper} maxWidth="sm">
+      <Container className={classes.paper} maxWidth="md">
         {/* pass props to children */}
         {React.cloneElement(children, { test: "hello" })}
       </Container>

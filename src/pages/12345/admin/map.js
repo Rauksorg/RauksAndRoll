@@ -1,20 +1,29 @@
 import React, { useEffect, useRef, useState } from "react";
+import { makeStyles } from '@material-ui/core/styles';
 import firebase from "gatsby-plugin-firebase";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { Map, Popup, Marker } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+}));
+
 const MyMapModif = () => {
+  const classes = useStyles();
   const mapRef = useRef(null);
   const markerRef = useRef([]);
   const [markersReact, setmarkersReact] = useState([])
 
   const handleChange = (id, event) => {
-    // Perf problem if deleting fast or typing fast because textfiel are recreated on markerchanges and/or updated twice
+    // Perf problem if deleting fast or typing fast because textfield are recreated on markerchanges and/or updated twice
     firebase
       .firestore()
       .doc(`markers/${id}`)
@@ -26,9 +35,7 @@ const MyMapModif = () => {
   const addMarker = () => {
     const { lng, lat } = mapRef.current.getCenter()
     const key = markersReact.length
-    console.log(markersReact)
     const payload = { name: "", LngLat: [lng, lat] }
-
     firebase.firestore().collection("markers").doc(key.toString()).set(payload)
       .catch(function (error) {
         console.error("Error writing document: ", error);
@@ -42,8 +49,6 @@ const MyMapModif = () => {
   const savePosition = (e) => {
     const key = e.target.feature.id
     const { lng, lat } = e.target.getLngLat()
-
-
     firebase.firestore().collection("markers").doc(key.toString()).update({ LngLat: [lng, lat] })
       .catch(function (error) {
         console.error("Error writing document: ", error);
@@ -97,25 +102,27 @@ const MyMapModif = () => {
   return (
     <div>
       <div style={{ width: '100%', height: '600px' }} id='map'></div>
-      <div>
+      <div style={{ marginBottom: '15px' }}>
         <Button onClick={addMarker} variant="contained">Add</Button>
       </div>
-      <div>
-        {/* Perf problem if deleting fast or typing fast because textfiel are recreated on markerchanges */}
-        {markersReact.map((element) => {
-          const id = element.id
-          return (
-            <div key={id}>
-              <TextField key={id} label={`Marker ${parseInt(id, 10) + 1}`} value={element.name} onChange={(e) => handleChange(id, e)}
-                InputProps={{
-                  endAdornment: <InputAdornment position="end"><IconButton onClick={() => { deleteMarker(id) }}><DeleteIcon /></IconButton></InputAdornment>,
-                }}
-              />
-            </div>)
-        })}
+      <div className={classes.root}>
+        <Grid container spacing={3} >
+          {markersReact.map((element) => {
+            const id = element.id
+            return (
+              <Grid item xs={3} key={id} >
+                <TextField style={{ width: '100%' }} variant="outlined" key={id} label={`Marker ${parseInt(id, 10) + 1}`} value={element.name} onChange={(e) => handleChange(id, e)}
+                  InputProps={{
+                    endAdornment: <InputAdornment position="end"><IconButton onClick={() => { deleteMarker(id) }}><DeleteIcon /></IconButton></InputAdornment>,
+                  }}
+                />
+              </Grid>
+            )
+          })}
+        </Grid>
       </div>
     </div>
   )
 }
 
-export default MyMapModif
+export default MyMapModif;
