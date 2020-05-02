@@ -23,7 +23,13 @@ const MyMapModif = () => {
   const [markersReact, setmarkersReact] = useState([])
 
   const handleChange = (id, event) => {
-    // Perf problem if deleting fast or typing fast because textfield are recreated on markerchanges and/or updated twice
+    // Perf problem if deleting fast or typing fast because all textfield are recreated on markerchanges
+    // Usereducer instead of usestate + delay to update server. DYnamicly created use reducer from markers only for text.
+    // 
+    // https://zacjones.io/handle-multiple-inputs-in-react-with-hooks
+    // https://gist.github.com/krambertech/76afec49d7508e89e028fce14894724c
+    // cf characters
+
     firebase
       .firestore()
       .doc(`markers/${id}`)
