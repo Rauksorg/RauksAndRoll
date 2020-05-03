@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useReducer } from "react";
 import { makeStyles } from '@material-ui/core/styles';
 import firebase from "gatsby-plugin-firebase";
 import Button from '@material-ui/core/Button';
@@ -28,7 +28,9 @@ const MyMapModif = () => {
     // 
     // https://zacjones.io/handle-multiple-inputs-in-react-with-hooks
     // https://gist.github.com/krambertech/76afec49d7508e89e028fce14894724c
-    // cf characters
+    // separate textfiled in an other usestate ?
+
+    // cf characters.js component
 
     firebase
       .firestore()
@@ -41,7 +43,7 @@ const MyMapModif = () => {
   const addMarker = () => {
     const { lng, lat } = mapRef.current.getCenter()
     const key = markersReact.length
-    const payload = { name: "", LngLat: [lng, lat] }
+    const payload = { name: "", LngLat: [lng, lat], order: parseInt(key, 10) }
     firebase.firestore().collection("markers").doc(key.toString()).set(payload)
       .catch(function (error) {
         console.error("Error writing document: ", error);
@@ -82,6 +84,7 @@ const MyMapModif = () => {
     const unsubscribe = firebase
       .firestore()
       .collection(`markers`)
+      .orderBy("order")
       .onSnapshot(querySnapshot => {
         // Delete Previous Markers and refs  
         markerRef.current.forEach(((element) => { element.remove() }))
@@ -98,7 +101,7 @@ const MyMapModif = () => {
             .setPopup(new Popup().setText(elementData.name).addTo(mapRef.current));
           newMarker.feature = { id: id, title: elementData.name }
           newMarker.on('dragend', savePosition)
-          markerRef.current[element.id] = newMarker
+          markerRef.current[id] = newMarker
         });
         setmarkersReact(markers)
       })
