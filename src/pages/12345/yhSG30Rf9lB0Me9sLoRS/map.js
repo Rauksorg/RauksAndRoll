@@ -36,14 +36,15 @@ const MyMap = () => {
         }))
         markerRef.current = []
         querySnapshot.forEach((element) => {
-          const elementData = element.data()
-          const newMarkerRef = new Marker()
-            .setLngLat(elementData.LngLat)
           if (!element.data().deleted) {
-            newMarkerRef.addTo(mapRef.current)
+            const elementData = element.data()
+            const newMarkerRef = new Marker()
+              .setLngLat(elementData.LngLat)
+              .addTo(mapRef.current)
               .setPopup(new Popup().setText(elementData.name));
+            markerRef.current.push(newMarkerRef)
           }
-          markerRef.current.push(newMarkerRef)
+
         });
       })
 

@@ -102,27 +102,21 @@ const MyMapModif = () => {
         markerRef.current.forEach(((element) => { element.remove() }))
         markerRef.current = []
         querySnapshot.forEach((element) => {
-
           const elementData = element.data()
           const id = element.id
-          const newMarker = new Marker({ draggable: true })
-            .setLngLat(elementData.LngLat)
-
           if (!elementData.deleted) {
             // hide deleted MArkers
-            newMarker.addTo(mapRef.current)
+            const newMarker = new Marker({ draggable: true })
+              .setLngLat(elementData.LngLat)
+              .addTo(mapRef.current)
               .setPopup(new Popup().setText(elementData.name).addTo(mapRef.current));
             newMarker.on('dragend', savePosition)
+            newMarker.feature = { id: id, name: elementData.name }
+            markerRef.current.push(newMarker)
           }
-
-          newMarker.feature = { id: id, name: elementData.name }
-          newMarker.on('dragend', savePosition)
-          markerRef.current.push(newMarker)
         });
-
-        // add the TextFields
+        // add the TextFields if from server
         if (!querySnapshot.metadata.hasPendingWrites) {
-          console.log('ext')
           const obj = {}
           querySnapshot.forEach((element) => {
             const id = element.id
