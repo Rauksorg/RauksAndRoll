@@ -28,21 +28,22 @@ const MyMap = () => {
 
     const unsubscribe = firebase
       .firestore()
-      .collection(`markers`)
+      .collection(`markersv2`)
       .onSnapshot(querySnapshot => {
         // Delete Previous Markers and refs
-        markerRef.current.forEach(((element, i, arr) => {
+        markerRef.current.forEach(((element) => {
           element.remove()
         }))
         markerRef.current = []
-
         querySnapshot.forEach((element) => {
           const elementData = element.data()
-          markerRef.current[element.id] = new Marker()
+          const newMarkerRef = new Marker()
             .setLngLat(elementData.LngLat)
-            .addTo(mapRef.current)
-            .setPopup(new Popup().setText(elementData.name))
-
+          if (!element.data().deleted) {
+            newMarkerRef.addTo(mapRef.current)
+              .setPopup(new Popup().setText(elementData.name));
+          }
+          markerRef.current.push(newMarkerRef)
         });
       })
 
