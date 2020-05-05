@@ -9,6 +9,10 @@ const useStyles = makeStyles({
   root: {
     width: '100%',
   },
+  resize:{
+    fontSize:'x-large'
+    // if can only apply to cara textfield
+  },  
 });
 
 const marks = [
@@ -115,7 +119,13 @@ const Character = ({ location }) => {
               onChange={handleChange}
               variant="outlined"
               className={classes.root}
-              style={{ marginTop: '10px' }}
+              style={{ marginTop: '10px'}}
+              // InputProps={{
+              //   classes: {
+              //     input: classes.resize,
+              //   },
+              // }}
+
             />
           )
         })}
