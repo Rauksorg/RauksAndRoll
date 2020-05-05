@@ -46,18 +46,17 @@ const Sheet = ({ sheetId }) => {
   }, [sheetId])
   return (
     <div>
-      <Typography variant="h4" >{reroll != null ? reroll : "."} <AutorenewIcon /></Typography>
-      <Typography variant="h6" gutterBottom>Carac</Typography>
+      <Typography variant="h6">Carac</Typography>
       <Typography variant="body2" className={classes.preserveLineBreak}>{sheetField.attributes != null ? sheetField.attributes : "Loading..."}</Typography>
-      <Typography variant="h4" gutterBottom >{reroll != null ? reroll : "."} <AutorenewIcon /></Typography>
-      <Typography variant="h6" gutterBottom>Comp</Typography>
-      <Typography variant="body2" gutterBottom className={classes.preserveLineBreak}>{sheetField.skills != null ? sheetField.skills : "Loading..."}</Typography>
-      <Typography variant="h6" gutterBottom>Traits</Typography>
-      <Typography variant="body2" gutterBottom className={classes.preserveLineBreak}>{sheetField.perks != null ? sheetField.perks : "Loading..."}</Typography>
-      <Typography variant="h6" gutterBottom>Traumas</Typography>
-      <Typography variant="body2" gutterBottom className={classes.preserveLineBreak}>{sheetField.traumas != null ? sheetField.traumas : "Loading..."}</Typography>
-      <Typography variant="h6" gutterBottom>Notes</Typography>
-      <Typography variant="body2" gutterBottom className={classes.preserveLineBreak}>{sheetField.notes != null ? sheetField.notes : "Loading..."}</Typography>
+      <Typography variant="h4">{reroll != null ? reroll : "."} <AutorenewIcon /></Typography>
+      <Typography variant="h6">Comp</Typography>
+      <Typography variant="body2" className={classes.preserveLineBreak}>{sheetField.skills != null ? sheetField.skills : "Loading..."}</Typography>
+      <Typography variant="h6">Traits</Typography>
+      <Typography variant="body2" className={classes.preserveLineBreak}>{sheetField.perks != null ? sheetField.perks : "Loading..."}</Typography>
+      <Typography variant="h6">Traumas</Typography>
+      <Typography variant="body2" className={classes.preserveLineBreak}>{sheetField.traumas != null ? sheetField.traumas : "Loading..."}</Typography>
+      <Typography variant="h6">Notes</Typography>
+      <Typography variant="body2" className={classes.preserveLineBreak}>{sheetField.notes != null ? sheetField.notes : "Loading..."}</Typography>
     </div>
   )
 }
