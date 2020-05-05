@@ -84,7 +84,7 @@ const MyMapModif = () => {
   const addMarker = () => {
     const { lng, lat } = mapRef.current.getCenter()
     const newOrder = numberOfmarker + 1
-    const payload = { name: "", LngLat: [lng, lat], order: newOrder, color: 'blue' }
+    const payload = { name: "", LngLat: [lng, lat], order: newOrder}
 
     firebase.firestore().collection("markersv2").add(payload)
       .then((docRef) => {
