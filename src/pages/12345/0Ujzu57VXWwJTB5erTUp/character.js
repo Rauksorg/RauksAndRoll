@@ -15,7 +15,7 @@ const marks = [
   { value: 0, label: '0', }, { value: 1, }, { value: 2, label: '2', }, { value: 3, }, { value: 4, label: '4', }, { value: 5, }, { value: 6, label: '6', }, { value: 7, }, { value: 8, label: '8', }, { value: 9, label: '9', },
 ];
 // find a way to include identification without mnessing with render
-const inputsFields = [{ name: 'attributes', title: 'Carac' }, { name: 'skills', title: 'Comp' }, { name: 'perks', title: 'Traits' }, { name: 'traumas', title: 'Traumas' }, { name: 'notes', title: 'Notes' }]
+const inputsFields = [{ name: 'attributes', title: '' }, { name: 'skills', title: 'Skills' }, { name: 'perks', title: 'Traits' }, { name: 'traumas', title: 'Traumas' }, { name: 'notes', title: 'Notes' }]
 
 const Character = ({ location }) => {
   const timer = useRef(null)

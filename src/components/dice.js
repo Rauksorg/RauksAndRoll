@@ -105,9 +105,9 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
 
   const body = (
     <div className={classes.paper}>
-      <Typography variant="h6" >Carac</Typography>
+      {/* <Typography variant="h6" >Carac</Typography> */}
       <Typography variant="body2" className={classes.preserveLineBreak}>{sheetField.attributes != null ? sheetField.attributes : "Loading..."}</Typography>
-      <Typography variant="h6" >Comp</Typography>
+      <Typography variant="h6">Skills</Typography>
       <Typography variant="body2" className={classes.preserveLineBreak}>{sheetField.skills != null ? sheetField.skills : "Loading..."}</Typography>
       <Typography variant="h6" >Traits</Typography>
       <Typography variant="body2" className={classes.preserveLineBreak}>{sheetField.perks != null ? sheetField.perks : "Loading..."}</Typography>

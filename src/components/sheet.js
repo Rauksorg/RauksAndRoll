@@ -3,6 +3,7 @@ import firebase from "gatsby-plugin-firebase"
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import AutorenewIcon from '@material-ui/icons/Autorenew';
+import Grid from '@material-ui/core/Grid';
 const useStyles = makeStyles({
   preserveLineBreak: {
     whiteSpace: 'pre-line',
@@ -46,10 +47,15 @@ const Sheet = ({ sheetId }) => {
   }, [sheetId])
   return (
     <div>
-      <Typography variant="h6">Carac</Typography>
-      <Typography variant="body2" className={classes.preserveLineBreak}>{sheetField.attributes != null ? sheetField.attributes : "Loading..."}</Typography>
-      <Typography variant="h4">{reroll != null ? reroll : "."} <AutorenewIcon /></Typography>
-      <Typography variant="h6">Comp</Typography>
+      <Grid container spacing={3}>
+        <Grid item xs={9}><Typography variant="h5">{sheetField.identification != null ? sheetField.identification : "Loading..."}</Typography></Grid>
+        <Grid item xs={3} ><Typography style={{textAlign:'right'}}variant="h4">{reroll != null ? reroll : "."} <AutorenewIcon /></Typography></Grid>
+      </Grid>
+      {/* <Typography variant="h5">{sheetField.identification != null ? sheetField.identification : "Loading..."}</Typography> */}
+      {/* <Typography variant="h6">Carac.</Typography> */}
+      <Typography variant="body1" className={classes.preserveLineBreak}>{sheetField.attributes != null ? sheetField.attributes : "Loading..."}</Typography>
+      {/* <Typography variant="h4">{reroll != null ? reroll : "."} <AutorenewIcon /></Typography> */}
+      <Typography variant="h6">Skills</Typography>
       <Typography variant="body2" className={classes.preserveLineBreak}>{sheetField.skills != null ? sheetField.skills : "Loading..."}</Typography>
       <Typography variant="h6">Traits</Typography>
       <Typography variant="body2" className={classes.preserveLineBreak}>{sheetField.perks != null ? sheetField.perks : "Loading..."}</Typography>
