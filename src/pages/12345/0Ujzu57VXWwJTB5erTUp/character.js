@@ -22,7 +22,6 @@ const Character = ({ location }) => {
 
   const playerId = location.pathname.split("/")[2]
   const classes = useStyles();
-  const [inventory, setInventory] = React.useState(null)
   const [reroll, setReroll] = React.useState(null)
 
   const [userInput, setUserInput] = useReducer(
@@ -43,7 +42,6 @@ const Character = ({ location }) => {
     const newValue = evt.target.value;
     setUserInput({ [name]: newValue });
     timer.current = setTimeout(() => {
-      console.log('saved')
       firebase
         .firestore()
         .doc(`players/${playerId}`)
@@ -64,22 +62,11 @@ const Character = ({ location }) => {
             setUserInput({ [element.name]: doc.data()[element.name] });
           })
           setUserInput({ 'identification': doc.data().identification })
-          setInventory(data.inventory)
         }
         setReroll(data.reroll)
       });
     return unsubscribe;
   }, [playerId])
-
-  const handleInventoryChange = (event) => {
-    setInventory(event.target.value)
-    firebase
-      .firestore()
-      .doc(`players/${playerId}`)
-      .update({
-        inventory: event.target.value
-      })
-  };
 
   const handleRerollChange = (_, newValue) => {
     firebase
@@ -132,18 +119,6 @@ const Character = ({ location }) => {
             />
           )
         })}
-
-
-        <TextField
-          id="standard-multiline-flexible"
-          label="Character sheet"
-          multiline
-          value={inventory != null ? inventory : "..."}
-          onChange={handleInventoryChange}
-          variant="outlined"
-          className={classes.root}
-          style={{ marginTop: '10px' }}
-        />
       </div>
     </form>
   );
