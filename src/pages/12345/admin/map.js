@@ -27,17 +27,16 @@ const ColorSelect = ({ markerId, color = 'blue' }) => {
   const [menuColor, setMenuColor] = useState(color);
 
   const handleChange = (event) => {
-    console.log(event.target)
-    const color=event.target.value
+    const color = event.target.value
     const name = event.target.name
     setMenuColor(color);
     firebase
-        .firestore()
-        .collection(`markersv2`)
-        .doc(name)
-        .update({
-          color: color
-        })
+      .firestore()
+      .collection(`markersv2`)
+      .doc(name)
+      .update({
+        color: color
+      })
   };
   useEffect(() => {
     setMenuColor(color);
@@ -85,7 +84,7 @@ const MyMapModif = () => {
   const addMarker = () => {
     const { lng, lat } = mapRef.current.getCenter()
     const newOrder = numberOfmarker + 1
-    const payload = { name: "", LngLat: [lng, lat], order: newOrder }
+    const payload = { name: "", LngLat: [lng, lat], order: newOrder, color: 'blue' }
 
     firebase.firestore().collection("markersv2").add(payload)
       .then((docRef) => {
