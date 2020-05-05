@@ -60,7 +60,6 @@ const MyMapModif = () => {
   const classes = useStyles();
   const mapRef = useRef(null);
   const markerRef = useRef([]);
-  const [numberOfmarker, setNumberOfmarker] = useState(null)
   const [userInput, setUserInput] = useReducer((state, newState) => ({ ...state, ...newState }), {});
 
   const handleChange = (evt) => {
@@ -82,18 +81,17 @@ const MyMapModif = () => {
   }
 
   const addMarker = () => {
+    const newMarkerRef = firebase.firestore().collection("markersv2").doc();
+    console.log(newMarkerRef.id)
     const { lng, lat } = mapRef.current.getCenter()
-    const newOrder = numberOfmarker + 1
-    const payload = { name: "", LngLat: [lng, lat], order: newOrder}
+    const newOrder = Date.now()
+    const payload = { name: "", LngLat: [lng, lat], order: newOrder }
 
-    firebase.firestore().collection("markersv2").add(payload)
-      .then((docRef) => {
-        setUserInput({ [docRef.id]: payload });
-        console.log("Document written with ID: ", docRef.id);
-      })
+    newMarkerRef.set(payload)
       .catch((error) => {
         console.error("Error adding document: ", error);
       });
+    setUserInput({ [newMarkerRef.id]: payload });
   }
 
   const deleteMarker = (id) => {
@@ -113,6 +111,7 @@ const MyMapModif = () => {
   }
 
   useEffect(() => {
+
     mapRef.current = new Map({
       attributionControl: false,
       container: 'map',
@@ -135,7 +134,6 @@ const MyMapModif = () => {
       .collection(`markersv2`)
       .orderBy("order")
       .onSnapshot(querySnapshot => {
-        setNumberOfmarker(querySnapshot.size)
         // Delete Previous Markers and refs
         markerRef.current.forEach(((element) => { element.remove() }))
         markerRef.current = []
