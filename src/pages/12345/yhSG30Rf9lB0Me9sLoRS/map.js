@@ -38,7 +38,8 @@ const MyMap = () => {
         querySnapshot.forEach((element) => {
           if (!element.data().deleted) {
             const elementData = element.data()
-            const newMarkerRef = new Marker()
+            const color = elementData.color ? elementData.color : 'blue'
+            const newMarkerRef = new Marker({ color: color })
               .setLngLat(elementData.LngLat)
               .addTo(mapRef.current)
               .setPopup(new Popup().setText(elementData.name));

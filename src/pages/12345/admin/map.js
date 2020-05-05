@@ -3,6 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import firebase from "gatsby-plugin-firebase";
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Grid from '@material-ui/core/Grid';
@@ -14,7 +17,44 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
   },
+  small: {
+    width: theme.spacing(2),
+    height: theme.spacing(2),
+  },
 }));
+const ColorSelect = ({ markerId, color = 'blue' }) => {
+  const classes = useStyles();
+  const [menuColor, setMenuColor] = useState(color);
+
+  const handleChange = (event) => {
+    console.log(event.target)
+    const color=event.target.value
+    const name = event.target.name
+    setMenuColor(color);
+    firebase
+        .firestore()
+        .collection(`markersv2`)
+        .doc(name)
+        .update({
+          color: color
+        })
+  };
+  useEffect(() => {
+    setMenuColor(color);
+  }, [color])
+
+  return (
+    <Select
+      value={menuColor}
+      onChange={handleChange}
+      name={markerId}
+    >
+      <MenuItem value={'blue'}><Avatar style={{ backgroundColor: 'blue' }} className={classes.small}> </Avatar></MenuItem>
+      <MenuItem value={'orange'}><Avatar style={{ backgroundColor: 'orange' }} className={classes.small}> </Avatar></MenuItem>
+      <MenuItem value={'green'}><Avatar style={{ backgroundColor: 'green' }} className={classes.small}> </Avatar></MenuItem>
+    </Select>
+  )
+}
 
 const MyMapModif = () => {
   const timer = useRef(null)
@@ -32,7 +72,6 @@ const MyMapModif = () => {
     newData.name = evt.target.value;
     setUserInput({ [name]: newData });
     timer.current = setTimeout(() => {
-      console.log('saved')
       firebase
         .firestore()
         .collection(`markersv2`)
@@ -91,7 +130,7 @@ const MyMapModif = () => {
   }, []);
 
   useEffect(() => {
-    // Add markers
+    // Add markers to map
     const unsubscribe = firebase
       .firestore()
       .collection(`markersv2`)
@@ -104,9 +143,10 @@ const MyMapModif = () => {
         querySnapshot.forEach((element) => {
           const elementData = element.data()
           const id = element.id
+          const color = elementData.color ? elementData.color : 'blue'
           if (!elementData.deleted) {
             // hide deleted MArkers
-            const newMarker = new Marker({ draggable: true })
+            const newMarker = new Marker({ draggable: true, color: color })
               .setLngLat(elementData.LngLat)
               .addTo(mapRef.current)
               .setPopup(new Popup().setText(elementData.name).addTo(mapRef.current));
@@ -128,9 +168,11 @@ const MyMapModif = () => {
     return unsubscribe
   }, []);
   let i = 0
+
   return (
 
     <div>
+
       <div style={{ width: '100%', height: '600px' }} id='map'></div>
       <div style={{ marginBottom: '15px' }}>
         <Button onClick={addMarker} variant="contained">Add</Button>
@@ -139,15 +181,20 @@ const MyMapModif = () => {
         <Grid container spacing={3} >
           {Object.keys(userInput).map((element) => {
             const name = userInput[element].name
+            const color = userInput[element].color
             if (userInput[element].deleted) return <span key={element}></span>
             i++
             return (
               <Grid item xs={3} key={element} >
+
                 <TextField style={{ width: '100%' }} variant="outlined" name={element} key={element} label={`Marker ${i}`} value={name != null ? name : '...'} onChange={handleChange}
                   InputProps={{
+                    startAdornment: (<InputAdornment position="start"><ColorSelect markerId={element} color={color} /></InputAdornment>),
                     endAdornment: <InputAdornment position="end"><IconButton name={element} onClick={() => { deleteMarker(element) }}><DeleteIcon /></IconButton></InputAdornment>,
                   }}
                 />
+
+
               </Grid>
             )
           })}
