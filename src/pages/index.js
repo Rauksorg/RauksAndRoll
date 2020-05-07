@@ -14,8 +14,6 @@ const useStyles = makeStyles((theme) => ({
 export default () => {
   const classes = useStyles();
   return (
-
-
     <div>
       <Link to="/12345/">
         Go to game 12345
