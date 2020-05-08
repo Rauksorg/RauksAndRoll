@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "gatsby-theme-material-ui";
 import Avatar from '@material-ui/core/Avatar';
 import { makeStyles } from '@material-ui/core/styles';
-import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon } from "../components/diceIcons";
+import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon,SkillAltIcon,SuccessAltIcon } from "../components/diceIcons";
 
 const useStyles = makeStyles((theme) => ({
   large: {
@@ -19,17 +19,21 @@ export default () => {
         Go to game 12345
       </Link>
       <div>
-        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><EpicFailIcon fontSize="large"/></Avatar>
-        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><FailIcon fontSize="large"/></Avatar>
-        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><TwoIcon fontSize="large"/></Avatar>
-        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><ThreeEpicIcon fontSize="large" /></Avatar>
-        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><SkillIcon fontSize="large" /></Avatar>
-        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><FourIcon fontSize="large"/></Avatar>
-        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><SuccessIcon fontSize="large"/></Avatar>
-        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><FailIcon fontSize="large"/></Avatar>
-        <Avatar className={classes.large} style={{ backgroundColor: "dimgrey" }}><NeutralIcon fontSize="large"/></Avatar>
-        <Avatar className={classes.large} style={{ backgroundColor: "dimgrey" }}><SuccessIcon fontSize="large"/></Avatar>
-        <Avatar className={classes.large} style={{ backgroundColor: "dimgrey" }}><ExplosivIcon fontSize="large"/></Avatar>
+        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><EpicFailIcon style={{ fontSize: 40 }} /></Avatar>
+        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><FailIcon style={{ fontSize: 40 }} /></Avatar>
+        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><TwoIcon style={{ fontSize: 40 }} /></Avatar>
+        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><ThreeEpicIcon style={{ fontSize: 40 }} /></Avatar>
+        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><SkillIcon style={{ fontSize: 40 }} /></Avatar>
+        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><FourIcon style={{ fontSize: 40 }} /></Avatar>
+        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><SuccessIcon style={{ fontSize: 40 }} /></Avatar>
+        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><SkillAltIcon style={{ fontSize: 40 }} /></Avatar>
+        <Avatar className={classes.large} style={{ backgroundColor: "blue" }}><SuccessAltIcon style={{ fontSize: 40 }} /></Avatar>
+        <Avatar className={classes.large} style={{ backgroundColor: "#202020" }}><FailIcon style={{ fontSize: 40 }} /></Avatar>
+        <Avatar className={classes.large} style={{ backgroundColor: "#202020" }}><NeutralIcon style={{ fontSize: 40 }} /></Avatar>
+        <Avatar className={classes.large} style={{ backgroundColor: "#202020" }}><SuccessIcon style={{ fontSize: 40 }} /></Avatar>
+        <Avatar className={classes.large} style={{ backgroundColor: "#202020" }}><ExplosivIcon style={{ fontSize: 40 }} /></Avatar>
+
+
       </div>
     </div>
   );
