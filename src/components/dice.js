@@ -26,9 +26,7 @@ const ResultToFace = (props) => {
   }
   const TagName = facesObject[props.result]
   return <TagName {...props} />
-
 }
-
 
 const useStyles = makeStyles((theme) => ({
   paper: {
