@@ -100,7 +100,47 @@ const MyMapModif = () => {
     setUserInput({ [id]: newData });
     firebase.firestore().collection("markersv2").doc(id).update({ deleted: true })
   }
+  
+  const downloadMarkers = () => {
+    firebase
+      .firestore()
+      .collection(`markersv2`).orderBy("order").get()
+      .then((querySnapshot) => {
+        const features = []
+        querySnapshot.forEach((doc) => {
+          const serverData = doc.data()
+          const featureTemplate = {
+            type: "Feature",
+            geometry: {
+              type: "Point",
+              coordinates: serverData.LngLat
+            },
+            properties: {
+              name: serverData.name,
+              color: serverData.color,
+              order: serverData.order,
+              id: doc.id,
+            }
+          }
+          if (!serverData.deleted) {
+            features.push(featureTemplate)
+          }
+        })
+        const geojson = {
+          "type": "FeatureCollection",
+          "features": features
+        }
+        // Create the file to save
+        const element = document.createElement("a");
+        const file = new Blob([JSON.stringify(geojson)], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = "markers.json";
+        document.body.appendChild(element); // Required for FireFox
+        element.click();
+      })
 
+
+  }
   const savePosition = (e) => {
     const key = e.target.feature.id
     const { lng, lat } = e.target.getLngLat()
@@ -167,9 +207,7 @@ const MyMapModif = () => {
   let i = 0
 
   return (
-
     <div>
-
       <div style={{ width: '100%', height: '600px' }} id='map'></div>
       <div style={{ marginBottom: '15px' }}>
         <Button onClick={addMarker} variant="contained">Add</Button>
@@ -183,19 +221,19 @@ const MyMapModif = () => {
             i++
             return (
               <Grid item xs={3} key={element} >
-
                 <TextField style={{ width: '100%' }} variant="outlined" name={element} key={element} label={`Marker ${i}`} value={name != null ? name : '...'} onChange={handleChange}
                   InputProps={{
                     startAdornment: (<InputAdornment position="start"><ColorSelect markerId={element} color={color} /></InputAdornment>),
                     endAdornment: <InputAdornment position="end"><IconButton name={element} onClick={() => { deleteMarker(element) }}><DeleteIcon /></IconButton></InputAdornment>,
                   }}
                 />
-
-
               </Grid>
             )
           })}
         </Grid>
+      </div>
+      <div >
+        <Button onClick={downloadMarkers} variant="contained">Download</Button>
       </div>
     </div>
   )
