@@ -10,30 +10,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon } from "../components/diceIcons";
 
-const ResultToFace = (props) => {
-  const facesObject = {
-    '✓': SuccessIcon,
-    '2': TwoIcon,
-    '3!': ThreeEpicIcon,
-    '4': FourIcon,
-    'S': SkillIcon,
-    '✘': FailIcon,
-    '✘!': EpicFailIcon,
-    '💀': FailIcon,
-    '☯': NeutralIcon,
-    '🍀': SuccessIcon,
-    '💥': ExplosivIcon,
-  }
-  const TagName = facesObject[props.result]
-  return <TagName {...props} />
-}
-
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: 'absolute',
     width: 400,
     backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
@@ -156,21 +137,23 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
       <IconButton size="small" onClick={handleOpen}>
         <AccountCircleIcon />
       </IconButton>
+
       <Modal
         open={open}
         onClose={handleClose}
       >
         {body}
       </Modal>
+
       <Grid
-  container
-  direction="row"
-  justify="center"
-  alignItems="center"
-  style={{ backgroundColor: diceProperties.color}}
->
-        <ResultToFace style={{ color: 'white',fontSize: 350,margin:20 }} result={result} />
-        </Grid>
+        container
+        direction="row"
+        justify="center"
+        alignItems="center"
+        style={{ backgroundColor: diceProperties.color }}
+      >
+        <ResultToFace style={{ color: 'white', fontSize: 350, margin: 20 }} result={result} />
+      </Grid>
       {rerollable && <RerollButon clickFunc={rerollDice} rerollNumber={reroll} />}
     </div>
   );
