@@ -133,7 +133,7 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
   );
 
   return (
-    <div style={{ backgroundColor: diceProperties.color, height: '100%' }}>
+    <div style={{ backgroundColor: diceProperties.color, minHeight: '100vh' }}>
       <IconButton size="small" onClick={handleOpen} style={{color:'white'}} >
         <AccountCircleIcon />
       </IconButton>

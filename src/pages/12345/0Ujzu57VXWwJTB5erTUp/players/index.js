@@ -29,13 +29,12 @@ export default function SimpleList({ location }) {
 
   return (
     <div>
-      <Paper style={{marginBottom:'10px',marginTop:'5px'}}>
+      <Paper style={{ marginBottom: '10px', marginTop: '5px' }}>
         <PlayersList location={location} players={players} results={results} />
       </Paper>
-      <Paper style={{padding:'5px'}}>
+      <Paper style={{ padding: '10px' }}>
         <Sheet sheetId={sheetId} />
       </Paper>
-
     </div>
 
   );
