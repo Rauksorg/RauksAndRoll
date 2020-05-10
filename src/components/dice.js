@@ -133,8 +133,8 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
   );
 
   return (
-    <div>
-      <IconButton size="small" onClick={handleOpen}>
+    <div style={{ backgroundColor: diceProperties.color, height: '100%' }}>
+      <IconButton size="small" onClick={handleOpen} style={{color:'white'}} >
         <AccountCircleIcon />
       </IconButton>
 
@@ -150,11 +150,18 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
         direction="row"
         justify="center"
         alignItems="center"
-        style={{ backgroundColor: diceProperties.color }}
       >
         <ResultToFace style={{ color: 'white', fontSize: 350, margin: 20 }} result={result} />
       </Grid>
-      {rerollable && <RerollButon clickFunc={rerollDice} rerollNumber={reroll} />}
+
+      <Grid
+        container
+        direction="row"
+        justify="center"
+        alignItems="center"
+      >
+        {rerollable && <RerollButon clickFunc={rerollDice} rerollNumber={reroll} />}
+      </Grid>
     </div>
   );
 }

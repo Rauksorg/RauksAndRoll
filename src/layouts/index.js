@@ -33,10 +33,9 @@ export default function Layout({ children, location, pageContext }) {
   }
 
   return (
-    <div>
-      <Container className={classes.paper} maxWidth="md">
-        {/* pass props to children */}
-        {React.cloneElement(children, { test: "hello" })}
+    <div style={{height:'100vh'}}>
+      <Container className={classes.paper} maxWidth="md" style={{height:'100%'}}>
+        {children}
       </Container>
       <AppBar component={'div'} position="fixed" style={{ top: "auto", bottom: 0 }}>
         <BottomNavigation value={value} onChange={handleChange}>

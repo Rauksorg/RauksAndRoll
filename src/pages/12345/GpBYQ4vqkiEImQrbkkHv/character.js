@@ -9,10 +9,10 @@ const useStyles = makeStyles({
   root: {
     width: '100%',
   },
-  resize:{
-    fontSize:'x-large'
+  resize: {
+    fontSize: 'x-large'
     // if can only apply to cara textfield
-  },  
+  },
 });
 
 const marks = [
@@ -80,7 +80,6 @@ const Character = ({ location }) => {
         reroll: newValue
       })
   };
-
   return (
     <form noValidate autoComplete="off">
       <TextField
@@ -119,12 +118,12 @@ const Character = ({ location }) => {
               onChange={handleChange}
               variant="outlined"
               className={classes.root}
-              style={{ marginTop: '10px'}}
-              // InputProps={{
-              //   classes: {
-              //     input: classes.resize,
-              //   },
-              // }}
+              style={{ marginTop: '10px' }}
+            // InputProps={{
+            //   classes: {
+            //     input: classes.resize,
+            //   },
+            // }}
 
             />
           )
