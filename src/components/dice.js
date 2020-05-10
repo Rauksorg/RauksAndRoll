@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'pre-line',
   },
   calc: {
-    minHeight: 'calc(100vh - 156px)'
+    minHeight: 'calc(100vh - 216px)'
   }
 }));
 
@@ -167,8 +167,8 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
         alignItems="center"
 
       >
-        <Grid item style={{ marginBottom: '10px' }}>
-          {rerollable && <RerollButon clickFunc={rerollDice} rerollNumber={reroll} />}\
+        <Grid item style={{ marginBottom: '70px' }}>
+          {rerollable && <RerollButon clickFunc={rerollDice} rerollNumber={reroll} />}
         </Grid>
       </Grid>
     </div>
