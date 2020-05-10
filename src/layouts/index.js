@@ -11,7 +11,7 @@ import { BottomNavigationAction } from "gatsby-theme-material-ui";
 
 const useStyles = makeStyles({
   paper: {
-    paddingBottom: 60,
+    paddingBottom: 56,
   },
 });
 

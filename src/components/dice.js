@@ -21,6 +21,9 @@ const useStyles = makeStyles((theme) => ({
   preserveLineBreak: {
     whiteSpace: 'pre-line',
   },
+  calc: {
+    minHeight: 'calc(100vh - 156px)'
+  }
 }));
 
 const ResultToFace = (props) => {
@@ -133,8 +136,8 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
   );
 
   return (
-    <div style={{ backgroundColor: diceProperties.color, minHeight: '100vh' }}>
-      <IconButton size="small" onClick={handleOpen} style={{color:'white'}} >
+    <div style={{ backgroundColor: diceProperties.color }}>
+      <IconButton size="small" onClick={handleOpen} style={{ color: 'white' }} >
         <AccountCircleIcon />
       </IconButton>
 
@@ -150,8 +153,11 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
         direction="row"
         justify="center"
         alignItems="center"
+        className={classes.calc}
       >
-        <ResultToFace style={{ color: 'white', fontSize: 350, margin: 20 }} result={result} />
+        <Grid item>
+          <ResultToFace style={{ color: 'white', fontSize: 350, margin: 20 }} result={result} />
+        </Grid>
       </Grid>
 
       <Grid
@@ -159,8 +165,11 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
         direction="row"
         justify="center"
         alignItems="center"
+
       >
-        {rerollable && <RerollButon clickFunc={rerollDice} rerollNumber={reroll} />}
+        <Grid item style={{ marginBottom: '10px' }}>
+          {rerollable && <RerollButon clickFunc={rerollDice} rerollNumber={reroll} />}\
+        </Grid>
       </Grid>
     </div>
   );
