@@ -1,15 +1,15 @@
-import React from 'react';
-import { withStyles, makeStyles } from '@material-ui/core/styles';
-import { blue, orange, red, grey } from '@material-ui/core/colors';
-import { Button } from "gatsby-theme-material-ui";
-import CasinoOutlinedIcon from '@material-ui/icons/CasinoOutlined';
+import React from 'react'
+import { withStyles, makeStyles } from '@material-ui/core/styles'
+import { blue, orange, red, grey } from '@material-ui/core/colors'
+import { Button } from 'gatsby-theme-material-ui'
+import CasinoOutlinedIcon from '@material-ui/icons/CasinoOutlined'
 
 const useStyles = makeStyles({
   diceButton: {
     width: '50%',
-    height: '100%'
+    height: '100%',
   },
-});
+})
 
 const BlueButton = withStyles((theme) => ({
   root: {
@@ -19,7 +19,7 @@ const BlueButton = withStyles((theme) => ({
       backgroundColor: blue[700],
     },
   },
-}))(Button);
+}))(Button)
 
 const OrangeButton = withStyles((theme) => ({
   root: {
@@ -29,7 +29,7 @@ const OrangeButton = withStyles((theme) => ({
       backgroundColor: orange[700],
     },
   },
-}))(Button);
+}))(Button)
 
 const RedButton = withStyles((theme) => ({
   root: {
@@ -39,7 +39,7 @@ const RedButton = withStyles((theme) => ({
       backgroundColor: red[800],
     },
   },
-}))(Button);
+}))(Button)
 
 const GreyButton = withStyles((theme) => ({
   root: {
@@ -49,30 +49,31 @@ const GreyButton = withStyles((theme) => ({
       backgroundColor: grey[900],
     },
   },
-}))(Button);
+}))(Button)
 
-export default ({ location }) => {
-  const playerId = location.pathname.split("/")[2]
-  const classes = useStyles();
+const ActionDiceSelect = ({ location }) => {
+  const playerId = location.pathname.split('/')[2]
+  const classes = useStyles()
   return (
-    <div  style={{backgroundColor:'red',height:'100%'}}>
-      <div style={{height:'50%'}}>
-        <BlueButton className={classes.diceButton} disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/blue/`}>
+    <div style={{ backgroundColor: 'red', height: '100%' }}>
+      <div style={{ height: '50%' }}>
+        <BlueButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/12345/${playerId}/dice/blue/`}>
           <CasinoOutlinedIcon />
         </BlueButton>
-        <OrangeButton className={classes.diceButton} disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/orange/`}>
+        <OrangeButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/12345/${playerId}/dice/orange/`}>
           <CasinoOutlinedIcon />
         </OrangeButton>
       </div>
-      <div style={{height:'50%'}}>
-        <RedButton className={classes.diceButton} disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/red/`}>
+      <div style={{ height: '50%' }}>
+        <RedButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/12345/${playerId}/dice/red/`}>
           <CasinoOutlinedIcon />
         </RedButton>
-        <GreyButton className={classes.diceButton} disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/grey/`}>
+        <GreyButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/12345/${playerId}/dice/grey/`}>
           <CasinoOutlinedIcon />
         </GreyButton>
       </div>
     </div>
-
-  );
+  )
 }
+
+export default ActionDiceSelect

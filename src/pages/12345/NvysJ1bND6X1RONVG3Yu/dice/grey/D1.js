@@ -1,14 +1,14 @@
-import React from "react";
+import React from 'react'
 import DiceResult from '../../../../../components/dice'
 
 const greyDice = ['💀', '💀', '☯', '☯', '🍀', '🍀', '💥']
 
 const randomNumber = (min, max) => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
+  return Math.floor(Math.random() * (max - min + 1) + min)
 }
 
-const allEqualTo = (arr, target) => arr.every(v => v === target)
-const takeFirst = arr => arr[0]
+const allEqualTo = (arr, target) => arr.every((v) => v === target)
+const takeFirst = (arr) => arr[0]
 
 const takeFirstCrit = (arr) => {
   if (allEqualTo(arr, 5)) return 6

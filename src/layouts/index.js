@@ -1,50 +1,50 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import RoomIcon from '@material-ui/icons/Room';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import DescriptionIcon from '@material-ui/icons/Description';
-import Container from '@material-ui/core/Container';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import AppBar from '@material-ui/core/AppBar';
-import { BottomNavigationAction } from "gatsby-theme-material-ui";
+import React from 'react'
+import { makeStyles } from '@material-ui/core/styles'
+import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted'
+import RoomIcon from '@material-ui/icons/Room'
+import PlayArrowIcon from '@material-ui/icons/PlayArrow'
+import DescriptionIcon from '@material-ui/icons/Description'
+import Container from '@material-ui/core/Container'
+import BottomNavigation from '@material-ui/core/BottomNavigation'
+import AppBar from '@material-ui/core/AppBar'
+import { BottomNavigationAction } from 'gatsby-theme-material-ui'
 
 const useStyles = makeStyles({
   paper: {
     paddingBottom: 56,
   },
-});
+})
 
-export default function Layout({ children, location, pageContext }) {
-
-  const classes = useStyles();
-  const navLocation = location.pathname.split("/")[3]
-  const playerId = location.pathname.split("/")[2]
-  const [value, setValue] = React.useState(navLocation);
+const Layout = ({ children, location, pageContext }) => {
+  const classes = useStyles()
+  const navLocation = location.pathname.split('/')[3]
+  const playerId = location.pathname.split('/')[2]
+  const [value, setValue] = React.useState(navLocation)
   const handleChange = (_, newValue) => {
-    setValue(newValue);
-  };
-
-  if (pageContext.layout === "noLayout") {
-    return <div><Container maxWidth="md">{children}</Container></div>
+    setValue(newValue)
   }
-  if (pageContext.layout === "admin") {
-    return <div><Container maxWidth="xl">{children}</Container></div>
+
+  if (pageContext.layout === 'noLayout') {
+    return <Container maxWidth='md'>{children}</Container>
+  }
+  if (pageContext.layout === 'admin') {
+    return <Container maxWidth='xl'>{children}</Container>
   }
 
   return (
     <div style={{ height: '100%' }}>
-      <Container className={classes.paper} maxWidth="md" style={{ height: '100%' }}>
+      <Container className={classes.paper} maxWidth='md' style={{ height: '100%' }}>
         {children}
       </Container>
-      <AppBar component={'div'} position="fixed" style={{ top: "auto", bottom: 0 }}>
+      <AppBar component={'div'} position='fixed' style={{ top: 'auto', bottom: 0 }}>
         <BottomNavigation value={value} onChange={handleChange}>
-          <BottomNavigationAction to={`/12345/${playerId}/players`} label="Players" value="players" icon={<FormatListBulletedIcon />} />
-          <BottomNavigationAction to={`/12345/${playerId}/character`} label="Character" value="character" icon={<DescriptionIcon />} />
-          <BottomNavigationAction to={`/12345/${playerId}/map`} label="Maps" value="map" icon={<RoomIcon />} />
-          <BottomNavigationAction to={`/12345/${playerId}/dice`} label="Dice" value="dice" icon={<PlayArrowIcon />} />
+          <BottomNavigationAction to={`/12345/${playerId}/players`} label='Players' value='players' icon={<FormatListBulletedIcon />} />
+          <BottomNavigationAction to={`/12345/${playerId}/character`} label='Character' value='character' icon={<DescriptionIcon />} />
+          <BottomNavigationAction to={`/12345/${playerId}/map`} label='Maps' value='map' icon={<RoomIcon />} />
+          <BottomNavigationAction to={`/12345/${playerId}/dice`} label='Dice' value='dice' icon={<PlayArrowIcon />} />
         </BottomNavigation>
       </AppBar>
     </div>
-  );
+  )
 }
+export default Layout
