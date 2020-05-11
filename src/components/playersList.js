@@ -8,6 +8,7 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
 import Badge from '@material-ui/core/Badge'
 import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon } from '../components/diceIcons'
+import joseAltuve from '../images/joseAltuve.jpg'
 
 // Fix listItemButton
 import patchBaseButtonComponent from '../../node_modules/gatsby-theme-material-ui/src/utils/patch-base-button-components'
@@ -22,6 +23,8 @@ const useStyles = makeStyles((theme) => ({
     height: theme.spacing(7),
   },
 }))
+
+const avatarList= {GpBYQ4vqkiEImQrbkkHv:joseAltuve}
 
 const ResultToFace = (props) => {
   const facesObject = { '✓': SuccessIcon, '2': TwoIcon, '3!': ThreeEpicIcon, '4': FourIcon, S: SkillIcon, '✘': FailIcon, '✘!': EpicFailIcon, '💀': FailIcon, '☯': NeutralIcon, '🍀': SuccessIcon, '💥': ExplosivIcon }
@@ -73,8 +76,8 @@ const PlayersList = ({ location, players, results }) => {
           const playerIsNewRoll = isNew[player.id]
           return (
             <ListItemPatched key={key} button to={`/12345/${playerId}/players/${player.id}`}>
-              <ListItemAvatar style={{ margin: '3px 0px 3px 0px' }}>
-                <Avatar>{player.name.charAt(0)}</Avatar>
+              <ListItemAvatar style={{ margin: '0px 5px 0px 0px' }}>
+                <Avatar className={classes.large} src={avatarList[player.id]}>{player.name.charAt(0)}</Avatar>
               </ListItemAvatar>
               <ListItemText primary={player.name} />
               <ListItemSecondaryAction>
