@@ -17,6 +17,6 @@ const takeFirstCrit = (arr) => {
 
 const rollDark1 = () => greyDice[takeFirstCrit([randomNumber(0, 5), randomNumber(0, 5)])]
 
-const DarkDice1 = ({ location }) => <DiceResult location={location} diceFormula={rollDark1} diceProperties={{ color: 'dimgray' }} rerollable={false} />
+const DarkDice1 = ({ location }) => <DiceResult location={location} diceFormula={rollDark1} diceProperties={{ color: '#202020' }} rerollable={false} />
 
 export default DarkDice1

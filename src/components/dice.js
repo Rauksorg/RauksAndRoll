@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useReducer,useEffect,useState } from 'react'
 import firebase from 'gatsby-plugin-firebase'
 import Fab from '@material-ui/core/Fab'
 import AutorenewIcon from '@material-ui/icons/Autorenew'
@@ -42,10 +42,10 @@ const RerollButon = ({ clickFunc, rerollNumber }) => (
 const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
   const classes = useStyles()
   const playerId = location.pathname.split('/')[2]
-  const [result, setResult] = React.useState(diceFormula())
-  const [reroll, setReroll] = React.useState(null)
-  const [rerolled, setRerolled] = React.useState(false)
-  const [open, setOpen] = React.useState(false)
+  const [result, setResult] = useState(diceFormula())
+  const [reroll, setReroll] = useState(null)
+  const [rerolled, setRerolled] = useState(false)
+  const [open, setOpen] = useState(false)
   const [sheetField, setSheetField] = useReducer((state, newState) => ({ ...state, ...newState }), {
     attributes: null,
     skills: null,
@@ -60,7 +60,7 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
     setOpen(false)
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     firebase.firestore().doc(`players/${playerId}`).update({
       diceResult: result,
       dice: diceProperties.color,
@@ -69,7 +69,7 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
     })
   }, [playerId, rerolled, result, diceProperties.color])
 
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = firebase
       .firestore()
       .doc(`players/${playerId}`)

@@ -7,6 +7,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
 import Badge from '@material-ui/core/Badge'
+import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon } from '../components/diceIcons'
 
 // Fix listItemButton
 import patchBaseButtonComponent from '../../node_modules/gatsby-theme-material-ui/src/utils/patch-base-button-components'
@@ -16,7 +17,17 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
   },
+  large: {
+    width: theme.spacing(7),
+    height: theme.spacing(7),
+  },
 }))
+
+const ResultToFace = (props) => {
+  const facesObject = { '✓': SuccessIcon, '2': TwoIcon, '3!': ThreeEpicIcon, '4': FourIcon, S: SkillIcon, '✘': FailIcon, '✘!': EpicFailIcon, '💀': FailIcon, '☯': NeutralIcon, '🍀': SuccessIcon, '💥': ExplosivIcon }
+  const TagName = facesObject[props.result]
+  return <TagName {...props} />
+}
 
 // Results structure
 // const results = { NvysJ1bND6X1RONVG3Yu: { diceResult: "3", dice: "blue",rerolled:false } }
@@ -62,13 +73,15 @@ const PlayersList = ({ location, players, results }) => {
           const playerIsNewRoll = isNew[player.id]
           return (
             <ListItemPatched key={key} button to={`/12345/${playerId}/players/${player.id}`}>
-              <ListItemAvatar>
-                <Avatar>{player.name.charAt(0)}</Avatar>
+              <ListItemAvatar style={{ marginRight: '10px' }}>
+                <Avatar className={classes.large}>{player.name.charAt(0)}</Avatar>
               </ListItemAvatar>
               <ListItemText primary={player.name} />
               <ListItemSecondaryAction>
                 <Badge color='primary' variant='dot' invisible={!playerIsNewRoll}>
-                  <Avatar style={{ border: playerRerolled ? '2px dotted' : 'none', backgroundColor: playerDice ? playerDice : 'grey' }}>{playerResult ? playerResult : '.'}</Avatar>
+                  <Avatar className={classes.large} style={{ border: playerRerolled ? '2px dotted' : 'none', backgroundColor: playerDice ? playerDice : 'grey' }}>
+                    {playerResult ? <ResultToFace style={{ color: 'white', fontSize: 40 }} result={playerResult} /> : ''}
+                  </Avatar>
                 </Badge>
               </ListItemSecondaryAction>
             </ListItemPatched>
