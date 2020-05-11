@@ -33,8 +33,8 @@ export default function Layout({ children, location, pageContext }) {
   }
 
   return (
-    <div>
-      <Container className={classes.paper} maxWidth="md">
+    <div style={{ backgroundColor: 'green', height: '100%' }}>
+      <Container className={classes.paper} maxWidth="md" style={{ height: '100%' }}>
         {children}
       </Container>
       <AppBar component={'div'} position="fixed" style={{ top: "auto", bottom: 0 }}>

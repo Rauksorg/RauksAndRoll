@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import Slider from '@material-ui/core/Slider';
+import Paper from '@material-ui/core/Paper';
 
 const useStyles = makeStyles({
   root: {
@@ -81,55 +82,56 @@ const Character = ({ location }) => {
       })
   };
   return (
-    <form noValidate autoComplete="off">
-      <TextField
-        name='identification'
-        label='Id'
-        multiline
-        value={userInput.identification != null ? userInput.identification : '...'}
-        onChange={handleChange}
-        variant="outlined"
-        className={classes.root}
-        style={{ marginTop: '10px' }}
-      />
-      <div>
-        <Typography id="discrete-slider-custom" gutterBottom style={{ marginTop: '10px' }}>
-          Relances
-      </Typography>
-        <Slider
-          value={reroll != null ? reroll : 5}
-          onChange={handleRerollChange}
-          aria-labelledby="discrete-slider-custom"
-          step={1}
-          valueLabelDisplay="auto"
-          marks={marks}
-          max={9}
+    <Paper style={{ padding: '15px', marginBottom: '60px' }}>
+      <form noValidate autoComplete="off">
+        <TextField
+          name='identification'
+          label='Id'
+          multiline
+          value={userInput.identification != null ? userInput.identification : '...'}
+          onChange={handleChange}
+          variant="outlined"
+          className={classes.root}
         />
-        {inputsFields.map((element, i) => {
+        
+          <Typography id="discrete-slider-custom" gutterBottom style={{ marginTop: '10px' }}>
+            Relances
+      </Typography>
+          <Slider
+            value={reroll != null ? reroll : 5}
+            onChange={handleRerollChange}
+            aria-labelledby="discrete-slider-custom"
+            step={1}
+            valueLabelDisplay="auto"
+            marks={marks}
+            max={9}
+          />
+          {inputsFields.map((element, i) => {
 
-          const value = userInput[element.name]
-          return (
-            <TextField
-              key={i}
-              name={element.name}
-              label={element.title}
-              multiline
-              value={value != null ? value : "..."}
-              onChange={handleChange}
-              variant="outlined"
-              className={classes.root}
-              style={{ marginTop: '10px' }}
-            // InputProps={{
-            //   classes: {
-            //     input: classes.resize,
-            //   },
-            // }}
+            const value = userInput[element.name]
+            return (
+              <TextField
+                key={i}
+                name={element.name}
+                label={element.title}
+                multiline
+                value={value != null ? value : "..."}
+                onChange={handleChange}
+                variant="outlined"
+                className={classes.root}
+                style={{ marginTop: '10px' }}
+              // InputProps={{
+              //   classes: {
+              //     input: classes.resize,
+              //   },
+              // }}
 
-            />
-          )
-        })}
-      </div>
-    </form>
+              />
+            )
+          })}
+        
+      </form>
+    </Paper>
   );
 }
 

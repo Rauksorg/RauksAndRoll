@@ -52,7 +52,7 @@ const MyMap = () => {
     return unsubscribe
   }, []);
 
-  return <div style={{ width: '100%', height: '600px' }} id='map'></div>
+  return <div style={{ width: '100%', height: '100%' }} id='map'></div>
 }
 
 export default MyMap

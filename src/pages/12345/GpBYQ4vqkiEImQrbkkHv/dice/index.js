@@ -7,8 +7,8 @@ import CasinoOutlinedIcon from '@material-ui/icons/CasinoOutlined';
 const useStyles = makeStyles({
   diceButton: {
     width: '50%',
-    height: '300px'
-  }
+    height: '100%'
+  },
 });
 
 const BlueButton = withStyles((theme) => ({
@@ -55,8 +55,8 @@ export default ({ location }) => {
   const playerId = location.pathname.split("/")[2]
   const classes = useStyles();
   return (
-    <div>
-      <div>
+    <div  style={{backgroundColor:'red',height:'100%'}}>
+      <div style={{height:'50%'}}>
         <BlueButton className={classes.diceButton} disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/blue/`}>
           <CasinoOutlinedIcon />
         </BlueButton>
@@ -64,7 +64,7 @@ export default ({ location }) => {
           <CasinoOutlinedIcon />
         </OrangeButton>
       </div>
-      <div>
+      <div style={{height:'50%'}}>
         <RedButton className={classes.diceButton} disableElevation size="large" variant="contained" color="primary" to={`/12345/${playerId}/dice/red/`}>
           <CasinoOutlinedIcon />
         </RedButton>

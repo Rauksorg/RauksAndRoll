@@ -136,38 +136,20 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
   );
 
   return (
-    <div style={{ backgroundColor: diceProperties.color }}>
+    <div style={{ backgroundColor: diceProperties.color, height: '100%' }}>
       <IconButton size="small" onClick={handleOpen} style={{ color: 'white' }} >
         <AccountCircleIcon />
       </IconButton>
-
-      <Modal
-        open={open}
-        onClose={handleClose}
-      >
+      <Modal open={open} onClose={handleClose}      >
         {body}
       </Modal>
-
-      <Grid
-        container
-        direction="row"
-        justify="center"
-        alignItems="center"
-        className={classes.calc}
-      >
+      <Grid container direction="row" justify="center" alignItems="center" style={{ height: '100%', backgroundColor: 'red' }}    >
         <Grid item>
-          <ResultToFace style={{ color: 'white', fontSize: 350, margin: 20 }} result={result} />
+          <ResultToFace style={{ color: 'white', fontSize: 350 }} result={result} />
         </Grid>
       </Grid>
-
-      <Grid
-        container
-        direction="row"
-        justify="center"
-        alignItems="center"
-
-      >
-        <Grid item style={{ marginBottom: '70px' }}>
+      <Grid container direction="row" justify="center" alignItems="center" style={{ position: 'absolute', bottom: '80px', left: '50%', transform: 'translate(-50%)' }} >
+        <Grid item>
           {rerollable && <RerollButon clickFunc={rerollDice} rerollNumber={reroll} />}
         </Grid>
       </Grid>
