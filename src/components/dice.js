@@ -143,7 +143,7 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
       <Modal open={open} onClose={handleClose}      >
         {body}
       </Modal>
-      <Grid container direction="row" justify="center" alignItems="center" style={{ height: '100%', backgroundColor: 'red' }}    >
+      <Grid container direction="row" justify="center" alignItems="center" style={{ height: '100%'}}    >
         <Grid item>
           <ResultToFace style={{ color: 'white', fontSize: 350 }} result={result} />
         </Grid>

@@ -33,7 +33,7 @@ export default function Layout({ children, location, pageContext }) {
   }
 
   return (
-    <div style={{ backgroundColor: 'green', height: '100%' }}>
+    <div style={{ height: '100%' }}>
       <Container className={classes.paper} maxWidth="md" style={{ height: '100%' }}>
         {children}
       </Container>
