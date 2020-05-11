@@ -73,8 +73,8 @@ const PlayersList = ({ location, players, results }) => {
           const playerIsNewRoll = isNew[player.id]
           return (
             <ListItemPatched key={key} button to={`/12345/${playerId}/players/${player.id}`}>
-              <ListItemAvatar style={{ marginRight: '10px' }}>
-                <Avatar className={classes.large}>{player.name.charAt(0)}</Avatar>
+              <ListItemAvatar style={{ margin: '3px 0px 3px 0px' }}>
+                <Avatar>{player.name.charAt(0)}</Avatar>
               </ListItemAvatar>
               <ListItemText primary={player.name} />
               <ListItemSecondaryAction>
