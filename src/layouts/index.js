@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted'
 import RoomIcon from '@material-ui/icons/Room'
@@ -15,20 +15,15 @@ const useStyles = makeStyles({
   },
 })
 
-const Layout = ({ children, location, pageContext }) => {
+const BottomNav = ({ children, location }) => {
   const classes = useStyles()
+
   const navLocation = location.pathname.split('/')[3]
   const playerId = location.pathname.split('/')[2]
-  const [value, setValue] = React.useState(navLocation)
+  const [value, setValue] = useState(navLocation)
+
   const handleChange = (_, newValue) => {
     setValue(newValue)
-  }
-
-  if (pageContext.layout === 'noLayout') {
-    return <Container maxWidth='md'>{children}</Container>
-  }
-  if (pageContext.layout === 'admin') {
-    return <Container maxWidth='xl'>{children}</Container>
   }
 
   return (
@@ -46,5 +41,15 @@ const Layout = ({ children, location, pageContext }) => {
       </AppBar>
     </div>
   )
+}
+
+const Layout = ({ children, location, pageContext }) => {
+  if (pageContext.layout === 'noLayout') {
+    return <Container maxWidth='md'>{children}</Container>
+  }
+  if (pageContext.layout === 'admin') {
+    return <Container maxWidth='xl'>{children}</Container>
+  }
+  return <BottomNav children={children} location={location} />
 }
 export default Layout
