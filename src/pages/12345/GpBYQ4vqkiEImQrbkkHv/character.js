@@ -10,10 +10,6 @@ const useStyles = makeStyles({
   root: {
     width: '100%',
   },
-  resize: {
-    fontSize: 'x-large',
-    // if can only apply to carac textfield
-  },
 })
 
 const marks = [
@@ -110,11 +106,6 @@ const Character = ({ location }) => {
               variant='outlined'
               className={classes.root}
               style={{ marginTop: '10px' }}
-              // InputProps={{
-              //   classes: {
-              //     input: classes.resize,
-              //   },
-              // }}
             />
           )
         })}
