@@ -4,11 +4,15 @@ import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import AutorenewIcon from '@material-ui/icons/Autorenew'
 import Grid from '@material-ui/core/Grid'
-const useStyles = makeStyles({
+
+const useStyles = makeStyles((theme) => ({
   preserveLineBreak: {
     whiteSpace: 'pre-line',
   },
-})
+  margin: {
+    margin: theme.spacing(1),
+  },
+}))
 
 const Sheet = ({ sheetId }) => {
   const classes = useStyles()
@@ -45,7 +49,9 @@ const Sheet = ({ sheetId }) => {
     <div>
       <Grid container spacing={3}>
         <Grid item xs={9}>
-          <Typography variant='h5'>{sheetField.identification != null ? sheetField.identification : 'Loading...'}</Typography>
+          <Typography variant='h5'>
+            {sheetField.identification != null ? sheetField.identification : 'Loading...'}
+          </Typography>
         </Grid>
         <Grid item xs={3}>
           <Typography style={{ textAlign: 'right' }} variant='h4'>
