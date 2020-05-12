@@ -1,11 +1,34 @@
 import React, { useEffect, useRef } from 'react'
 import firebase from 'gatsby-plugin-firebase'
+import { makeStyles } from '@material-ui/core/styles'
 import { Map, Popup, Marker } from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
+const useStyles = makeStyles({
+  height100: {
+    // height: '100vh', /* Fallback for browsers that do not support Custom Properties */
+    height: 'calc(var(--vh, 1vh) * 100)',
+  },
+})
+
 const MyMap = () => {
+  const classes = useStyles()
+
   const mapRef = useRef(null)
   const markerRef = useRef([])
+
+  const resize = () => {
+    let vh = window.innerHeight * 0.01
+    document.documentElement.style.setProperty('--vh', `${vh}px`)
+    console.log(vh)
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', resize)
+    return () => {
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
 
   useEffect(() => {
     mapRef.current = new Map({
@@ -44,7 +67,7 @@ const MyMap = () => {
       })
     return unsubscribe
   }, [])
-  return <div style={{ width: '100%', height: '100%' }} id='map'></div>
+  return <div className={classes.height100} style={{ width: '100%' }} id='map'></div>
 }
 
 export default MyMap
