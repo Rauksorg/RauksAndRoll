@@ -81,6 +81,7 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
   }
 
   useEffect(() => {
+    resize()
     window.addEventListener('resize', resize)
     return () => {
       window.removeEventListener('resize', resize)

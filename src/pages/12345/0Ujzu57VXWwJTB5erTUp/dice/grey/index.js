@@ -34,6 +34,7 @@ const DestinyDiceSelect = ({ location }) => {
   }
 
   useEffect(() => {
+    resize()
     window.addEventListener('resize', resize)
     return () => {
       window.removeEventListener('resize', resize)
