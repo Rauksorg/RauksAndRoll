@@ -9,8 +9,7 @@ const useStyles = makeStyles({
     // height: '100vh', /* Fallback for browsers that do not support Custom Properties */
     height: 'calc(var(--vh, 1vh) * 100)',
   },
-},
-)
+})
 
 const MyMap = () => {
   const classes = useStyles()
@@ -19,15 +18,14 @@ const MyMap = () => {
   const markerRef = useRef([])
 
   const resize = () => {
-    let vh = window.innerHeight * 0.01;
-    document.documentElement.style.setProperty('--vh', `${vh}px`);
-    console.log(vh)
+    let vh = window.innerHeight * 0.01
+    document.documentElement.style.setProperty('--vh', `${vh}px`)
   }
 
   useEffect(() => {
-    window.addEventListener('resize', resize);
+    window.addEventListener('resize', resize)
     return () => {
-      window.removeEventListener("resize", resize)
+      window.removeEventListener('resize', resize)
     }
   }, [])
 
