@@ -1,2 +1,1 @@
-import "firebase/firestore"
-import './src/styles/global.css'
+import 'firebase/firestore'

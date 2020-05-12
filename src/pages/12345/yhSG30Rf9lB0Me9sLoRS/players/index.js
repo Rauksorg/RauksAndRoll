@@ -33,7 +33,7 @@ const PlayersListPage = ({ location }) => {
   }, [])
 
   return (
-    <div style={{ margin: '0px 15px 60px 15px'  }}>
+    <div style={{ margin: '5px 15px 5px 15px'  }}>
       <Paper style={{ marginBottom: '10px' }}>
         <PlayersList location={location} players={players} results={results} />
       </Paper>

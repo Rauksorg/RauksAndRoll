@@ -27,8 +27,8 @@ const BottomNav = ({ children, location }) => {
   }
 
   return (
-    <div style={{ height: '100%' }}>
-      <Container disableGutters className={classes.paper} maxWidth='md' style={{ height: '100%' }}>
+    <div>
+      <Container disableGutters className={classes.paper} maxWidth='md'>
         {children}
       </Container>
       <AppBar component={'div'} position='fixed' style={{ top: 'auto', bottom: 0 }}>

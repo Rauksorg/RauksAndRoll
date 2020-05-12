@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import { withStyles, makeStyles } from '@material-ui/core/styles'
 import { blue, orange, red, grey } from '@material-ui/core/colors'
 import { Button } from 'gatsby-theme-material-ui'
@@ -8,6 +8,10 @@ const useStyles = makeStyles({
   diceButton: {
     width: '50%',
     height: '100%',
+  },
+  height100: {
+    // height: '100vh', /* Fallback for browsers that do not support Custom Properties */
+    height: 'calc(var(--vh, 1vh) * 100 - 56px)',
   },
 })
 
@@ -54,8 +58,21 @@ const GreyButton = withStyles((theme) => ({
 const ActionDiceSelect = ({ location }) => {
   const playerId = location.pathname.split('/')[2]
   const classes = useStyles()
+
+  const resize = () => {
+    let vh = window.innerHeight * 0.01
+    document.documentElement.style.setProperty('--vh', `${vh}px`)
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', resize)
+    return () => {
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
   return (
-    <div style={{ backgroundColor: 'red', height: '100%' }}>
+    <div className={classes.height100}>
       <div style={{ height: '50%' }}>
         <BlueButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/12345/${playerId}/dice/blue/`}>
           <CasinoOutlinedIcon />

@@ -1,11 +1,10 @@
-import React, { useReducer,useEffect,useState } from 'react'
+import React, { useReducer, useEffect, useState } from 'react'
 import firebase from 'gatsby-plugin-firebase'
 import Fab from '@material-ui/core/Fab'
 import AutorenewIcon from '@material-ui/icons/Autorenew'
 import IconButton from '@material-ui/core/IconButton'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import Modal from '@material-ui/core/Modal'
-import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon } from '../components/diceIcons'
@@ -13,6 +12,9 @@ import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, 
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: 'absolute',
+    left: '50%',
+    top:'50%',
+    transform: 'translate(-50%, -50%)',
     width: 400,
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
@@ -21,9 +23,22 @@ const useStyles = makeStyles((theme) => ({
   preserveLineBreak: {
     whiteSpace: 'pre-line',
   },
-  calc: {
-    minHeight: 'calc(100vh - 216px)',
+  height100: {
+    // height: '100vh', /* Fallback for browsers that do not support Custom Properties */
+    height: 'calc(var(--vh, 1vh) * 100 - 56px)',
   },
+  center: {
+    position: 'absolute',
+    top: 'calc(50% - 56px)',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+  },
+  centerRR: {
+    position: 'absolute',
+    bottom: '50px',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+  }
 }))
 
 const ResultToFace = (props) => {
@@ -59,6 +74,18 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
   const handleClose = () => {
     setOpen(false)
   }
+
+  const resize = () => {
+    let vh = window.innerHeight * 0.01
+    document.documentElement.style.setProperty('--vh', `${vh}px`)
+  }
+
+  useEffect(() => {
+    window.addEventListener('resize', resize)
+    return () => {
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
 
   useEffect(() => {
     firebase.firestore().doc(`players/${playerId}`).update({
@@ -119,21 +146,17 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
   )
 
   return (
-    <div style={{ backgroundColor: diceProperties.color, height: '100%' }}>
+    <div className={classes.height100} style={{ backgroundColor: diceProperties.color }}>
       <IconButton size='small' onClick={handleOpen} style={{ color: 'white' }}>
         <AccountCircleIcon />
       </IconButton>
       <Modal open={open} onClose={handleClose}>
         {body}
       </Modal>
-      <Grid container direction='row' justify='center' alignItems='center' style={{ height: '100%' }}>
-        <Grid item>
-          <ResultToFace style={{ color: 'white', fontSize: 350 }} result={result} />
-        </Grid>
-      </Grid>
-      <Grid container direction='row' justify='center' alignItems='center' style={{ position: 'absolute', bottom: '80px', left: '50%', transform: 'translate(-50%)' }}>
-        <Grid item>{rerollable && <RerollButon clickFunc={rerollDice} rerollNumber={reroll} />}</Grid>
-      </Grid>
+      <ResultToFace className={classes.center} style={{ color: 'white', fontSize: 350 }} result={result} />
+      <div className={classes.centerRR}>
+        {rerollable && <RerollButon clickFunc={rerollDice} rerollNumber={reroll} />}
+      </div>
     </div>
   )
 }
