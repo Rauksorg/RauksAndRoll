@@ -90,7 +90,7 @@ const Character = ({ location }) => {
     })
   }
   return (
-    <Paper style={{ padding: '15px', marginBottom: '60px' }}>
+    <Paper style={{ padding: '15px', margin: '0px 15px 60px 15px' }}>
       <form noValidate autoComplete='off'>
         <TextField name='identification' label='Id' multiline value={userInput.identification != null ? userInput.identification : '...'} onChange={handleChange} variant='outlined' className={classes.root} />
         <Typography id='discrete-slider-custom' gutterBottom style={{ marginTop: '10px' }}>
