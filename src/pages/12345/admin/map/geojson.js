@@ -59,9 +59,13 @@ const Geojson = () => {
   return (
     <div>
       <div id='jsoneditor' className={classes.height100}></div>
+      <Button to={`/12345/admin/map/`} variant='contained'>
+        Back
+      </Button>
       <Button onClick={saveLayer} variant='contained'>
         Save
       </Button>
+    
     </div>
   )
 }
