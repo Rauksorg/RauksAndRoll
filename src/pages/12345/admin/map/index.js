@@ -213,13 +213,18 @@ const MyMapModif = () => {
           mapRef.current.addLayer({
             id: 'points',
             type: 'symbol',
+            minzoom: 10,
             source: 'xNMZJLF9yLNEZGGUPLQc',
+            paint: {
+              'text-color': '#404040',
+            },
             layout: {
               'icon-image': 'circle-11',
               'text-field': ['get', 'title'],
               'text-font': ['Roboto sans-serif', 'Arial Unicode MS Regular'],
               'text-offset': [0, 0.6],
               'text-anchor': 'top',
+              'text-size': 12,
             },
             filter: ['==', '$type', 'Point'],
           })
