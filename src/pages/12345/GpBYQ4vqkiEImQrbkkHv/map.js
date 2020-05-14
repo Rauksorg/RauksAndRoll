@@ -76,6 +76,7 @@ const MyMap = () => {
       .onSnapshot((querySnapshot) => {
         if (mapRef.current.getLayer('zone')) mapRef.current.removeLayer('zone')
         if (mapRef.current.getLayer('points')) mapRef.current.removeLayer('points')
+        if (mapRef.current.getLayer('lines')) mapRef.current.removeLayer('lines')
         if (mapRef.current.getSource('xNMZJLF9yLNEZGGUPLQc')) mapRef.current.removeSource('xNMZJLF9yLNEZGGUPLQc')
         const data = querySnapshot.data()
         const obj = JSON.parse(data.geojson)
