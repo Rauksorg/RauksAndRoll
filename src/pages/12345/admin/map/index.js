@@ -120,10 +120,8 @@ const MyMapModif = () => {
               coordinates: serverData.LngLat,
             },
             properties: {
-              name: serverData.name,
-              color: serverData.color,
-              order: serverData.order,
-              id: doc.id,
+              title: serverData.name,
+              'marker-color': serverData.color,
             },
           }
           if (!serverData.deleted) {
