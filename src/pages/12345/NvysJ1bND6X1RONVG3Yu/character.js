@@ -34,9 +34,9 @@ const inputsFields = [
 ]
 
 const Character = ({ location }) => {
+  const classes = useStyles()
   const timer = useRef(null)
   const playerId = location.pathname.split('/')[2]
-  const classes = useStyles()
   const [reroll, setReroll] = React.useState(null)
 
   const [userInput, setUserInput] = useReducer((state, newState) => ({ ...state, ...newState }), {

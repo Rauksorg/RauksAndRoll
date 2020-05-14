@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import firebase from 'gatsby-plugin-firebase'
 import Paper from '@material-ui/core/Paper'
 
@@ -17,8 +17,8 @@ const nullResults = {
 const PlayersListPage = ({ location }) => {
   const sheetId = location.pathname.split('/')[2]
 
-  const [results, setResults] = React.useState(nullResults)
-  React.useEffect(() => {
+  const [results, setResults] = useState(nullResults)
+  useEffect(() => {
     const unsubscribe = firebase
       .firestore()
       .collection(`players`)
@@ -33,7 +33,7 @@ const PlayersListPage = ({ location }) => {
   }, [])
 
   return (
-    <div style={{ margin: '5px 15px 5px 15px'  }}>
+    <div style={{ margin: '5px 15px 5px 15px' }}>
       <Paper style={{ marginBottom: '10px' }}>
         <PlayersList location={location} players={players} results={results} />
       </Paper>

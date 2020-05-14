@@ -15,7 +15,7 @@ const useStyles = makeStyles({
 const MyMap = () => {
   const classes = useStyles()
 
-  const [mapOptions, changeMap] = useContext(MapContext)
+  const [mapOptions] = useContext(MapContext)
 
   const mapRef = useRef(null)
   const markerRef = useRef([])
@@ -43,7 +43,6 @@ const MyMap = () => {
     })
     mapRef.current = map
     return () => {
-      // Cleanup the map
       mapRef.current.off()
       mapRef.current.remove()
     }
@@ -56,18 +55,74 @@ const MyMap = () => {
     }
   }, [mapOptions])
 
-  
+  // removed coz perf problems
+  // useEffect(() => {
+  //   mapRef.current.on('dragend', function () {
+  //     const { lng, lat } = mapRef.current.getCenter()
+  //     changeMap([lng, lat], mapRef.current.getZoom())
+  //   })
+  //   mapRef.current.on('zoomend', function () {
+  //     // update position between navigation trigger infinit loop because of first setzoom
+  //     // const { lng, lat } = mapRef.current.getCenter()
+  //     // changeMap([lng, lat], mapRef.current.getZoom())
+  //   })
+  // }, [changeMap])
+
   useEffect(() => {
-    mapRef.current.on('dragend', function () {
-      const { lng, lat } = mapRef.current.getCenter()
-      changeMap([lng, lat], mapRef.current.getZoom())
-    })
-    mapRef.current.on('zoomend', function () {
-      // update position between navigation trigger infinit loop because of first setzoom
-      // const { lng, lat } = mapRef.current.getCenter()
-      // changeMap([lng, lat], mapRef.current.getZoom())
-    })
-  }, [changeMap])
+    const unsubscribe = firebase
+      .firestore()
+      .collection(`layers`)
+      .doc('xNMZJLF9yLNEZGGUPLQc')
+      .onSnapshot((querySnapshot) => {
+        if (mapRef.current.getLayer('zone')) mapRef.current.removeLayer('zone')
+        if (mapRef.current.getLayer('points')) mapRef.current.removeLayer('points')
+        if (mapRef.current.getSource('xNMZJLF9yLNEZGGUPLQc')) mapRef.current.removeSource('xNMZJLF9yLNEZGGUPLQc')
+        const data = querySnapshot.data()
+        const obj = JSON.parse(data.geojson)
+        mapRef.current.addSource('xNMZJLF9yLNEZGGUPLQc', {
+          type: 'geojson',
+          data: obj,
+        })
+        mapRef.current.addLayer({
+          id: 'zone',
+          type: 'fill',
+          source: 'xNMZJLF9yLNEZGGUPLQc',
+          paint: {
+            'fill-color': '#888888',
+            'fill-opacity': 0.4,
+          },
+          filter: ['==', '$type', 'Polygon'],
+        })
+        mapRef.current.addLayer({
+          id: 'points',
+          type: 'symbol',
+          source: 'xNMZJLF9yLNEZGGUPLQc',
+          layout: {
+            'icon-image': 'circle-11',
+            'text-field': ['get', 'title'],
+            'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
+            'text-offset': [0, 0.6],
+            'text-anchor': 'top',
+          },
+          filter: ['==', '$type', 'Point'],
+        })
+        mapRef.current.addLayer({
+          id: 'lines',
+          type: 'line',
+          source: 'xNMZJLF9yLNEZGGUPLQc',
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round',
+          },
+          paint: {
+            'line-color': '#888',
+            'line-width': 8,
+          },
+          filter: ['==', '$type', 'LineString'],
+        })
+      })
+    return unsubscribe
+  }, [])
 
   useEffect(() => {
     // Add markers
