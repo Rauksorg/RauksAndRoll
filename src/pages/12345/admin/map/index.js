@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useReducer, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import firebase from 'gatsby-plugin-firebase'
-import Button from '@material-ui/core/Button'
+import { Button } from 'gatsby-theme-material-ui'
 import TextField from '@material-ui/core/TextField'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -62,8 +62,9 @@ const ColorSelect = ({ markerId, color = 'blue' }) => {
 }
 
 const MyMapModif = () => {
-  const timer = useRef(null)
   const classes = useStyles()
+
+  const timer = useRef(null)
   const mapRef = useRef(null)
   const markerRef = useRef([])
   const [userInput, setUserInput] = useReducer((state, newState) => ({ ...state, ...newState }), {})
@@ -136,7 +137,7 @@ const MyMapModif = () => {
         const element = document.createElement('a')
         const file = new Blob([JSON.stringify(geojson)], { type: 'text/plain' })
         element.href = URL.createObjectURL(file)
-        element.download = 'markers.json'
+        element.download = 'markers.geojson'
         document.body.appendChild(element) // Required for FireFox
         element.click()
       })
@@ -156,13 +157,21 @@ const MyMapModif = () => {
   }
 
   useEffect(() => {
-    mapRef.current = new Map({
-      attributionControl: false,
-      container: 'map',
-      style: 'https://api.maptiler.com/maps/26d5835c-e2ed-4494-bf8d-2fd2d97b787c/style.json?key=PS6lrXSMa4E9FzduhwA2',
-      center: [11.47535, 53.09155],
-      zoom: 15,
-    })
+    firebase
+      .firestore()
+      .collection('params')
+      .doc('mapCenter')
+      .get()
+      .then((doc) => {
+        const { LngLat, zoom } = doc.data()
+        mapRef.current = new Map({
+          attributionControl: false,
+          container: 'map',
+          style: 'https://api.maptiler.com/maps/26d5835c-e2ed-4494-bf8d-2fd2d97b787c/style.json?key=PS6lrXSMa4E9FzduhwA2',
+          center: LngLat,
+          zoom: zoom,
+        })
+      })
     return () => {
       // Cleanup the map
       mapRef.current.off()
@@ -215,6 +224,12 @@ const MyMapModif = () => {
         <Button onClick={addMarker} variant='contained'>
           Add
         </Button>
+        <Button to={`/12345/admin/map/geojson/`} variant='contained'>
+          Geojson
+        </Button>
+        <Button onClick={downloadMarkers} variant='contained'>
+          Download
+        </Button>
       </div>
       <div className={classes.root}>
         <Grid container spacing={3}>
@@ -257,11 +272,6 @@ const MyMapModif = () => {
             )
           })}
         </Grid>
-      </div>
-      <div>
-        <Button onClick={downloadMarkers} variant='contained'>
-          Download
-        </Button>
       </div>
     </div>
   )

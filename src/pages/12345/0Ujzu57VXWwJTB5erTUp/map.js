@@ -1,18 +1,21 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useContext } from 'react'
 import firebase from 'gatsby-plugin-firebase'
 import { makeStyles } from '@material-ui/core/styles'
 import { Map, Popup, Marker } from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import MapContext from '../../../components/state'
 
 const useStyles = makeStyles({
   height100: {
     // height: '100vh', /* Fallback for browsers that do not support Custom Properties */
-    height: 'calc(var(--vh, 1vh) * 100)',
+    height: 'calc(var(--vh, 1vh) * 100 - 56px)',
   },
 })
 
 const MyMap = () => {
   const classes = useStyles()
+
+  const [mapOptions, changeMap] = useContext(MapContext)
 
   const mapRef = useRef(null)
   const markerRef = useRef([])
@@ -31,19 +34,40 @@ const MyMap = () => {
   }, [])
 
   useEffect(() => {
-    mapRef.current = new Map({
+    const map = new Map({
       attributionControl: false,
       container: 'map',
       style: 'https://api.maptiler.com/maps/26d5835c-e2ed-4494-bf8d-2fd2d97b787c/style.json?key=PS6lrXSMa4E9FzduhwA2',
-      center: [11.47535, 53.09155],
-      zoom: 15,
+      center: [10, 10],
+      zoom: [5],
     })
+    mapRef.current = map
     return () => {
       // Cleanup the map
       mapRef.current.off()
       mapRef.current.remove()
     }
   }, [])
+
+  useEffect(() => {
+    if (mapOptions) {
+      mapRef.current.setZoom(mapOptions.zoom)
+      mapRef.current.setCenter(mapOptions.LngLat)
+    }
+  }, [mapOptions])
+
+  
+  useEffect(() => {
+    mapRef.current.on('dragend', function () {
+      const { lng, lat } = mapRef.current.getCenter()
+      changeMap([lng, lat], mapRef.current.getZoom())
+    })
+    mapRef.current.on('zoomend', function () {
+      // update position between navigation trigger infinit loop because of first setzoom
+      // const { lng, lat } = mapRef.current.getCenter()
+      // changeMap([lng, lat], mapRef.current.getZoom())
+    })
+  }, [changeMap])
 
   useEffect(() => {
     // Add markers
@@ -67,6 +91,7 @@ const MyMap = () => {
       })
     return unsubscribe
   }, [])
+
   return <div className={classes.height100} style={{ width: '100%' }} id='map'></div>
 }
 
