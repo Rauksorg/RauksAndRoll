@@ -67,6 +67,7 @@ const MyMapModif = () => {
   const timer = useRef(null)
   const mapRef = useRef(null)
   const markerRef = useRef([])
+  const [isLoaded, setIsLoaded] = useState(false)
   const [userInput, setUserInput] = useReducer((state, newState) => ({ ...state, ...newState }), {})
 
   const handleChange = (evt) => {
@@ -164,20 +165,85 @@ const MyMapModif = () => {
       .get()
       .then((doc) => {
         const { LngLat, zoom } = doc.data()
-        mapRef.current = new Map({
+        const map = new Map({
           attributionControl: false,
           container: 'map',
           style: 'https://api.maptiler.com/maps/26d5835c-e2ed-4494-bf8d-2fd2d97b787c/style.json?key=PS6lrXSMa4E9FzduhwA2',
           center: LngLat,
           zoom: zoom,
         })
+        mapRef.current = map
+        map.on('load', () => {
+          setIsLoaded(true)
+        })
       })
+
     return () => {
       // Cleanup the map
       mapRef.current.off()
       mapRef.current.remove()
     }
   }, [])
+
+  useEffect(() => {
+    if (isLoaded) {
+      const unsubscribe = firebase
+        .firestore()
+        .collection(`layers`)
+        .doc('xNMZJLF9yLNEZGGUPLQc')
+        .onSnapshot((querySnapshot) => {
+          if (mapRef.current.getLayer('zone')) mapRef.current.removeLayer('zone')
+          if (mapRef.current.getLayer('points')) mapRef.current.removeLayer('points')
+          if (mapRef.current.getLayer('lines')) mapRef.current.removeLayer('lines')
+          if (mapRef.current.getSource('xNMZJLF9yLNEZGGUPLQc')) mapRef.current.removeSource('xNMZJLF9yLNEZGGUPLQc')
+          const data = querySnapshot.data()
+          const obj = JSON.parse(data.geojson)
+          mapRef.current.addSource('xNMZJLF9yLNEZGGUPLQc', {
+            type: 'geojson',
+            data: obj,
+          })
+          mapRef.current.addLayer({
+            id: 'zone',
+            type: 'fill',
+            source: 'xNMZJLF9yLNEZGGUPLQc',
+            paint: {
+              'fill-color': ['case', ['to-boolean', ['get', 'fill']], ['get', 'fill'], 'grey'],
+              'fill-opacity': ['case', ['to-boolean', ['get', 'fill-opacity']], ['get', 'fill-opacity'], 0.4],
+            },
+            filter: ['==', '$type', 'Polygon'],
+          })
+          mapRef.current.addLayer({
+            id: 'points',
+            type: 'symbol',
+            source: 'xNMZJLF9yLNEZGGUPLQc',
+            layout: {
+              'icon-image': 'circle-11',
+              'text-field': ['get', 'title'],
+              'text-font': ['Roboto sans-serif', 'Arial Unicode MS Regular'],
+              'text-offset': [0, 0.6],
+              'text-anchor': 'top',
+            },
+            filter: ['==', '$type', 'Point'],
+          })
+          mapRef.current.addLayer({
+            id: 'lines',
+            type: 'line',
+            source: 'xNMZJLF9yLNEZGGUPLQc',
+            layout: {
+              'line-join': 'round',
+              'line-cap': 'round',
+            },
+            paint: {
+              'line-color': ['case', ['to-boolean', ['get', 'stroke']], ['get', 'stroke'], 'grey'],
+              'line-width': ['case', ['to-boolean', ['get', 'stroke-width']], ['get', 'stroke-width'], 1],
+              'line-opacity': ['case', ['to-boolean', ['get', 'stroke-opacity']], ['get', 'stroke-opacity'], 1],
+            },
+            filter: ['==', '$type', 'LineString'],
+          })
+        })
+      return unsubscribe
+    }
+  }, [isLoaded])
 
   useEffect(() => {
     // Add markers to map
