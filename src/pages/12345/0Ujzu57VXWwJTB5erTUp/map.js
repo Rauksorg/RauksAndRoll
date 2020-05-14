@@ -55,19 +55,6 @@ const MyMap = () => {
     }
   }, [mapOptions])
 
-  // removed coz perf problems
-  // useEffect(() => {
-  //   mapRef.current.on('dragend', function () {
-  //     const { lng, lat } = mapRef.current.getCenter()
-  //     changeMap([lng, lat], mapRef.current.getZoom())
-  //   })
-  //   mapRef.current.on('zoomend', function () {
-  //     // update position between navigation trigger infinit loop because of first setzoom
-  //     // const { lng, lat } = mapRef.current.getCenter()
-  //     // changeMap([lng, lat], mapRef.current.getZoom())
-  //   })
-  // }, [changeMap])
-
   useEffect(() => {
     const unsubscribe = firebase
       .firestore()
@@ -89,8 +76,8 @@ const MyMap = () => {
           type: 'fill',
           source: 'xNMZJLF9yLNEZGGUPLQc',
           paint: {
-            'fill-color': '#888888',
-            'fill-opacity': 0.4,
+            'fill-color': ['case', ['to-boolean', ['get', 'fill']], ['get', 'fill'], 'grey'],
+            'fill-opacity': ['case', ['to-boolean', ['get', 'fill-opacity']], ['get', 'fill-opacity'], 0.4],
           },
           filter: ['==', '$type', 'Polygon'],
         })
@@ -116,8 +103,9 @@ const MyMap = () => {
             'line-cap': 'round',
           },
           paint: {
-            'line-color': '#888',
-            'line-width': 8,
+            'line-color': ['case', ['to-boolean', ['get', 'stroke']], ['get', 'stroke'], 'grey'],
+            'line-width': ['case', ['to-boolean', ['get', 'stroke-width']], ['get', 'stroke-width'], 1],
+            'line-opacity': ['case', ['to-boolean', ['get', 'stroke-opacity']], ['get', 'stroke-opacity'], 1],
           },
           filter: ['==', '$type', 'LineString'],
         })
