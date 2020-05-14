@@ -7,7 +7,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import Modal from '@material-ui/core/Modal'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon } from '../components/diceIcons'
+import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon, SkullIcon,CloverIcon } from '../components/diceIcons'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 const ResultToFace = (props) => {
-  const facesObject = { '✓': SuccessIcon, '2': TwoIcon, '3!': ThreeEpicIcon, '4': FourIcon, S: SkillIcon, '✘': FailIcon, '✘!': EpicFailIcon, '💀': FailIcon, '☯': NeutralIcon, '🍀': SuccessIcon, '💥': ExplosivIcon }
+  const facesObject = { '✓': SuccessIcon, '2': TwoIcon, '3!': ThreeEpicIcon, '4': FourIcon, S: SkillIcon, '✘': FailIcon, '✘!': EpicFailIcon, '💀': SkullIcon, '☯': NeutralIcon, '🍀': CloverIcon, '💥': ExplosivIcon }
   const TagName = facesObject[props.result]
   return <TagName {...props} />
 }

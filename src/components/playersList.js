@@ -7,7 +7,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
 import Badge from '@material-ui/core/Badge'
-import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon } from '../components/diceIcons'
+import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon, SkullIcon, CloverIcon, CloverIconAlt } from '../components/diceIcons'
 import joseAltuve from '../images/joseAltuve.jpg'
 
 // Fix listItemButton
@@ -24,10 +24,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const avatarList= {GpBYQ4vqkiEImQrbkkHv:joseAltuve}
+const avatarList = { GpBYQ4vqkiEImQrbkkHv: joseAltuve }
 
 const ResultToFace = (props) => {
-  const facesObject = { '✓': SuccessIcon, '2': TwoIcon, '3!': ThreeEpicIcon, '4': FourIcon, S: SkillIcon, '✘': FailIcon, '✘!': EpicFailIcon, '💀': FailIcon, '☯': NeutralIcon, '🍀': SuccessIcon, '💥': ExplosivIcon }
+  const facesObject = { '✓': SuccessIcon, '2': TwoIcon, '3!': ThreeEpicIcon, '4': FourIcon, S: SkillIcon, '✘': FailIcon, '✘!': EpicFailIcon, '💀': SkullIcon, '☯': NeutralIcon, '🍀': CloverIconAlt, '💥': ExplosivIcon }
   const TagName = facesObject[props.result]
   return <TagName {...props} />
 }
@@ -77,7 +77,9 @@ const PlayersList = ({ location, players, results }) => {
           return (
             <ListItemPatched key={key} button to={`/12345/${playerId}/players/${player.id}`}>
               <ListItemAvatar style={{ margin: '0px 5px 0px 0px' }}>
-                <Avatar className={classes.large} src={avatarList[player.id]}>{player.name.charAt(0)}</Avatar>
+                <Avatar className={classes.large} src={avatarList[player.id]}>
+                  {player.name.charAt(0)}
+                </Avatar>
               </ListItemAvatar>
               <ListItemText primary={player.name} />
               <ListItemSecondaryAction>
