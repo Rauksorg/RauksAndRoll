@@ -8,7 +8,9 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
 import Badge from '@material-ui/core/Badge'
 import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon, SkullIcon, CloverIcon, CloverIconAlt } from '../components/diceIcons'
-import joseAltuve from '../images/joseAltuve.jpg'
+import joseClose from '../images/joseClose.jpg'
+import beauriceClose from '../images/BeauriceClose.jpg'
+import francisClose from '../images/FrancisClose.jpg'
 
 // Fix listItemButton
 import patchBaseButtonComponent from '../../node_modules/gatsby-theme-material-ui/src/utils/patch-base-button-components'
@@ -24,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const avatarList = { GpBYQ4vqkiEImQrbkkHv: joseAltuve }
+const avatarList = { GpBYQ4vqkiEImQrbkkHv: joseClose, '0Ujzu57VXWwJTB5erTUp': beauriceClose, yhSG30Rf9lB0Me9sLoRS: francisClose }
 
 const ResultToFace = (props) => {
   const facesObject = { '✓': SuccessIcon, '2': TwoIcon, '3!': ThreeEpicIcon, '4': FourIcon, S: SkillIcon, '✘': FailIcon, '✘!': EpicFailIcon, '💀': SkullIcon, '☯': NeutralIcon, '🍀': CloverIconAlt, '💥': ExplosivIcon }
