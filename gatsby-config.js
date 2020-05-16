@@ -1,4 +1,4 @@
-const firebaseCreds = require("./firebaseCreds.js")
+const firebaseCreds = require('./firebaseCreds.js')
 module.exports = {
   siteMetadata: {
     title: `Gatsby Theme Material-UI`,
@@ -10,13 +10,13 @@ module.exports = {
         name: `images`,
         path: `${__dirname}/src/images/`,
       },
-    }
-    ,`gatsby-theme-material-ui`
-    , `gatsby-transformer-sharp`
-    , `gatsby-plugin-sharp`
-    , `gatsby-plugin-layout`,
+    },
+    `gatsby-theme-material-ui`,
+    `gatsby-plugin-sharp`,
+    `gatsby-transformer-sharp`,
+    `gatsby-plugin-layout`,
     {
-      resolve: "gatsby-plugin-firebase",
+      resolve: 'gatsby-plugin-firebase',
       options: {
         credentials: {
           apiKey: firebaseCreds.apiKey,
@@ -25,9 +25,9 @@ module.exports = {
           projectId: firebaseCreds.projectId,
           storageBucket: firebaseCreds.storageBucket,
           messagingSenderId: firebaseCreds.messagingSenderId,
-          appId: firebaseCreds.appId
-        }
-      }
-    }
-  ]
-};
+          appId: firebaseCreds.appId,
+        },
+      },
+    },
+  ],
+}

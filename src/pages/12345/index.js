@@ -12,23 +12,25 @@ export const players = [
   { id: 'GpBYQ4vqkiEImQrbkkHv', name: 'José Altuve' },
   { id: 'yhSG30Rf9lB0Me9sLoRS', name: 'Francis Dubourg' },
 ]
-export const gameMaster = { id: 'NvysJ1bND6X1RONVG3Yu', name: 'MJ' }
+export const gameMaster = { id: 'NvysJ1bND6X1RONVG3Yu', name: 'Maître du jeu' }
 
 export const playerById = arrayToObject(players, 'id')
 
-export default () => (
-  <div>
+export default () => {
+  return (
     <div>
-      <Link to={`/12345/${gameMaster.id}/players`}>Play as {gameMaster.name}</Link>
+      <div>
+        <Link to={`/12345/${gameMaster.id}/players`}>Play as {gameMaster.name}</Link>
+      </div>
+      <div>
+        <Link to={`/12345/${players[0].id}/players`}>Play as {players[0].name}</Link>
+      </div>
+      <div>
+        <Link to={`/12345/${players[1].id}/players`}>Play as {players[1].name}</Link>
+      </div>
+      <div>
+        <Link to={`/12345/${players[2].id}/players`}>Play as {players[2].name}</Link>
+      </div>
     </div>
-    <div>
-      <Link to={`/12345/${players[0].id}/players`}>Play as {players[0].name}</Link>
-    </div>
-    <div>
-      <Link to={`/12345/${players[1].id}/players`}>Play as {players[1].name}</Link>
-    </div>
-    <div>
-      <Link to={`/12345/${players[2].id}/players`}>Play as {players[2].name}</Link>
-    </div>
-  </div>
-)
+  )
+}

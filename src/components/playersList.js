@@ -77,9 +77,13 @@ const PlayersList = ({ location, players, gameMaster, results }) => {
     return (
       <ListItemPatched button to={`/12345/${playerId}/players/${player.id}`}>
         <ListItemAvatar style={{ margin: '0px 5px 0px 0px' }}>
-          <Avatar className={classes.large} src={avatarList[player.id]}>
-            {player.name.charAt(0)}
-          </Avatar>
+          <div style={{ position: 'relative' }}>
+            <Avatar variant={player.id === 'NvysJ1bND6X1RONVG3Yu' ? 'rounded' : 'circle'} className={classes.large} src={avatarList[player.id]}>
+              {player.name.charAt(0)}
+            </Avatar>
+            {/* To add an image overlay on avatar */}
+            {/* <SuccessIcon style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, height: '100%', width: '100%', opacity: 1, borderRadius: '50%' }}/> */}
+          </div>
         </ListItemAvatar>
         <ListItemText primary={player.name} />
         <ListItemSecondaryAction>
