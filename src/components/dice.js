@@ -7,13 +7,13 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import Modal from '@material-ui/core/Modal'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon, SkullIcon,CloverIcon } from '../components/diceIcons'
+import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon, SkullIcon, CloverIcon } from '../components/diceIcons'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: 'absolute',
     left: '50%',
-    top:'50%',
+    top: '50%',
     transform: 'translate(-50%, -50%)',
     width: 400,
     backgroundColor: theme.palette.background.paper,
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     bottom: '50px',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-  }
+  },
 }))
 
 const ResultToFace = (props) => {
@@ -155,9 +155,7 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
         {body}
       </Modal>
       <ResultToFace className={classes.center} style={{ color: 'white', fontSize: 350 }} result={result} />
-      <div className={classes.centerRR}>
-        {rerollable && <RerollButon clickFunc={rerollDice} rerollNumber={reroll} />}
-      </div>
+      <div className={classes.centerRR}>{rerollable && <RerollButon clickFunc={rerollDice} rerollNumber={reroll} />}</div>
     </div>
   )
 }
