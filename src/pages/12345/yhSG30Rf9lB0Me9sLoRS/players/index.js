@@ -5,7 +5,7 @@ import Paper from '@material-ui/core/Paper'
 import PlayersList from '../../../../components/playersList'
 import Sheet from '../../../../components/sheet'
 
-import { players } from '../../index'
+import { players, gameMaster } from '../../index'
 
 const nullResults = {
   NvysJ1bND6X1RONVG3Yu: { diceResult: null, dice: null },
@@ -35,7 +35,7 @@ const PlayersListPage = ({ location }) => {
   return (
     <div style={{ margin: '5px 15px 5px 15px' }}>
       <Paper style={{ marginBottom: '10px' }}>
-        <PlayersList location={location} players={players} results={results} />
+        <PlayersList location={location} players={players} gameMaster={gameMaster} results={results} />
       </Paper>
       <Paper style={{ padding: '15px' }}>
         <Sheet sheetId={sheetId} />
