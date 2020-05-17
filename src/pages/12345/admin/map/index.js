@@ -155,6 +155,19 @@ const MyMapModif = () => {
       })
   }
 
+  const updateCenter = () => {
+    const zoom = mapRef.current.getZoom()
+    const { lng, lat } = mapRef.current.getCenter()
+    firebase
+      .firestore()
+      .collection('params')
+      .doc('mapCenter')
+      .update({ LngLat: [lng, lat], zoom: zoom })
+      .catch(function (error) {
+        console.error('Error writing document: ', error)
+      })
+  }
+
   useEffect(() => {
     firebase
       .firestore()
@@ -292,6 +305,9 @@ const MyMapModif = () => {
       <div style={{ marginBottom: '15px' }}>
         <Button onClick={addMarker} variant='contained'>
           Add
+        </Button>
+        <Button onClick={updateCenter} variant='contained'>
+          Update Center
         </Button>
         <Button to={`/12345/admin/map/geojson/`} variant='contained'>
           Geojson
