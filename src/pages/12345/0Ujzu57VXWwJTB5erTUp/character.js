@@ -81,7 +81,7 @@ const Character = ({ location }) => {
   const timer = useRef(null)
   const playerId = location.pathname.split('/')[2]
   const [reroll, setReroll] = useState(null)
-  const [status, setStatus] = useState(4)
+  const [status, setStatus] = useState(null)
   const [statusText, setStatusText] = useState('')
   const [statusChip, setStatusChip] = useState([])
 
@@ -122,6 +122,8 @@ const Character = ({ location }) => {
           setUserInput({ identification: doc.data().identification })
         }
         setReroll(data.reroll)
+        setStatusChip(data.statusDesc)
+        setStatus(data.status)
       })
     return unsubscribe
   }, [playerId])
@@ -131,7 +133,6 @@ const Character = ({ location }) => {
       reroll: newValue,
     })
   }
-
   const handleStatusChange = (event, newValue) => {
     if (newValue === null) return
     setStatus(newValue)
@@ -139,10 +140,23 @@ const Character = ({ location }) => {
       status: newValue,
     })
   }
-  const handleChange2 = (event) => {
+  const handleStatusChipChange = (event, newValue) => {
+    setStatusChip(newValue)
+    setStatusText('')
+    firebase.firestore().doc(`players/${playerId}`).update({ statusDesc: newValue })
+  }
+  const handleStatusTextChange = (event) => {
     setStatusText(event.target.value)
   }
-
+  const handleStatusTextBlur = () => {
+    if (!statusText) return
+    setStatusChip([...statusChip, statusText])
+    setStatusText('')
+    firebase
+      .firestore()
+      .doc(`players/${playerId}`)
+      .update({ statusDesc: [...statusChip, statusText] })
+  }
   return (
     <Paper style={{ padding: '15px', margin: '5px 15px 5px 15px' }}>
       <form noValidate autoComplete='off'>
@@ -173,26 +187,10 @@ const Character = ({ location }) => {
           style={{ marginTop: '10px' }}
           options={[]}
           value={statusChip}
-          onChange={(event, newValue) => {
-            setStatusChip(newValue)
-          }}
+          onChange={handleStatusChipChange}
           freeSolo
           renderTags={(value, getTagProps) => value.map((option, index) => <Chip variant='outlined' label={option} {...getTagProps({ index })} />)}
-          renderInput={(params) => (
-            <TextField
-              value={statusText}
-              onChange={handleChange2}
-              onBlur={(event) => {
-                if (!statusText) return
-                setStatusChip([...statusChip, statusText])
-                setStatusText('')
-              }}
-              variant='outlined'
-              {...params}
-              label='Etats'
-              placeholder='Ajouter'
-            />
-          )}
+          renderInput={(params) => <TextField value={statusText} onChange={handleStatusTextChange} onBlur={handleStatusTextBlur} variant='outlined' {...params} label='Etats' placeholder='Ajouter...' />}
         />
         <StyledRating
           name='customized-icons'
