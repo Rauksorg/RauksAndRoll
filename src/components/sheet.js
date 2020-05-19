@@ -6,7 +6,6 @@ import AutorenewIcon from '@material-ui/icons/Autorenew'
 import Grid from '@material-ui/core/Grid'
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied'
 import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied'
-import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied'
 import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied'
 import Chip from '@material-ui/core/Chip'
 import Rating from '@material-ui/lab/Rating'
@@ -46,10 +45,6 @@ const customIcons = {
     label: 'Badly Injured',
   },
   3: {
-    icon: <SentimentSatisfiedIcon fontSize='large' />,
-    label: 'Injured',
-  },
-  4: {
     icon: <SentimentVerySatisfiedIcon fontSize='large' />,
     label: 'Fine',
   },
@@ -131,7 +126,7 @@ const Sheet = ({ sheetId }) => {
           return <Chip label={item} variant='outlined' />
         })}
       </div>
-      <StyledRating readOnly name='customized-icons' max={4} value={status} IconContainerComponent={IconContainer} />
+      <StyledRating readOnly name='customized-icons' max={3} value={status} IconContainerComponent={IconContainer} />
     </div>
   )
 }

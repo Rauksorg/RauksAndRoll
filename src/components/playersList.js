@@ -7,7 +7,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
 import Badge from '@material-ui/core/Badge'
-import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon, CloverIcon, SkullIcon } from '../components/diceIcons'
+import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon, CloverIcon, SkullIcon, BrockenGlass } from '../components/diceIcons'
 import joseClose from '../images/joseClose.jpg'
 import beauriceClose from '../images/BeauriceClose.jpg'
 import francisClose from '../images/FrancisClose.jpg'
@@ -74,6 +74,7 @@ const PlayersList = ({ location, players, gameMaster, results }) => {
     const playerRerolled = results[player.id].rerolled
     const playerIsNewRoll = isNew[player.id]
     const playerDice = results[player.id].dice
+    const injured = results[player.id].status < 3 ? false : true
     return (
       <ListItemPatched button to={`/12345/${playerId}/players/${player.id}`}>
         <ListItemAvatar style={{ margin: '0px 5px 0px 0px' }}>
@@ -82,7 +83,7 @@ const PlayersList = ({ location, players, gameMaster, results }) => {
               {player.name.charAt(0)}
             </Avatar>
             {/* To add an image overlay on avatar */}
-            {/* <SuccessIcon style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, height: '100%', width: '100%', opacity: 1, borderRadius: '50%' }}/> */}
+            {injured || <BrockenGlass style={{ fill: 'white', position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, height: '100%', width: '100%', opacity: 1, borderRadius: '50%' }} />}
           </div>
         </ListItemAvatar>
         <ListItemText primary={player.name} />

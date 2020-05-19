@@ -8,7 +8,6 @@ import Paper from '@material-ui/core/Paper'
 import Rating from '@material-ui/lab/Rating'
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied'
 import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied'
-import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied'
 import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied'
 import Chip from '@material-ui/core/Chip'
 import Autocomplete from '@material-ui/lab/Autocomplete'
@@ -41,10 +40,6 @@ const customIcons = {
     label: 'Badly Injured',
   },
   3: {
-    icon: <SentimentSatisfiedIcon fontSize='large' />,
-    label: 'Injured',
-  },
-  4: {
     icon: <SentimentVerySatisfiedIcon fontSize='large' />,
     label: 'Fine',
   },
@@ -194,7 +189,7 @@ const Character = ({ location }) => {
         />
         <StyledRating
           name='customized-icons'
-          max={4}
+          max={3}
           value={status}
           style={{ marginTop: '10px' }}
           onChange={handleStatusChange}
