@@ -1,16 +1,59 @@
-import React, { useReducer, useRef } from 'react'
+import React, { useReducer, useRef, useState, useEffect } from 'react'
 import firebase from 'gatsby-plugin-firebase'
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
 import Slider from '@material-ui/core/Slider'
 import Paper from '@material-ui/core/Paper'
+import Rating from '@material-ui/lab/Rating'
+import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied'
+import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied'
+import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied'
+import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied'
+import Chip from '@material-ui/core/Chip'
+import Autocomplete from '@material-ui/lab/Autocomplete'
 
 const useStyles = makeStyles({
   root: {
     width: '100%',
   },
 })
+
+const StyledRating = withStyles({
+  iconFilled: {
+    color: '#e50000',
+  },
+  iconHover: {
+    color: '#ff0000',
+  },
+  iconEmpty: {
+    opacity: '0.2',
+  },
+})(Rating)
+
+const customIcons = {
+  1: {
+    icon: <SentimentVeryDissatisfiedIcon fontSize='large' />,
+    label: 'Neutralized',
+  },
+  2: {
+    icon: <SentimentDissatisfiedIcon fontSize='large' />,
+    label: 'Badly Injured',
+  },
+  3: {
+    icon: <SentimentSatisfiedIcon fontSize='large' />,
+    label: 'Injured',
+  },
+  4: {
+    icon: <SentimentVerySatisfiedIcon fontSize='large' />,
+    label: 'Fine',
+  },
+}
+
+const IconContainer = (props) => {
+  const { value, ...other } = props
+  return <span {...other}>{customIcons[value].icon}</span>
+}
 
 const marks = [
   { value: 0, label: '0' },
@@ -37,7 +80,10 @@ const Character = ({ location }) => {
   const classes = useStyles()
   const timer = useRef(null)
   const playerId = location.pathname.split('/')[2]
-  const [reroll, setReroll] = React.useState(null)
+  const [reroll, setReroll] = useState(null)
+  const [status, setStatus] = useState(4)
+  const [statusText, setStatusText] = useState('')
+  const [statusChip, setStatusChip] = useState([])
 
   const [userInput, setUserInput] = useReducer((state, newState) => ({ ...state, ...newState }), {
     identification: null,
@@ -63,7 +109,7 @@ const Character = ({ location }) => {
     }, 400)
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = firebase
       .firestore()
       .doc(`players/${playerId}`)
@@ -85,6 +131,18 @@ const Character = ({ location }) => {
       reroll: newValue,
     })
   }
+
+  const handleStatusChange = (event, newValue) => {
+    if (newValue === null) return
+    setStatus(newValue)
+    firebase.firestore().doc(`players/${playerId}`).update({
+      status: newValue,
+    })
+  }
+  const handleChange2 = (event) => {
+    setStatusText(event.target.value)
+  }
+
   return (
     <Paper style={{ padding: '15px', margin: '5px 15px 5px 15px' }}>
       <form noValidate autoComplete='off'>
@@ -109,6 +167,42 @@ const Character = ({ location }) => {
             />
           )
         })}
+        <Autocomplete
+          multiple
+          id='tags-filled'
+          style={{ marginTop: '10px' }}
+          options={[]}
+          value={statusChip}
+          onChange={(event, newValue) => {
+            setStatusChip(newValue)
+          }}
+          freeSolo
+          renderTags={(value, getTagProps) => value.map((option, index) => <Chip variant='outlined' label={option} {...getTagProps({ index })} />)}
+          renderInput={(params) => (
+            <TextField
+              value={statusText}
+              onChange={handleChange2}
+              onBlur={(event) => {
+                if (!statusText) return
+                setStatusChip([...statusChip, statusText])
+                setStatusText('')
+              }}
+              variant='outlined'
+              {...params}
+              label='Etats'
+              placeholder='Ajouter'
+            />
+          )}
+        />
+        <StyledRating
+          name='customized-icons'
+          max={4}
+          value={status}
+          style={{ marginTop: '10px' }}
+          onChange={handleStatusChange}
+          getLabelText={(value) => customIcons[value].label}
+          IconContainerComponent={IconContainer}
+        />
       </form>
     </Paper>
   )
