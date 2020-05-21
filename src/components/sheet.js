@@ -37,15 +37,15 @@ const StyledRating = withStyles({
 
 const customIcons = {
   1: {
-    icon: <SentimentVeryDissatisfiedIcon fontSize='large' />,
+    icon: <SentimentVeryDissatisfiedIcon style={{ fontSize: 30 }} />,
     label: 'Neutralized',
   },
   2: {
-    icon: <SentimentDissatisfiedIcon fontSize='large' />,
+    icon: <SentimentDissatisfiedIcon style={{ fontSize: 30 }} />,
     label: 'Badly Injured',
   },
   3: {
-    icon: <SentimentVerySatisfiedIcon fontSize='large' />,
+    icon: <SentimentVerySatisfiedIcon style={{ fontSize: 30 }} />,
     label: 'Fine',
   },
 }

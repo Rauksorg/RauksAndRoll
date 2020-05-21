@@ -11,6 +11,7 @@ import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, 
 import joseClose from '../images/joseClose.jpg'
 import beauriceClose from '../images/BeauriceClose.jpg'
 import francisClose from '../images/FrancisClose.jpg'
+import gameMasterClose from '../images/GameMasterClose.jpg'
 import Divider from '@material-ui/core/Divider'
 
 // Fix listItemButton
@@ -27,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const avatarList = { GpBYQ4vqkiEImQrbkkHv: joseClose, '0Ujzu57VXWwJTB5erTUp': beauriceClose, yhSG30Rf9lB0Me9sLoRS: francisClose }
+const avatarList = { GpBYQ4vqkiEImQrbkkHv: joseClose, '0Ujzu57VXWwJTB5erTUp': beauriceClose, yhSG30Rf9lB0Me9sLoRS: francisClose, NvysJ1bND6X1RONVG3Yu: gameMasterClose }
 
 const ResultToFace = (props) => {
   const facesObject = { '✓': SuccessIcon, '2': TwoIcon, '3!': ThreeEpicIcon, '4': FourIcon, S: SkillIcon, '✘': FailIcon, '✘!': EpicFailIcon, '💀': SkullIcon, '☯': NeutralIcon, '🍀': CloverIcon, '💥': ExplosivIcon }
