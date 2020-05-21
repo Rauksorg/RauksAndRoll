@@ -16,7 +16,6 @@ const EditableChip = (props) => {
     }
     return [htmlElRef, setFocus]
   }
-
   const [inputRef, setInputFocus] = useFocus()
 
   const handleChange = (event) => {
@@ -25,20 +24,26 @@ const EditableChip = (props) => {
     setStatusText(newValue)
   }
   const clicked = () => {
+    console.log({ ...other })
     setEditing(true)
   }
   const blured = () => {
     setEditing(false)
   }
+  const enterPressed = (event) => {
+    if (event.key === 'Enter') {
+      setEditing(false)
+    }
+  }
   useEffect(() => {
     // trick to set focus to the input
-    setInputFocus()
+    if (editing) setInputFocus()
   }, [editing, setInputFocus])
 
-  const myChip = <Chip label={statusText} onClick={clicked} {...other}  />
+  const myChip = <Chip label={statusText} onClick={clicked} {...other} />
   const myText = (
     <FormControl>
-      <Input inputRef={inputRef} name='chip' value={statusText} onChange={handleChange} onBlur={blured} />
+      <Input inputRef={inputRef} name='chip' value={statusText} onKeyDown={enterPressed} onChange={handleChange} onBlur={blured} />
     </FormControl>
   )
   return editing ? myText : myChip
@@ -56,10 +61,8 @@ const EditChip = () => {
         options={[]}
         freeSolo
         renderTags={(value, getTagProps) => value.map((option, index) => <EditableChip variant='outlined' label={option} {...getTagProps({ index })} />)}
-        renderInput={(params) => <TextField variant='outlined' {...params} label='Etats' placeholder='Ajouter...' />}
+        renderInput={(params) => <TextField variant='outlined' label='Etats' placeholder='Ajouter...' {...params} />}
       />
-      <EditableChip label={'hello'} />
-      <EditableChip />
     </div>
   )
 }
