@@ -10,6 +10,8 @@ import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
+import Grid from '@material-ui/core/Grid'
+import Paper from '@material-ui/core/Paper'
 
 const useStyles = makeStyles((theme) => ({
   small: {
@@ -127,6 +129,99 @@ const EditableChip = (props) => {
 const EditChip = () => {
   return (
     <div>
+      <Paper variant='outlined' style={{ margin: '10px 0px 10px 0px', padding: '10px', position: 'relative' }}>
+        <div style={{ position: 'absolute', top: -10, left: 12, backgroundColor: 'white' }}>Hello</div>
+        <Grid container spacing={1} alignItems='flex-end'>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <EditableChip variant='outlined' label={'test'} />
+          </Grid>
+          <Grid item>
+            <Input id='input-with-icon-grid' label='With a grid' disableUnderline={true} placeholder='Ajouter...' />
+          </Grid>
+        </Grid>
+      </Paper>
+
       <TextField
         variant='outlined'
         label='Etats'
@@ -135,8 +230,6 @@ const EditChip = () => {
         InputProps={{
           startAdornment: (
             <InputAdornment position='start'>
-              <EditableChip variant='outlined' label={'test'} />
-              <EditableChip variant='outlined' label={'test'} />
               <EditableChip variant='outlined' label={'test'} />
               <EditableChip variant='outlined' label={'test'} />
               <EditableChip variant='outlined' label={'test'} />

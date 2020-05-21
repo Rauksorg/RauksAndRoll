@@ -63,8 +63,11 @@ const Layout = ({ children, location, pageContext }) => {
     return unsubscribe
   }, [])
 
-  if (pageContext.layout === 'noLayout') {
+  if (pageContext.layout === 'setup') {
     return <Container maxWidth='md'>{children}</Container>
+  }
+  if (pageContext.layout === 'noLayout') {
+    return <MapContext.Provider value={[mapOptions, changeMap]}>{children}</MapContext.Provider>
   }
   if (pageContext.layout === 'admin') {
     return <Container maxWidth='xl'>{children}</Container>
