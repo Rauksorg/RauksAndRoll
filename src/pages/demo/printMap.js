@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useContext, useState } from 'react'
 import firebase from 'gatsby-plugin-firebase'
-import { Map, Popup, Marker } from 'mapbox-gl'
+import { Map } from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import MapContext from '../../components/state'
 import { Button } from 'gatsby-theme-material-ui'
@@ -8,8 +8,8 @@ import { Button } from 'gatsby-theme-material-ui'
 const PrintMap = () => {
   const [mapOptions] = useContext(MapContext)
   const mapRef = useRef(null)
-  const markerRef = useRef([])
   const [mapLayer, setMapLayer] = useState(null)
+  const [mapMarkers, setMapMarkers] = useState(null)
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
@@ -39,15 +39,49 @@ const PrintMap = () => {
   }, [mapOptions])
 
   useEffect(() => {
-    const unsubscribe = firebase
+    firebase
       .firestore()
       .collection(`layers`)
       .doc('xNMZJLF9yLNEZGGUPLQc')
-      .onSnapshot((querySnapshot) => {
+      .get()
+      .then((querySnapshot) => {
         const data = querySnapshot.data()
         setMapLayer(JSON.parse(data.geojson))
       })
-    return unsubscribe
+  }, [])
+
+  useEffect(() => {
+    firebase
+      .firestore()
+      .collection(`markersv2`)
+      .orderBy('order')
+      .get()
+      .then((querySnapshot) => {
+        const features = []
+        querySnapshot.forEach((doc) => {
+          const serverData = doc.data()
+          const featureTemplate = {
+            type: 'Feature',
+            geometry: {
+              type: 'Point',
+              coordinates: serverData.LngLat,
+            },
+            properties: {
+              title: serverData.name,
+              'marker-color': serverData.color,
+            },
+          }
+          if (!serverData.deleted) {
+            features.push(featureTemplate)
+          }
+        })
+        const geojson = {
+          type: 'FeatureCollection',
+          features: features,
+        }
+
+        setMapMarkers(geojson)
+      })
   }, [])
 
   useEffect(() => {
@@ -107,25 +141,33 @@ const PrintMap = () => {
   }, [isLoaded, mapLayer])
 
   useEffect(() => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection(`markersv2`)
-      .onSnapshot((querySnapshot) => {
-        markerRef.current.forEach((element) => {
-          element.remove()
-        })
-        markerRef.current = []
-        querySnapshot.forEach((element) => {
-          if (!element.data().deleted) {
-            const elementData = element.data()
-            const color = elementData.color ? elementData.color : 'blue'
-            const newMarkerRef = new Marker({ color: color }).setLngLat(elementData.LngLat).addTo(mapRef.current).setPopup(new Popup().setText(elementData.name))
-            markerRef.current.push(newMarkerRef)
-          }
-        })
+    if (isLoaded && mapMarkers) {
+      if (mapRef.current.getLayer('markers')) mapRef.current.removeLayer('markers')
+      if (mapRef.current.getSource('markersSource')) mapRef.current.removeSource('markersSource')
+      mapRef.current.addSource('markersSource', {
+        type: 'geojson',
+        data: mapMarkers,
       })
-    return unsubscribe
-  }, [])
+      mapRef.current.addLayer({
+        id: 'markers',
+        type: 'symbol',
+        minzoom: 10,
+        source: 'markersSource',
+        paint: {
+          'text-color': '#404040',
+        },
+        layout: {
+          'icon-image': 'circle-11',
+          'text-field': ['get', 'title'],
+          'text-font': ['Roboto sans-serif', 'Arial Unicode MS Regular'],
+          'text-offset': [0, 0.6],
+          'text-anchor': 'top',
+          'text-size': 12,
+        },
+        filter: ['==', '$type', 'Point'],
+      })
+    }
+  }, [isLoaded, mapMarkers])
 
   const download = () => {
     const img = mapRef.current.getCanvas().toDataURL('image/png')
