@@ -169,7 +169,7 @@ const PrintMap = () => {
     }
   }, [isLoaded, mapMarkers])
 
-  const download = () => {
+  const downloadMap = () => {
     const img = mapRef.current.getCanvas().toDataURL('image/png')
     const element = document.createElement('a')
     element.href = img
@@ -180,10 +180,10 @@ const PrintMap = () => {
 
   return (
     <div>
-      <Button onClick={download} variant='contained'>
+      <Button onClick={downloadMap} variant='contained'>
         Download
       </Button>
-      <div style={{ width: '1189mm', height: '841mm' }} id='map'></div>
+      <div style={{ width: '1189mm', height: '841mm', visibility: 'hidden' }} id='map'></div>
     </div>
   )
 }
