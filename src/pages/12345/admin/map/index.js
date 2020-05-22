@@ -21,7 +21,14 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(2),
     height: theme.spacing(2),
   },
+  buttonSpacing: {
+    '& > *': {
+      margin: theme.spacing(1),
+    },
+  },
 }))
+
+// TODO : add firebase actions
 
 const ColorSelect = ({ markerId, color = 'blue' }) => {
   const classes = useStyles()
@@ -33,12 +40,8 @@ const ColorSelect = ({ markerId, color = 'blue' }) => {
     setMenuColor(color)
   }
 
-  useEffect(() => {
-    setMenuColor(color)
-  }, [color])
-
   return (
-    <Select value={menuColor} onChange={handleChange} name={markerId}>
+    <Select value={menuColor} onChange={handleChange} name={markerId} disableUnderline>
       <MenuItem value={'blue'}>
         <Avatar style={{ backgroundColor: 'blue' }} className={classes.small}>
           {' '}
@@ -64,15 +67,6 @@ const EditableChip = (props) => {
   const [statusTextWidth, setStatusTextWidth] = useState('')
   const [editing, setEditing] = useState(false)
 
-  const useFocus = () => {
-    const htmlElRef = useRef(null)
-    const setFocus = () => {
-      htmlElRef.current && htmlElRef.current.focus()
-    }
-    return [htmlElRef, setFocus]
-  }
-  const [inputRef, setInputFocus] = useFocus()
-
   const handleChange = (event) => {
     // const name = event.target.name
     const newValue = event.target.value
@@ -82,20 +76,17 @@ const EditableChip = (props) => {
     setEditing(true)
     edit(popupRefKey, true)
   }
+
   const handleClickAway = () => {
     setEditing(false)
     edit(popupRefKey, false)
   }
-
   const enterPressed = (event) => {
     if (event.key === 'Enter') {
       setEditing(false)
+      edit(popupRefKey, false)
     }
   }
-  useEffect(() => {
-    // trick to set focus to the input
-    if (editing) setInputFocus()
-  }, [editing, setInputFocus])
 
   useEffect(() => {
     setStatusTextWidth(statusText.length * 0.5 + 7 + 'em')
@@ -105,7 +96,6 @@ const EditableChip = (props) => {
   const myText = (
     <ClickAwayListener mouseEvent='onMouseDown' touchEvent='onTouchStart' onClickAway={handleClickAway}>
       <Input
-        inputRef={inputRef}
         name='chip'
         style={{ width: statusTextWidth, maxWidth: '500px' }}
         value={statusText}
@@ -135,7 +125,6 @@ const NewChipInput = () => {
   const [newChipTextWidth, setNewChipTextWidth] = useState('')
 
   const handleChange = (event) => {
-    // const name = event.target.name
     const newValue = event.target.value
     setNewChipText(newValue)
   }
@@ -148,6 +137,7 @@ const NewChipInput = () => {
 }
 
 const MyMapModif = () => {
+  const classes = useStyles()
   const mapRef = useRef(null)
   const markerRef = useRef([])
   const popupRef = useRef([])
@@ -316,13 +306,12 @@ const MyMapModif = () => {
   }, [isLoaded, mapLayer])
 
   useEffect(() => {
-    // Add markers to map
     const unsubscribe = firebase
       .firestore()
       .collection(`markersv2`)
       .orderBy('order')
       .onSnapshot((querySnapshot) => {
-        // Delete Previous Markers and refs
+        // Delete Previous Markers and refs to start from scratch
         markerRef.current.forEach((element) => {
           element.remove()
         })
@@ -356,15 +345,15 @@ const MyMapModif = () => {
   return (
     <div>
       <div style={{ width: '100%', height: '70vh' }} id='map'></div>
-      <div style={{ marginBottom: '15px' }}>
-        <Button onClick={updateCenter} variant='contained'>
+      <div style={{ marginBottom: '15px' }} className={classes.buttonSpacing}>
+        <Button onClick={updateCenter} variant='outlined'>
           Update Center
         </Button>
-        <Button to={`/12345/admin/map/geojson/`} variant='contained'>
-          Geojson
+        <Button to={`/12345/admin/map/geojson/`} variant='outlined'>
+          Geojson Layer
         </Button>
-        <Button onClick={downloadJsonMarkers} variant='contained'>
-          Download
+        <Button onClick={downloadJsonMarkers} variant='outlined'>
+          Download Markers
         </Button>
       </div>
       <div>
