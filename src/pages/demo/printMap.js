@@ -5,6 +5,8 @@ import 'mapbox-gl/dist/mapbox-gl.css'
 import MapContext from '../../components/state'
 import { Button } from 'gatsby-theme-material-ui'
 
+// add a modal for loading to hide scrollbar
+
 const PrintMap = () => {
   const [mapOptions] = useContext(MapContext)
   const mapRef = useRef(null)
