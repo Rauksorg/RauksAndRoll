@@ -1,27 +1,28 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useReducer, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import firebase from 'gatsby-plugin-firebase'
 import { Button } from 'gatsby-theme-material-ui'
+import TextField from '@material-ui/core/TextField'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import Avatar from '@material-ui/core/Avatar'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import Grid from '@material-ui/core/Grid'
-import Chip from '@material-ui/core/Chip'
-import Input from '@material-ui/core/Input'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
-import Paper from '@material-ui/core/Paper'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import { Map, Popup, Marker } from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
   small: {
     width: theme.spacing(2),
     height: theme.spacing(2),
   },
 }))
+
 
 const ColorSelect = ({ markerId, color = 'blue' }) => {
   const classes = useStyles()
@@ -29,8 +30,11 @@ const ColorSelect = ({ markerId, color = 'blue' }) => {
 
   const handleChange = (event) => {
     const color = event.target.value
-    // const name = event.target.name
+    const name = event.target.name
     setMenuColor(color)
+    firebase.firestore().collection(`markersv2`).doc(name).update({
+      color: color,
+    })
   }
 
   useEffect(() => {
@@ -58,102 +62,47 @@ const ColorSelect = ({ markerId, color = 'blue' }) => {
   )
 }
 
-const EditableChip = (props) => {
-  const { label = '', color, edit, popupRefKey, ...other } = props
-  const [statusText, setStatusText] = useState(label)
-  const [statusTextWidth, setStatusTextWidth] = useState('')
-  const [editing, setEditing] = useState(false)
-
-  const useFocus = () => {
-    const htmlElRef = useRef(null)
-    const setFocus = () => {
-      htmlElRef.current && htmlElRef.current.focus()
-    }
-    return [htmlElRef, setFocus]
-  }
-  const [inputRef, setInputFocus] = useFocus()
-
-  const handleChange = (event) => {
-    // const name = event.target.name
-    const newValue = event.target.value
-    setStatusText(newValue)
-  }
-  const setEditTrue = () => {
-    setEditing(true)
-    edit(popupRefKey, true)
-  }
-  const handleClickAway = () => {
-    setEditing(false)
-    edit(popupRefKey, false)
-  }
-
-  const enterPressed = (event) => {
-    if (event.key === 'Enter') {
-      setEditing(false)
-    }
-  }
-  useEffect(() => {
-    // trick to set focus to the input
-    if (editing) setInputFocus()
-  }, [editing, setInputFocus])
-
-  useEffect(() => {
-    setStatusTextWidth(statusText.length * 0.5 + 7 + 'em')
-  }, [statusText])
-
-  const myChip = <Chip style={{ backgroundColor: color }} label={statusText} onClick={() => {}} onMouseDown={setEditTrue} {...other} /> //onMouseDown to permit to edit just after leaving an other chip, onClick allow hover
-  const myText = (
-    <ClickAwayListener mouseEvent='onMouseDown' touchEvent='onTouchStart' onClickAway={handleClickAway}>
-      <Input
-        inputRef={inputRef}
-        name='chip'
-        style={{ width: statusTextWidth, maxWidth: '500px' }}
-        value={statusText}
-        disableUnderline={true}
-        onKeyDown={enterPressed}
-        onChange={handleChange}
-        startAdornment={
-          <InputAdornment position='start'>
-            <ColorSelect color={color} />
-          </InputAdornment>
-        }
-        endAdornment={
-          <InputAdornment position='end'>
-            <IconButton>
-              <DeleteIcon />
-            </IconButton>
-          </InputAdornment>
-        }
-      />
-    </ClickAwayListener>
-  )
-  return editing ? myText : myChip
-}
-
-const NewChipInput = () => {
-  const [newChipText, setNewChipText] = useState('')
-  const [newChipTextWidth, setNewChipTextWidth] = useState('')
-
-  const handleChange = (event) => {
-    // const name = event.target.name
-    const newValue = event.target.value
-    setNewChipText(newValue)
-  }
-
-  useEffect(() => {
-    setNewChipTextWidth(newChipText.length * 0.5 + 7 + 'em')
-  }, [newChipText, setNewChipTextWidth])
-
-  return <Input style={{ width: newChipTextWidth, maxWidth: '500px' }} value={newChipText} onChange={handleChange} id='input-with-icon-grid' label='With a grid' disableUnderline={true} placeholder='Ajouter...' />
-}
-
 const MyMapModif = () => {
+  const classes = useStyles()
+
+  const timer = useRef(null)
   const mapRef = useRef(null)
   const markerRef = useRef([])
-  const popupRef = useRef([])
   const [isLoaded, setIsLoaded] = useState(false)
   const [mapLayer, setMapLayer] = useState(null)
-  const [markersChip, setMarkersChip] = useState([])
+  const [userInput, setUserInput] = useReducer((state, newState) => ({ ...state, ...newState }), {})
+
+  const handleChange = (evt) => {
+    // with a very fsat and unsual field swith it is possible to skip the save
+    clearTimeout(timer.current)
+    const name = evt.target.name
+    const newData = userInput[name]
+    newData.name = evt.target.value
+    setUserInput({ [name]: newData })
+    timer.current = setTimeout(() => {
+      firebase.firestore().collection(`markersv2`).doc(name).update({
+        name: newData.name,
+      })
+    }, 400)
+  }
+
+  const createNewMarker = () => {
+    const newMarkerRef = firebase.firestore().collection('markersv2').doc()
+    const { lng, lat } = mapRef.current.getCenter()
+    const newOrder = Date.now()
+    const payload = { name: '', LngLat: [lng, lat], order: newOrder }
+    newMarkerRef.set(payload).catch((error) => {
+      console.error('Error adding document: ', error)
+    })
+    setUserInput({ [newMarkerRef.id]: payload })
+  }
+
+  const deleteMarker = (id) => {
+    const newData = userInput[id]
+    newData.deleted = true
+    setUserInput({ [id]: newData })
+    firebase.firestore().collection('markersv2').doc(id).update({ deleted: true })
+  }
 
   const downloadJsonMarkers = () => {
     firebase
@@ -327,36 +276,39 @@ const MyMapModif = () => {
           element.remove()
         })
         markerRef.current = []
-        popupRef.current = []
-        const markers = []
-        let i = 0
         querySnapshot.forEach((element) => {
           const elementData = element.data()
           const id = element.id
-          markers.push({ ...elementData, id: id, refKey: i })
-          i++
           const color = elementData.color ? elementData.color : 'blue'
-          const newPopup = new Popup().setText(elementData.name)
-          const newMarker = new Marker({ draggable: true, color: color }).setLngLat(elementData.LngLat).addTo(mapRef.current).setPopup(newPopup)
-          newMarker.on('dragend', savePosition)
-          newMarker.feature = { id: id, name: elementData.name }
-          markerRef.current.push(newMarker)
-          popupRef.current.push(newPopup)
+          if (!elementData.deleted) {
+            // hide deleted MArkers
+            const newMarker = new Marker({ draggable: true, color: color }).setLngLat(elementData.LngLat).addTo(mapRef.current).setPopup(new Popup().setText(elementData.name).addTo(mapRef.current))
+            newMarker.on('dragend', savePosition)
+            newMarker.feature = { id: id, name: elementData.name }
+            markerRef.current.push(newMarker)
+          }
         })
-        setMarkersChip(markers)
+        // add the TextFields if from server
+        if (!querySnapshot.metadata.hasPendingWrites) {
+          const obj = {}
+          querySnapshot.forEach((element) => {
+            const id = element.id
+            obj[id] = element.data()
+          })
+          setUserInput(obj)
+        }
       })
     return unsubscribe
   }, [])
 
-  const showHidePopup = (popupRefKey, edit) => {
-    if (edit) popupRef.current[popupRefKey].addTo(mapRef.current)
-    if (!edit) popupRef.current[popupRefKey].remove()
-  }
-
+  let i = 0
   return (
     <div>
-      <div style={{ width: '100%', height: '70vh' }} id='map'></div>
+      <div style={{ width: '100%', height: '600px' }} id='map'></div>
       <div style={{ marginBottom: '15px' }}>
+        <Button onClick={createNewMarker} variant='contained'>
+          Add
+        </Button>
         <Button onClick={updateCenter} variant='contained'>
           Update Center
         </Button>
@@ -367,22 +319,47 @@ const MyMapModif = () => {
           Download
         </Button>
       </div>
-      <div>
-        <Paper variant='outlined' style={{ margin: '10px 0px 10px 0px', padding: '10px', position: 'relative' }}>
-          <div style={{ position: 'absolute', top: -10, left: 12, backgroundColor: 'white' }}>Hello</div>
-          <Grid container spacing={1} alignItems='flex-end'>
-            {markersChip.map((element) => {
-              return (
-                <Grid item key={element.id}>
-                  <EditableChip variant='outlined' label={element.name} popupRefKey={element.refKey} color={element.color} edit={showHidePopup} />
-                </Grid>
-              )
-            })}
-            <Grid item>
-              <NewChipInput />
-            </Grid>
-          </Grid>
-        </Paper>
+      <div className={classes.root}>
+        <Grid container spacing={3}>
+          {Object.keys(userInput).map((element) => {
+            const name = userInput[element].name
+            const color = userInput[element].color
+            if (userInput[element].deleted) return <span key={element}></span>
+            i++
+            return (
+              <Grid item xs={3} key={element}>
+                <TextField
+                  style={{ width: '100%' }}
+                  variant='outlined'
+                  name={element}
+                  key={element}
+                  label={`Marker ${i}`}
+                  value={name != null ? name : '...'}
+                  onChange={handleChange}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position='start'>
+                        <ColorSelect markerId={element} color={color} />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position='end'>
+                        <IconButton
+                          name={element}
+                          onClick={() => {
+                            deleteMarker(element)
+                          }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Grid>
+            )
+          })}
+        </Grid>
       </div>
     </div>
   )
