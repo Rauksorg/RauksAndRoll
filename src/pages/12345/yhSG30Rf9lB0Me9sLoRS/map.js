@@ -16,7 +16,7 @@ const MyMap = () => {
   const classes = useStyles()
 
   const [mapOptions] = useContext(MapContext)
- 
+
   const mapRef = useRef(null)
   const markerRef = useRef([])
   const [mapLayer, setMapLayer] = useState(null)
@@ -138,12 +138,10 @@ const MyMap = () => {
         })
         markerRef.current = []
         querySnapshot.forEach((element) => {
-          if (!element.data().deleted) {
-            const elementData = element.data()
-            const color = elementData.color ? elementData.color : 'blue'
-            const newMarkerRef = new Marker({ color: color }).setLngLat(elementData.LngLat).addTo(mapRef.current).setPopup(new Popup().setText(elementData.name))
-            markerRef.current.push(newMarkerRef)
-          }
+          const elementData = element.data()
+          const color = elementData.color ? elementData.color : 'blue'
+          const newMarkerRef = new Marker({ color: color }).setLngLat(elementData.LngLat).addTo(mapRef.current).setPopup(new Popup().setText(elementData.name))
+          markerRef.current.push(newMarkerRef)
         })
       })
     return unsubscribe

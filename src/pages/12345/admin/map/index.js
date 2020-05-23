@@ -234,9 +234,7 @@ const MyMapModif = () => {
               'marker-color': serverData.color,
             },
           }
-          if (!serverData.deleted) {
-            features.push(featureTemplate)
-          }
+          features.push(featureTemplate)
         })
         const geojson = {
           type: 'FeatureCollection',
