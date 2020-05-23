@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Avatar from '@material-ui/core/Avatar'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
+// import ListItemText from '@material-ui/core/ListItemText'
 import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import imageJpg from '../../images/FrancisClose.jpg'
 import imageSVGBandW from '../../images/Francisbw2.svg'
@@ -20,7 +20,7 @@ const SvgAvatar = () => {
   return (
     <div>
       <div style={{ backgroundImage: `url(${imageSVGBandW})`, width: '500px', height: '500px', backgroundColor: '#eb0000', backgroundBlendMode: 'hard-light' }}></div>
-      <img src={imageJpg} />
+      <img alt='test' src={imageJpg} />
       <List>
         <ListItem button>
           <ListItemAvatar style={{ margin: '0px 5px 0px 0px' }}>
@@ -41,7 +41,7 @@ const SvgAvatar = () => {
       <div>
         <div style={{ position: 'relative' }}>
           <div style={{ width: '288px', height: '288px', position: 'absolute', backgroundColor: '#eb0000' }} />
-          <img src={imageSVGBandW} style={{ width: '288px', height: '288px', position: 'absolute', mixBlendMode: 'hard-light' }} />
+          <img alt='test'  src={imageSVGBandW} style={{ width: '288px', height: '288px', position: 'absolute', mixBlendMode: 'hard-light' }} />
         </div>
       </div>
     </div>

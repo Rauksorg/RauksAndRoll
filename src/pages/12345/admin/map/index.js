@@ -432,7 +432,7 @@ const MyMapModif = () => {
       </div>
       <div>
         <Paper variant='outlined' style={{ margin: '10px 0px 10px 0px', padding: '10px', position: 'relative' }}>
-          <div style={{ position: 'absolute', top: -10, left: 12, backgroundColor: 'white' }}>Hello</div>
+          <div style={{ position: 'absolute', top: -10, left: 12, backgroundColor: 'white' }}>Marqueurs</div>
           <Grid container spacing={1} alignItems='flex-end'>
             {markersChip.map((element) => {
               return (
