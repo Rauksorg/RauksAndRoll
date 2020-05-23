@@ -30,13 +30,20 @@ const useStyles = makeStyles((theme) => ({
 
 // TODO : add firebase actions
 
-const ColorSelect = ({ markerId, color = 'blue' }) => {
+const ColorSelect = ({ markerId, color }) => {
   const classes = useStyles()
-  const [menuColor, setMenuColor] = useState(color)
+  // default value {color='blue'} doesn't works if color is empty string
+  const correctColor = color ? color : 'blue'
+  const [menuColor, setMenuColor] = useState(correctColor)
 
   const handleChange = (event) => {
     const color = event.target.value
-    // const name = event.target.name
+    const name = event.target.name
+    // blue is default in db used for geojson export
+    const dbColor = color === 'blue' ? '' : color
+    firebase.firestore().collection(`markersv2`).doc(name).update({
+      color: dbColor,
+    })
     setMenuColor(color)
   }
 
@@ -62,31 +69,51 @@ const ColorSelect = ({ markerId, color = 'blue' }) => {
 }
 
 const EditableChip = (props) => {
-  const { label = '', color, edit, popupRefKey, ...other } = props
+  const { label = '', color, markerId, edit, popupRefKey, ...other } = props
   const [statusText, setStatusText] = useState(label)
   const [statusTextWidth, setStatusTextWidth] = useState('')
   const [editing, setEditing] = useState(false)
 
   const handleChange = (event) => {
-    // const name = event.target.name
     const newValue = event.target.value
     setStatusText(newValue)
   }
   const setEditTrue = () => {
     setEditing(true)
-    edit(popupRefKey, true)
+  }
+
+  const saveMarkerTextInDb = (id, text) => {
+    firebase.firestore().collection(`markersv2`).doc(id).update({
+      name: text,
+    })
   }
 
   const handleClickAway = () => {
     setEditing(false)
-    edit(popupRefKey, false)
+    saveMarkerTextInDb(markerId, statusText)
   }
+
   const enterPressed = (event) => {
     if (event.key === 'Enter') {
       setEditing(false)
-      edit(popupRefKey, false)
+      saveMarkerTextInDb(markerId, statusText)
     }
   }
+  const deleteMarker = (markerId) => {
+    firebase
+      .firestore()
+      .collection(`markersv2`)
+      .doc(markerId)
+      .delete()
+      .catch((error) => {
+        console.error('Error removing document: ', error)
+      })
+  }
+
+  useEffect(() => {
+    if (editing) edit(popupRefKey, true)
+    if (!editing) edit(popupRefKey, false)
+  }, [editing, edit, popupRefKey])
 
   useEffect(() => {
     setStatusTextWidth(statusText.length * 0.5 + 7 + 'em')
@@ -96,7 +123,7 @@ const EditableChip = (props) => {
   const myText = (
     <ClickAwayListener mouseEvent='onMouseDown' touchEvent='onTouchStart' onClickAway={handleClickAway}>
       <Input
-        name='chip'
+        name={markerId}
         style={{ width: statusTextWidth, maxWidth: '500px' }}
         value={statusText}
         disableUnderline={true}
@@ -104,12 +131,16 @@ const EditableChip = (props) => {
         onChange={handleChange}
         startAdornment={
           <InputAdornment position='start'>
-            <ColorSelect color={color} />
+            <ColorSelect color={color} markerId={markerId} />
           </InputAdornment>
         }
         endAdornment={
           <InputAdornment position='end'>
-            <IconButton>
+            <IconButton
+              onClick={() => {
+                deleteMarker(markerId)
+              }}
+            >
               <DeleteIcon />
             </IconButton>
           </InputAdornment>
@@ -120,9 +151,32 @@ const EditableChip = (props) => {
   return editing ? myText : myChip
 }
 
-const NewChipInput = () => {
+const NewChipInput = ({ mapCenter }) => {
   const [newChipText, setNewChipText] = useState('')
   const [newChipTextWidth, setNewChipTextWidth] = useState('')
+
+  const createMarkerInDb = (text, center) => {
+    const newMarkerRef = firebase.firestore().collection('markersv2').doc()
+    const newOrder = Date.now()
+    const payload = { name: text, LngLat: center, order: newOrder, color: '' }
+    newMarkerRef.set(payload).catch((error) => {
+      console.error('Error adding document: ', error)
+    })
+  }
+
+  const handleBlur = () => {
+    if (newChipText) {
+      createMarkerInDb(newChipText, mapCenter)
+      setNewChipText('')
+    }
+  }
+
+  const enterPressed = (event) => {
+    if (event.key === 'Enter' && newChipText) {
+      createMarkerInDb(newChipText, mapCenter)
+      setNewChipText('')
+    }
+  }
 
   const handleChange = (event) => {
     const newValue = event.target.value
@@ -133,7 +187,20 @@ const NewChipInput = () => {
     setNewChipTextWidth(newChipText.length * 0.5 + 7 + 'em')
   }, [newChipText, setNewChipTextWidth])
 
-  return <Input style={{ width: newChipTextWidth, maxWidth: '500px' }} value={newChipText} onChange={handleChange} id='input-with-icon-grid' label='With a grid' disableUnderline={true} placeholder='Ajouter...' />
+  return (
+    <Input
+      style={{ width: newChipTextWidth, maxWidth: '500px' }}
+      autoComplete='off'
+      value={newChipText}
+      onKeyDown={enterPressed}
+      onBlur={handleBlur}
+      onChange={handleChange}
+      id='input-with-icon-grid'
+      label='With a grid'
+      disableUnderline={true}
+      placeholder='Ajouter...'
+    />
+  )
 }
 
 const MyMapModif = () => {
@@ -144,6 +211,7 @@ const MyMapModif = () => {
   const [isLoaded, setIsLoaded] = useState(false)
   const [mapLayer, setMapLayer] = useState(null)
   const [markersChip, setMarkersChip] = useState([])
+  const [mapCenter, setMapCenter] = useState([])
 
   const downloadJsonMarkers = () => {
     firebase
@@ -228,6 +296,12 @@ const MyMapModif = () => {
         mapRef.current = map
         map.on('load', () => {
           setIsLoaded(true)
+        })
+        const { lng, lat } = map.getCenter()
+        setMapCenter([lng, lat])
+        map.on('moveend', () => {
+          const { lng, lat } = map.getCenter()
+          setMapCenter([lng, lat])
         })
       })
 
@@ -363,12 +437,12 @@ const MyMapModif = () => {
             {markersChip.map((element) => {
               return (
                 <Grid item key={element.id}>
-                  <EditableChip variant='outlined' label={element.name} popupRefKey={element.refKey} color={element.color} edit={showHidePopup} />
+                  <EditableChip variant='outlined' markerId={element.id} label={element.name} popupRefKey={element.refKey} color={element.color} edit={showHidePopup} />
                 </Grid>
               )
             })}
             <Grid item>
-              <NewChipInput />
+              <NewChipInput mapCenter={mapCenter} />
             </Grid>
           </Grid>
         </Paper>
