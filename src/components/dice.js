@@ -89,15 +89,6 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
   }, [])
 
   useEffect(() => {
-    firebase.firestore().doc(`players/${playerId}`).update({
-      diceResult: result,
-      dice: diceProperties.color,
-      rerolled: rerolled,
-      timeRolled: Date.now(),
-    })
-  }, [playerId, rerolled, result, diceProperties.color])
-
-  useEffect(() => {
     const unsubscribe = firebase
       .firestore()
       .doc(`players/${playerId}`)
@@ -113,6 +104,31 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
     return unsubscribe
   }, [playerId])
 
+  useEffect(() => {
+    firebase.firestore().doc(`players/${playerId}`).update({
+      diceResult: result,
+      dice: diceProperties.color,
+      rerolled: rerolled,
+      timeRolled: Date.now(),
+    })
+  }, [playerId, rerolled, result, diceProperties.color])
+
+  useEffect(() => {
+    firebase
+      .firestore()
+      .collection('dicesLogs')
+      .add({
+        playerId: playerId,
+        diceResult: result,
+        dice: diceProperties.color,
+        rerolled: rerolled,
+        timeRolled: Date.now(),
+      })
+      .catch((error) => {
+        console.error('Error adding document: ', error)
+      })
+  }, [playerId, rerolled, result, diceProperties.color])
+
   const rerollDice = () => {
     if (reroll > 0) {
       const newRerollCount = reroll - 1
@@ -120,13 +136,8 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
       setResult(newResult)
       setReroll(newRerollCount)
       setRerolled(true)
-      firebase.firestore().doc(`players/${playerId}`).update({
-        reroll: newRerollCount,
-        diceResult: newResult,
-        dice: diceProperties.color,
-        rerolled: true,
-        timeRolled: Date.now(),
-      })
+      // try to find a better way to update reroll in one call ?
+      firebase.firestore().doc(`players/${playerId}`).update({ reroll: newRerollCount })
     }
   }
 
