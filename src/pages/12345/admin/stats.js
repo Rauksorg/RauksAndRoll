@@ -1,12 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import firebase from 'gatsby-plugin-firebase'
-import { ResponsiveScatterPlot } from '@nivo/scatterplot'
 import { ResponsiveSwarmPlot } from '@nivo/swarmplot'
+import { ResponsivePie } from '@nivo/pie'
 import groupBy from 'lodash/groupBy'
-
+import { playerById } from '../index'
+import Slider from '@material-ui/core/Slider'
 const Stats = () => {
-  const [statsData, setStatsData] = useState(null)
-  const [groupedByPlayer, setGroupedByPlayer] = useState([])
+  const [statsData, setStatsData] = useState([])
+  const [rollPerplayerData, setRollPerplayerData] = useState([])
+  const [filteredStatsData, setFilteredStatsData] = useState([])
+
+  const [value, setValue] = useState([])
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue)
+    const [oldStart, oldEnd] = value
+    const [start, end] = newValue
+    if (oldStart === start && oldEnd === end) return
+    const statLength = statsData.length
+    const newStatsData = statsData.slice(statLength - end, statLength - start)
+    setFilteredStatsData(newStatsData)
+  }
 
   useEffect(() => {
     firebase
@@ -16,87 +30,133 @@ const Stats = () => {
       .get()
       .then((querySnapshot) => {
         const dataFromServer = []
+        let key = 0
         querySnapshot.forEach((doc) => {
-          dataFromServer.push(doc.data())
+          const data = doc.data()
+          if (data.playerId !== 'NvysJ1bND6X1RONVG3Yu') {
+            dataFromServer.push({ ...data, id: key, name: playerById[data.playerId].name })
+            key++
+          }
         })
+        setValue([0, dataFromServer.length])
+        setFilteredStatsData(dataFromServer)
         setStatsData(dataFromServer)
       })
   }, [])
 
   useEffect(() => {
-    console.log('statdata', statsData)
-    if (!statsData) return
-    const groupedData = groupBy(statsData, 'playerId')
-    const filteredGroupedData = Object.keys(groupedData).map((item, key) => {
-      return { id: item, data: groupedData[item].map((value) => ({ x: value.timeRolled, y: key,color:value.dice })) }
+    if (!filteredStatsData) return
+    const groupedData = groupBy(filteredStatsData, 'name')
+
+    const rollsPerplayer = Object.keys(groupedData).map((item) => {
+      return { id: item, label: item, value: groupedData[item].length }
     })
-   
-    console.log(groupedData)
-    console.log(filteredGroupedData)
-     setGroupedByPlayer(filteredGroupedData)
-  }, [statsData])
+    setRollPerplayerData(rollsPerplayer)
+  }, [filteredStatsData])
 
   return (
-    <div style={{ width: '100%', height: '500px' }}>
-      <ResponsiveScatterPlot
-        data={groupedByPlayer}
-        colors={(e) => {
-          return e.color
-        }}
-        margin={{ top: 60, right: 140, bottom: 70, left: 90 }}
-        xScale={{ type: 'linear', min: 'auto', max: 'auto' }}
-        xFormat={function (e) {
-          return e + ' kg'
-        }}
-        yScale={{ type: 'linear', min: 0, max: 'auto' }}
-        yFormat={function (e) {
-          return e + ' cm'
-        }}
-        blendMode='multiply'
-        axisTop={null}
-        axisRight={null}
-        axisBottom={{
-          orient: 'bottom',
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: 'weight',
-          legendPosition: 'middle',
-          legendOffset: 46,
-        }}
-        axisLeft={{
-          orient: 'left',
-          tickSize: 5,
-          tickPadding: 5,
-          tickRotation: 0,
-          legend: 'size',
-          legendPosition: 'middle',
-          legendOffset: -60,
-        }}
-        legends={[
-          {
-            anchor: 'bottom-right',
-            direction: 'column',
-            justify: false,
-            translateX: 130,
-            translateY: 0,
-            itemWidth: 100,
-            itemHeight: 12,
-            itemsSpacing: 5,
-            itemDirection: 'left-to-right',
-            symbolSize: 12,
-            symbolShape: 'circle',
-            effects: [
+    <div>
+      {filteredStatsData ? (
+        <div>
+          <div style={{ width: '100%', height: '500px' }}>
+            <ResponsiveSwarmPlot
+              data={filteredStatsData}
+              groupBy='name'
+              groups={Object.keys(playerById).map((value) => playerById[value].name)}
+              value={(e) => e.timeRolled}
+              valueFormat={(e) => {
+                const date = new Date(e)
+                const day = date.getDate()
+                const month = date.getMonth()
+                const year = date.getFullYear()
+                const hours = date.getHours()
+                const minutes = '0' + date.getMinutes()
+                const seconds = '0' + date.getSeconds()
+                const formattedTime = `${hours}:${minutes.substr(-2)}:${seconds.substr(-2)} ${day}/${month + 1}/${year}`
+                return formattedTime
+              }}
+              animate={false}
+              label={(e) => e.data.diceResult}
+              colors={(e) => e.data.dice}
+              valueScale={{ type: 'linear', min: 'auto', max: 'auto', reverse: false }}
+              size={30}
+              layout='horizontal'
+              simulationIterations={100}
+              margin={{ top: 80, right: 100, bottom: 80, left: 100 }}
+              axisTop={null}
+              axisRight={{
+                orient: 'right',
+                tickSize: 10,
+                tickPadding: 5,
+                tickRotation: 0,
+              }}
+              enableGridX={false}
+              axisBottom={null}
+              axisLeft={{
+                orient: 'left',
+                tickSize: 10,
+                tickPadding: 5,
+                tickRotation: 0,
+              }}
+            />
+          </div>
+          <div>
+            <Slider value={value} onChange={handleChange} valueLabelDisplay='auto' min={0} max={statsData.length} />
+          </div>
+        </div>
+      ) : (
+        'Loading...'
+      )}
+
+      <div style={{ width: '100%', height: '500px' }}>
+        {rollPerplayerData ? (
+          <ResponsivePie
+            data={rollPerplayerData}
+            margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
+            innerRadius={0.5}
+            padAngle={0.7}
+            cornerRadius={3}
+            colors={{ scheme: 'nivo' }}
+            borderWidth={1}
+            borderColor={{ from: 'color', modifiers: [['darker', 0.2]] }}
+            radialLabelsSkipAngle={10}
+            radialLabelsTextXOffset={6}
+            radialLabelsTextColor='#333333'
+            radialLabelsLinkOffset={0}
+            radialLabelsLinkDiagonalLength={16}
+            radialLabelsLinkHorizontalLength={24}
+            radialLabelsLinkStrokeWidth={1}
+            radialLabelsLinkColor={{ from: 'color' }}
+            slicesLabelsSkipAngle={10}
+            slicesLabelsTextColor='#333333'
+            animate={true}
+            motionStiffness={90}
+            motionDamping={15}
+            defs={[
               {
-                on: 'hover',
-                style: {
-                  itemOpacity: 1,
-                },
+                id: 'dots',
+                type: 'patternDots',
+                background: 'inherit',
+                color: 'rgba(255, 255, 255, 0.3)',
+                size: 4,
+                padding: 1,
+                stagger: true,
               },
-            ],
-          },
-        ]}
-      />
+              {
+                id: 'lines',
+                type: 'patternLines',
+                background: 'inherit',
+                color: 'rgba(255, 255, 255, 0.3)',
+                rotation: -45,
+                lineWidth: 6,
+                spacing: 10,
+              },
+            ]}
+          />
+        ) : (
+          'Loading...'
+        )}
+      </div>
     </div>
   )
 }
