@@ -5,30 +5,42 @@ import { ResponsivePie } from '@nivo/pie'
 import groupBy from 'lodash/groupBy'
 import { playerById } from '../index'
 import Slider from '@material-ui/core/Slider'
+import Typography from '@material-ui/core/Typography'
+
 const Stats = () => {
-  const [statsData, setStatsData] = useState([])
+  const [rawStats, setRawStats] = useState([])
+  const [filteredStats, setFilteredStats] = useState([])
   const [rollPerplayerData, setRollPerplayerData] = useState([])
-  const [filteredStatsData, setFilteredStatsData] = useState([])
+  const [filterCursorValue, setFilterCursorValue] = useState([null]) //Need to be null or it will fail if cursor is on 0
+  const [zoomCursorValue, setZoomCursorValue] = useState(1)
+  const [timeOrigin, setTimeOrigin] = useState([])
+  const [followNewRoll, setFollowNewRoll] = useState(true)
 
-  const [value, setValue] = useState([])
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue)
-    const [oldStart, oldEnd] = value
+  const handleFilterChange = (event, newValue) => {
+    const [oldStart, oldEnd] = filterCursorValue
     const [start, end] = newValue
+    if (start === end) return
     if (oldStart === start && oldEnd === end) return
-    const statLength = statsData.length
-    const newStatsData = statsData.slice(statLength - end, statLength - start)
-    setFilteredStatsData(newStatsData)
+    end === rawStats.length ? setFollowNewRoll(true) : setFollowNewRoll(false)
+    setFilterCursorValue(newValue)
+  }
+
+  const handleZoomChange = (event, newValue) => {
+    setZoomCursorValue(newValue)
+  }
+
+  const changeDataToRelativetime = (data) => {
+    const origin = data[0].timeRolled
+    setTimeOrigin(origin)
+    return data.map(({ timeRolled, ...others }) => ({ timeRolled: timeRolled, relativeTime: origin - timeRolled, ...others }))
   }
 
   useEffect(() => {
-    firebase
+    const unsubscribe = firebase
       .firestore()
       .collection('dicesLogs')
       .orderBy('timeRolled', 'desc')
-      .get()
-      .then((querySnapshot) => {
+      .onSnapshot((querySnapshot) => {
         const dataFromServer = []
         let key = 0
         querySnapshot.forEach((doc) => {
@@ -38,70 +50,99 @@ const Stats = () => {
             key++
           }
         })
-        setValue([0, dataFromServer.length])
-        setFilteredStatsData(dataFromServer)
-        setStatsData(dataFromServer)
+        setRawStats(dataFromServer)
       })
+    return unsubscribe
   }, [])
 
   useEffect(() => {
-    if (!filteredStatsData) return
-    const groupedData = groupBy(filteredStatsData, 'name')
+    if (!rawStats[0]) return
+    const [start, end] = filterCursorValue
+    const statLength = rawStats.length
+    const newStatsData = rawStats.slice(statLength - end, statLength - start)
+    setFilteredStats(changeDataToRelativetime(newStatsData))
+  }, [rawStats, filterCursorValue])
+
+  useEffect(() => {
+    if (!rawStats[0]) return
+    setFilterCursorValue(([start = 0, end = rawStats.length]) => {
+      return followNewRoll ? [start, rawStats.length] : [start, end]
+    })
+  }, [rawStats, followNewRoll])
+
+  useEffect(() => {
+    if (!filteredStats) return
+    const groupedData = groupBy(filteredStats, 'name')
 
     const rollsPerplayer = Object.keys(groupedData).map((item) => {
       return { id: item, label: item, value: groupedData[item].length }
     })
     setRollPerplayerData(rollsPerplayer)
-  }, [filteredStatsData])
+  }, [filteredStats])
 
   return (
     <div>
-      {filteredStatsData ? (
+      {filteredStats ? (
         <div>
-          <div style={{ width: '100%', height: '500px' }}>
-            <ResponsiveSwarmPlot
-              data={filteredStatsData}
-              groupBy='name'
-              groups={Object.keys(playerById).map((value) => playerById[value].name)}
-              value={(e) => e.timeRolled}
-              valueFormat={(e) => {
-                const date = new Date(e)
-                const day = date.getDate()
-                const month = date.getMonth()
-                const year = date.getFullYear()
-                const hours = date.getHours()
-                const minutes = '0' + date.getMinutes()
-                const seconds = '0' + date.getSeconds()
-                const formattedTime = `${hours}:${minutes.substr(-2)}:${seconds.substr(-2)} ${day}/${month + 1}/${year}`
-                return formattedTime
-              }}
-              animate={false}
-              label={(e) => e.data.diceResult}
-              colors={(e) => e.data.dice}
-              valueScale={{ type: 'linear', min: 'auto', max: 'auto', reverse: false }}
-              size={30}
-              layout='horizontal'
-              simulationIterations={100}
-              margin={{ top: 80, right: 100, bottom: 80, left: 100 }}
-              axisTop={null}
-              axisRight={{
-                orient: 'right',
-                tickSize: 10,
-                tickPadding: 5,
-                tickRotation: 0,
-              }}
-              enableGridX={false}
-              axisBottom={null}
-              axisLeft={{
-                orient: 'left',
-                tickSize: 10,
-                tickPadding: 5,
-                tickRotation: 0,
-              }}
-            />
+          <div style={{ overflowX: zoomCursorValue === 1 ? 'visible' : 'auto', height: '500px' }}>
+            <div style={{ width: zoomCursorValue * 100 + '%', height: '98%' }}>
+              <ResponsiveSwarmPlot
+                data={filteredStats}
+                groupBy='name'
+                groups={Object.keys(playerById).map((value) => playerById[value].name)}
+                value={(e) => e.relativeTime / 1000}
+                valueFormat={(e) => {
+                  // bug with date formating
+                  const date = new Date((-e + timeOrigin) * 1000)
+                  const day = date.getDate()
+                  const month = date.getMonth()
+                  const year = date.getFullYear()
+                  const hours = date.getHours()
+                  const minutes = '0' + date.getMinutes()
+                  const seconds = '0' + date.getSeconds()
+                  const formattedTime = `${hours}:${minutes.substr(-2)}:${seconds.substr(-2)} ${day}/${month + 1}/${year}`
+                  return e
+                }}
+                animate={false}
+                label={(e) => e.data.diceResult}
+                colors={(e) => e.data.dice}
+                valueScale={{ type: 'linear', min: 'auto', max: 'auto', reverse: true }}
+                size={30}
+                layout='horizontal'
+                simulationIterations={90}
+                margin={{ top: 80, right: 100, bottom: 80, left: 100 }}
+                axisTop={{
+                  orient: 'top',
+                  tickSize: 10,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                }}
+                axisRight={{
+                  orient: 'right',
+                  tickSize: 10,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                }}
+                axisBottom={{
+                  orient: 'bottom',
+                  tickSize: 10,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                }}
+                axisLeft={{
+                  orient: 'left',
+                  tickSize: 10,
+                  tickPadding: 5,
+                  tickRotation: 0,
+                }}
+              />
+            </div>
           </div>
           <div>
-            <Slider value={value} onChange={handleChange} valueLabelDisplay='auto' min={0} max={statsData.length} />
+            <Typography gutterBottom>Filter</Typography>
+            <Slider value={filterCursorValue} onChange={handleFilterChange} valueLabelDisplay='auto' min={0} max={rawStats.length} />
+            <Typography gutterBottom>Zoom</Typography>
+            <Slider value={zoomCursorValue} onChange={handleZoomChange} valueLabelDisplay='auto' step={1} marks min={1} max={10} />
           </div>
         </div>
       ) : (
