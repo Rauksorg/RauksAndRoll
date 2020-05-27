@@ -11,17 +11,15 @@ const Stats = () => {
   const [rawStats, setRawStats] = useState([])
   const [filteredStats, setFilteredStats] = useState([])
   const [rollPerplayerData, setRollPerplayerData] = useState([])
-  const [filterCursorValue, setFilterCursorValue] = useState([null]) //Need to be null or it will fail if cursor is on 0
+  const [filterCursorValue, setFilterCursorValue] = useState([])
   const [zoomCursorValue, setZoomCursorValue] = useState(1)
   const [timeOrigin, setTimeOrigin] = useState([])
-  const [followNewRoll, setFollowNewRoll] = useState(true)
 
   const handleFilterChange = (event, newValue) => {
     const [oldStart, oldEnd] = filterCursorValue
     const [start, end] = newValue
     if (start === end) return
     if (oldStart === start && oldEnd === end) return
-    end === rawStats.length ? setFollowNewRoll(true) : setFollowNewRoll(false)
     setFilterCursorValue(newValue)
   }
 
@@ -51,12 +49,21 @@ const Stats = () => {
           }
         })
         setRawStats(dataFromServer)
+        console.log(dataFromServer)
       })
     return unsubscribe
   }, [])
 
   useEffect(() => {
     if (!rawStats[0]) return
+    setFilterCursorValue(([start = 0, end = rawStats.length]) => {
+      return end === rawStats.length - 1 ? [start, rawStats.length] : [start, end] //Should use a boolean set from handleFilterChange() ?
+    })
+  }, [rawStats])
+
+  useEffect(() => {
+    if (!rawStats.length) return
+    if (!filterCursorValue.length) return
     const [start, end] = filterCursorValue
     const statLength = rawStats.length
     const newStatsData = rawStats.slice(statLength - end, statLength - start)
@@ -64,16 +71,8 @@ const Stats = () => {
   }, [rawStats, filterCursorValue])
 
   useEffect(() => {
-    if (!rawStats[0]) return
-    setFilterCursorValue(([start = 0, end = rawStats.length]) => {
-      return followNewRoll ? [start, rawStats.length] : [start, end]
-    })
-  }, [rawStats, followNewRoll])
-
-  useEffect(() => {
     if (!filteredStats) return
     const groupedData = groupBy(filteredStats, 'name')
-
     const rollsPerplayer = Object.keys(groupedData).map((item) => {
       return { id: item, label: item, value: groupedData[item].length }
     })
@@ -82,7 +81,7 @@ const Stats = () => {
 
   return (
     <div>
-      {filteredStats ? (
+      {filteredStats.length ? (
         <div>
           <div style={{ overflowX: zoomCursorValue === 1 ? 'visible' : 'auto', height: '500px' }}>
             <div style={{ width: zoomCursorValue * 100 + '%', height: '98%' }}>
@@ -93,7 +92,7 @@ const Stats = () => {
                 value={(e) => e.relativeTime / 1000}
                 valueFormat={(e) => {
                   // bug with date formating
-                  const date = new Date((-e + timeOrigin) * 1000)
+                  const date = new Date(-e * 1000 + timeOrigin)
                   const day = date.getDate()
                   const month = date.getMonth()
                   const year = date.getFullYear()
@@ -101,7 +100,7 @@ const Stats = () => {
                   const minutes = '0' + date.getMinutes()
                   const seconds = '0' + date.getSeconds()
                   const formattedTime = `${hours}:${minutes.substr(-2)}:${seconds.substr(-2)} ${day}/${month + 1}/${year}`
-                  return e
+                  return formattedTime
                 }}
                 animate={false}
                 label={(e) => e.data.diceResult}
@@ -150,7 +149,7 @@ const Stats = () => {
       )}
 
       <div style={{ width: '100%', height: '500px' }}>
-        {rollPerplayerData ? (
+        {rollPerplayerData.length ? (
           <ResponsivePie
             data={rollPerplayerData}
             margin={{ top: 40, right: 80, bottom: 80, left: 80 }}
