@@ -99,6 +99,10 @@ const Log = ({ text, id, order = 0 }) => {
   const [logText, setLogText] = useState(text)
   const [editText, setEditText] = useState(false)
 
+  useEffect(() => {
+    setLogText(text)
+  }, [text])
+
   const getShortText = (text, maxCarac) => {
     const lineBreakPositiion = text.indexOf('\n')
     const firstLine = lineBreakPositiion === -1 ? text : text.substring(0, lineBreakPositiion)
