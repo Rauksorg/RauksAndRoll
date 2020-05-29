@@ -49,7 +49,6 @@ const Stats = () => {
           }
         })
         setRawStats(dataFromServer)
-        console.log(dataFromServer)
       })
     return unsubscribe
   }, [])
@@ -71,7 +70,7 @@ const Stats = () => {
   }, [rawStats, filterCursorValue])
 
   useEffect(() => {
-    if (!filteredStats) return
+    if (!filteredStats.length) return
     const groupedData = groupBy(filteredStats, 'name')
     const rollsPerplayer = Object.keys(groupedData).map((item) => {
       return { id: item, label: item, value: groupedData[item].length }
@@ -91,7 +90,6 @@ const Stats = () => {
                 groups={Object.keys(playerById).map((value) => playerById[value].name)}
                 value={(e) => e.relativeTime / 1000}
                 valueFormat={(e) => {
-                  // bug with date formating
                   const date = new Date(-e * 1000 + timeOrigin)
                   const day = date.getDate()
                   const month = date.getMonth()

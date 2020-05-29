@@ -179,8 +179,7 @@ const NewChipInput = ({ mapCenter }) => {
   }
 
   const handleChange = (event) => {
-    const newValue = event.target.value
-    setNewChipText(newValue)
+    setNewChipText(event.target.value)
   }
 
   useEffect(() => {
