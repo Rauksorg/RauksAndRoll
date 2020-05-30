@@ -101,7 +101,7 @@ const Stats = () => {
                   return formattedTime
                 }}
                 animate={false}
-                label={(e) => e.data.diceResult}
+                label={(e) => (`${e.data.diceResult}${e.data.rerolled ? 'R' : ''}`)}
                 colors={(e) => e.data.dice}
                 valueScale={{ type: 'linear', min: 'auto', max: 'auto', reverse: true }}
                 size={30}
