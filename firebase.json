@@ -51,8 +51,12 @@
     ],
     "rewrites": [
       {
-        "source": "/foo{,/**}",
-        "destination": "/12345/index.html"
+        "source": "/**/players*",
+        "destination": "/12345/0Ujzu57VXWwJTB5erTUp/players/index.html"
+      },
+      {
+        "source": "/**/dice*",
+        "destination": "/12345/0Ujzu57VXWwJTB5erTUp/dice/index.html"
       }
     ]
   }
