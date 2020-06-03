@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import firebase from 'gatsby-plugin-firebase'
 import Paper from '@material-ui/core/Paper'
+import { Button } from 'gatsby-theme-material-ui'
 
 import PlayersList from '../../../../components/playersList'
 import Sheet from '../../../../components/sheet'
@@ -40,6 +41,7 @@ const PlayersListPage = ({ location }) => {
       <Paper style={{ padding: '15px' }}>
         <Sheet sheetId={sheetId} />
       </Paper>
+      <Button variant='outlined' to={`/12345/${sheetId}/players/logbook`} style={{marginTop:'5px'}}>Logbook</Button>
     </div>
   )
 }

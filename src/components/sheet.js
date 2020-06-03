@@ -123,7 +123,7 @@ const Sheet = ({ sheetId }) => {
       <Typography variant='h6'>Etats</Typography>
       <div className={classes.chip}>
         {statusChip.map((item, index) => {
-          return <Chip label={item} variant='outlined' />
+          return <Chip key={index} label={item} variant='outlined' />
         })}
       </div>
       <StyledRating readOnly name='customized-icons' max={3} value={status} IconContainerComponent={IconContainer} />
