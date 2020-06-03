@@ -48,6 +48,12 @@
           }
         ]
       }
+    ],
+    "rewrites": [
+      {
+        "source": "/foo{,/**}",
+        "destination": "/12345/index.html"
+      }
     ]
   }
 }
