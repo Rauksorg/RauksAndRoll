@@ -19,16 +19,6 @@ const useStyles = makeStyles({
   },
 })
 
-const convertArrayToObject = (array, key) => {
-  const initialValue = {}
-  return array.reduce((obj, item) => {
-    return {
-      ...obj,
-      [item[key]]: item,
-    }
-  }, initialValue)
-}
-
 const FirebaseRedux = () => {
   const dispatch = useDispatch()
 
@@ -37,8 +27,7 @@ const FirebaseRedux = () => {
       .firestore()
       .collection(`players`)
       .onSnapshot((querySnapshot) => {
-        const playersArray = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-        const playerObj = convertArrayToObject(playersArray, 'id')
+        const playerObj = querySnapshot.docs.reduce((obj, doc) => ((obj[doc.id] = doc.data()), obj), {})
         dispatch(update(playerObj))
       })
     return unsubscribe
