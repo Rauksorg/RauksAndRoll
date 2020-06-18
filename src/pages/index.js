@@ -4,7 +4,12 @@ import { Link } from 'gatsby-theme-material-ui'
 export default () => {
   return (
     <div>
-      <Link to='/12345/'>Go to game 12345</Link>
+      <div>
+        <Link to='/12345/'>Go to game 12345</Link>
+      </div>
+      <div>
+        <Link to='/games?g=ljasPdwsI7BvnCo38TmJ'>Go to game ljasPdwsI7BvnCo38TmJ</Link>
+      </div>
     </div>
   )
 }

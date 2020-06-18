@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const avatarList = { GpBYQ4vqkiEImQrbkkHv: joseClose, '0Ujzu57VXWwJTB5erTUp': beauriceClose, yhSG30Rf9lB0Me9sLoRS: francisClose, NvysJ1bND6X1RONVG3Yu: gameMasterClose }
+const avatarList = { porthos: joseClose, athos: beauriceClose, aramis: francisClose, gamemaster: gameMasterClose }
 
 const ResultToFace = (props) => {
   const facesObject = { '✓': SuccessIcon, '2': TwoIcon, '3!': ThreeEpicIcon, '4': FourIcon, S: SkillIcon, '✘': FailIcon, '✘!': EpicFailIcon, '💀': SkullIcon, '☯': NeutralIcon, '🍀': CloverIcon, '💥': ExplosivIcon }
@@ -44,6 +44,7 @@ const PlayersList = ({ location, players, gameMaster, results }) => {
   const [isNew, setIsnew] = useReducer((state, newState) => ({ ...state, ...newState }), {})
   const playerId = location.pathname.split('/')[2]
   const classes = useStyles()
+  console.log(playerId)
 
   const setUpdate = (id, i) => {
     timer.current[i] = setTimeout(() => {

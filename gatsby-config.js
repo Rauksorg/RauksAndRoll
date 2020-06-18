@@ -15,7 +15,6 @@ module.exports = {
     `gatsby-plugin-sharp`,
     `gatsby-transformer-sharp`,
     `gatsby-plugin-layout`,
-    `@wardpeet/gatsby-plugin-static-site`, //it allows firebase hosting rewrite
     {
       resolve: 'gatsby-plugin-firebase',
       options: {

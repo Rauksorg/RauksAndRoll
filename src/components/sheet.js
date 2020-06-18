@@ -72,7 +72,7 @@ const Sheet = ({ sheetId }) => {
   React.useEffect(() => {
     const unsubscribe = firebase
       .firestore()
-      .doc(`players/${sheetId}`)
+      .doc(`games/${sheetId}`)
       .onSnapshot((snapshot) => {
         const data = snapshot.data()
         setSheetField({
