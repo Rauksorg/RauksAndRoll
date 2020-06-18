@@ -11,9 +11,7 @@ const playersSlice = createSlice({
 })
 
 const { actions, reducer } = playersSlice
-const { update } = actions
-
+export const { update } = actions
 
 const configureStore = () => rtkConfigureStore({ reducer: reducer })
-export {update}
 export default configureStore

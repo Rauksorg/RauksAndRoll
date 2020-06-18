@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch,useSelector } from 'react-redux'
 import firebase from 'gatsby-plugin-firebase'
 import {update} from '../../state/configureStore'
 
@@ -15,6 +15,7 @@ const convertArrayToObject = (array, key) => {
 
 const Fire = () => {
   const dispatch = useDispatch()
+  const state = useSelector((state) => state['0Ujzu57VXWwJTB5erTUp'])
 
   useEffect(() => {
     const unsubscribe = firebase
@@ -28,7 +29,7 @@ const Fire = () => {
     return unsubscribe
   }, [dispatch])
 
-  return <div></div>
+  return <div style={{whiteSpace: 'pre-line'}}>{JSON.stringify(state, null, 2)}</div>
 }
 
 const Rtkfirebase = () => {

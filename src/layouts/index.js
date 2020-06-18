@@ -10,12 +10,42 @@ import BottomNavigation from '@material-ui/core/BottomNavigation'
 import AppBar from '@material-ui/core/AppBar'
 import { BottomNavigationAction } from 'gatsby-theme-material-ui'
 import MapContext from '../components/state'
+import { useDispatch } from 'react-redux'
+import { update } from '../state/configureStore'
 
 const useStyles = makeStyles({
   paper: {
     paddingBottom: 56,
   },
 })
+
+const convertArrayToObject = (array, key) => {
+  const initialValue = {}
+  return array.reduce((obj, item) => {
+    return {
+      ...obj,
+      [item[key]]: item,
+    }
+  }, initialValue)
+}
+
+const FirebaseRedux = () => {
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const unsubscribe = firebase
+      .firestore()
+      .collection(`players`)
+      .onSnapshot((querySnapshot) => {
+        const playersArray = querySnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
+        const playerObj = convertArrayToObject(playersArray, 'id')
+        dispatch(update(playerObj))
+      })
+    return unsubscribe
+  }, [dispatch])
+
+  return null
+}
 
 const BottomNav = ({ children, location }) => {
   const classes = useStyles()
@@ -64,16 +94,32 @@ const Layout = ({ children, location, pageContext }) => {
   }, [])
 
   if (pageContext.layout === 'setup') {
-    return <Container maxWidth='md'>{children}</Container>
+    return (
+      <Container maxWidth='md'>
+        <FirebaseRedux />
+        {children}
+      </Container>
+    )
   }
   if (pageContext.layout === 'noLayout') {
-    return <MapContext.Provider value={[mapOptions, changeMap]}>{children}</MapContext.Provider>
+    return (
+      <MapContext.Provider value={[mapOptions, changeMap]}>
+        <FirebaseRedux />
+        {children}
+      </MapContext.Provider>
+    )
   }
   if (pageContext.layout === 'admin') {
-    return <Container maxWidth='xl'>{children}</Container>
+    return (
+      <Container maxWidth='xl'>
+        <FirebaseRedux />
+        {children}
+      </Container>
+    )
   }
   return (
     <MapContext.Provider value={[mapOptions, changeMap]}>
+      <FirebaseRedux />
       <BottomNav children={children} location={location} />
     </MapContext.Provider>
   )
