@@ -10,6 +10,17 @@ const playersSlice = createSlice({
   },
 })
 
+export const players = [
+  { id: 'athos', name: 'Baurice Maltheiser-Targu' },
+  { id: 'porthos', name: 'José Altuve' },
+  { id: 'aramis', name: 'Francis Dubourg' },
+]
+export const gameMaster = { id: 'gameMaster', name: 'Maître du jeu' }
+
+player = {
+  athos:{name:'Baurice Maltheiser-Targu' }
+}
+
 const { actions, reducer } = playersSlice
 export const { update } = actions
 
