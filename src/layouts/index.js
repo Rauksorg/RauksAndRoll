@@ -11,7 +11,7 @@ import AppBar from '@material-ui/core/AppBar'
 import { BottomNavigationAction } from 'gatsby-theme-material-ui'
 import MapContext from '../components/state'
 import { useDispatch } from 'react-redux'
-import { update } from '../state/configureStore'
+import { update, loaded } from '../state/configureStore'
 
 const useStyles = makeStyles({
   paper: {
@@ -19,26 +19,29 @@ const useStyles = makeStyles({
   },
 })
 
-const FirebaseRedux = () => {
+const FirebaseRedux = ({ gameId }) => {
   const dispatch = useDispatch()
-
   useEffect(() => {
     const unsubscribe = firebase
       .firestore()
-      .collection(`players`)
+      .collection(`games`)
+      .doc(gameId)
+      .collection('players')
       .onSnapshot((querySnapshot) => {
+        // eslint-disable-next-line no-sequences
         const playerObj = querySnapshot.docs.reduce((obj, doc) => ((obj[doc.id] = doc.data()), obj), {})
         dispatch(update(playerObj))
+        dispatch(loaded())
       })
     return unsubscribe
-  }, [dispatch])
+  }, [dispatch, gameId])
 
   return null
 }
 
 const BottomNav = ({ children, location }) => {
   const classes = useStyles()
-
+  const search = location.search
   const navLocation = location.pathname.split('/')[3]
   const playerId = location.pathname.split('/')[2]
   const [value, setValue] = useState(navLocation)
@@ -54,10 +57,10 @@ const BottomNav = ({ children, location }) => {
       </Container>
       <AppBar component={'div'} position='fixed' style={{ top: 'auto', bottom: 0 }}>
         <BottomNavigation value={value} onChange={handleChange}>
-          <BottomNavigationAction to={`/12345/${playerId}/players`} label='Players' value='players' icon={<FormatListBulletedIcon />} />
-          <BottomNavigationAction to={`/12345/${playerId}/character`} label='Character' value='character' icon={<DescriptionIcon />} />
-          <BottomNavigationAction to={`/12345/${playerId}/map`} label='Maps' value='map' icon={<RoomIcon />} />
-          <BottomNavigationAction to={`/12345/${playerId}/dice`} label='Dice' value='dice' icon={<PlayArrowIcon />} />
+          <BottomNavigationAction to={`/games/${playerId}/players/${search}`} label='Players' value='players' icon={<FormatListBulletedIcon />} />
+          <BottomNavigationAction to={`/games/${playerId}/character/${search}`} label='Character' value='character' icon={<DescriptionIcon />} />
+          <BottomNavigationAction to={`/games/${playerId}/map/${search}`} label='Maps' value='map' icon={<RoomIcon />} />
+          <BottomNavigationAction to={`/games/${playerId}/dice/${search}`} label='Dice' value='dice' icon={<PlayArrowIcon />} />
         </BottomNavigation>
       </AppBar>
     </div>
@@ -66,6 +69,10 @@ const BottomNav = ({ children, location }) => {
 
 const Layout = ({ children, location, pageContext }) => {
   const [mapOptions, setMapOptions] = useState(null)
+
+  const search = location.search
+  const urlParams = new URLSearchParams(search)
+  const gameId = urlParams.get('g')
 
   const changeMap = (center, zoom) => {
     setMapOptions({ LngLat: center, zoom: zoom })
@@ -82,18 +89,18 @@ const Layout = ({ children, location, pageContext }) => {
     return unsubscribe
   }, [])
 
-  if (pageContext.layout === 'setup') {
-    return (
-      <Container maxWidth='md'>
-        <FirebaseRedux />
-        {children}
-      </Container>
-    )
-  }
+  // if (pageContext.layout === 'setup') {
+  //   return (
+  //     <Container maxWidth='md'>
+  //       <FirebaseRedux gameId={gameId} />
+  //       {children}
+  //     </Container>
+  //   )
+  // }
   if (pageContext.layout === 'noLayout') {
     return (
       <MapContext.Provider value={[mapOptions, changeMap]}>
-        <FirebaseRedux />
+        <FirebaseRedux gameId={gameId} />
         {children}
       </MapContext.Provider>
     )
@@ -101,14 +108,14 @@ const Layout = ({ children, location, pageContext }) => {
   if (pageContext.layout === 'admin') {
     return (
       <Container maxWidth='xl'>
-        <FirebaseRedux />
+        <FirebaseRedux gameId={gameId} />
         {children}
       </Container>
     )
   }
   return (
     <MapContext.Provider value={[mapOptions, changeMap]}>
-      <FirebaseRedux />
+      <FirebaseRedux gameId={gameId} />
       <BottomNav children={children} location={location} />
     </MapContext.Provider>
   )

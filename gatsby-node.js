@@ -1,9 +1,9 @@
 exports.onCreatePage = ({ page, actions }) => {
   const { createPage } = actions
-  if (page.path.match(/^\/12345\/$/) || page.path.match(/^\/$/)) {
-    page.context.layout = 'setup'
-    createPage(page)
-  }
+  // if (page.path.match(/^\/12345\/$/) || page.path.match(/^\/$/)) {
+  //   page.context.layout = 'setup'
+  //   createPage(page)
+  // }
   if (page.path.match(/admin/)) {
     page.context.layout = 'admin'
     createPage(page)

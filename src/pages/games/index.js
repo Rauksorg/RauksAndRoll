@@ -1,39 +1,27 @@
 import React from 'react'
 import { Link } from 'gatsby-theme-material-ui'
+import { useSelector } from 'react-redux'
 
-const arrayToObject = (array, keyField) =>
-  array.reduce((obj, item) => {
-    obj[item[keyField]] = item
-    return obj
-  }, {})
-
-export const players = [
-  { id: 'athos', name: 'Baurice Maltheiser-Targu' },
-  { id: 'porthos', name: 'José Altuve' },
-  { id: 'aramis', name: 'Francis Dubourg' },
-]
-export const gameMaster = { id: 'gameMaster', name: 'Maître du jeu' }
-
-export const playerById = arrayToObject(players, 'id')
-
-export default ({location}) => {
+export default ({ location }) => {
   const search = location.search
-  // const urlParams = new URLSearchParams(location.search)
-  // const gameId = urlParams.get('g')
-  return (
+  const playersList = useSelector((state) => state.playersList)
+  const loading = useSelector((state) => state.loading)
+  return loading === 'idle' ? (
     <div>
       <div>
-        <Link to={`/games/gamemaster/players${search}`}>Play as {gameMaster.name}</Link>
+        <Link to={`/games/gamemaster/players${search}`}>Play as {playersList.gameMaster.identification}</Link>
       </div>
       <div>
-        <Link to={`/games/athos/players${search}`}>Play as {players[0].name}</Link>
+        <Link to={`/games/athos/players${search}`}>Play as {playersList.athos.identification}</Link>
       </div>
       <div>
-        <Link to={`/games/porthos/players${search}`}>Play as {players[1].name}</Link>
+        <Link to={`/games/porthos/players${search}`}>Play as {playersList.porthos.identification}</Link>
       </div>
       <div>
-        <Link to={`/games/aramis/players${search}`}>Play as {players[2].name}</Link>
+        <Link to={`/games/aramis/players${search}`}>Play as {playersList.aramis.identification}</Link>
       </div>
     </div>
+  ) : (
+    'Loading...'
   )
 }

@@ -1,5 +1,4 @@
-import React, { useReducer, useState } from 'react'
-import firebase from 'gatsby-plugin-firebase'
+import React from 'react'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import AutorenewIcon from '@material-ui/icons/Autorenew'
@@ -9,6 +8,7 @@ import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied'
 import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied'
 import Chip from '@material-ui/core/Chip'
 import Rating from '@material-ui/lab/Rating'
+import { useSelector } from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
   preserveLineBreak: {
@@ -56,78 +56,51 @@ const IconContainer = (props) => {
 
 const Sheet = ({ sheetId }) => {
   const classes = useStyles()
-  const [reroll, setReroll] = useState(null)
-  const [status, setStatus] = useState(null)
-  const [statusChip, setStatusChip] = useState([])
 
-  const [sheetField, setSheetField] = useReducer((state, newState) => ({ ...state, ...newState }), {
-    identification: null,
-    attributes: null,
-    skills: null,
-    perks: null,
-    traumas: null,
-    notes: null,
-  })
+  const playerSheet = useSelector((state) => state.playersList[sheetId])
+  const loading = useSelector((state) => state.loading)
 
-  React.useEffect(() => {
-    const unsubscribe = firebase
-      .firestore()
-      .doc(`games/${sheetId}`)
-      .onSnapshot((snapshot) => {
-        const data = snapshot.data()
-        setSheetField({
-          identification: data.identification,
-          attributes: data.attributes,
-          skills: data.skills,
-          perks: data.perks,
-          traumas: data.traumas,
-          notes: data.notes,
-        })
-        setReroll(data.reroll)
-        setStatus(data.status)
-        setStatusChip(data.statusDesc)
-      })
-    return unsubscribe
-  }, [sheetId])
-  return (
+    return loading === 'idle' ? (
     <div>
       <Grid container spacing={3}>
         <Grid item xs={9}>
-          <Typography variant='h5'>{sheetField.identification != null ? sheetField.identification : 'Loading...'}</Typography>
+          <Typography variant='h5'>{playerSheet.identification}</Typography>
         </Grid>
         <Grid item xs={3}>
           <Typography style={{ textAlign: 'right' }} variant='h4'>
-            {reroll != null ? reroll : '.'} <AutorenewIcon />
+            {playerSheet.reroll} <AutorenewIcon />
           </Typography>
         </Grid>
       </Grid>
       <Typography variant='body1' className={classes.preserveLineBreak}>
-        {sheetField.attributes != null ? sheetField.attributes : 'Loading...'}
+        {playerSheet.attributes}
       </Typography>
       <Typography variant='h6'>Skills</Typography>
       <Typography variant='body2' className={classes.preserveLineBreak}>
-        {sheetField.skills != null ? sheetField.skills : 'Loading...'}
+        {playerSheet.skills}
       </Typography>
       <Typography variant='h6'>Traits</Typography>
       <Typography variant='body2' className={classes.preserveLineBreak}>
-        {sheetField.perks != null ? sheetField.perks : 'Loading...'}
+        {playerSheet.perks}
       </Typography>
       <Typography variant='h6'>Traumas</Typography>
       <Typography variant='body2' className={classes.preserveLineBreak}>
-        {sheetField.traumas != null ? sheetField.traumas : 'Loading...'}
+        {playerSheet.traumas}
       </Typography>
       <Typography variant='h6'>Notes</Typography>
       <Typography variant='body2' className={classes.preserveLineBreak}>
-        {sheetField.notes != null ? sheetField.notes : 'Loading...'}
+        {playerSheet.notes}
       </Typography>
       <Typography variant='h6'>Etats</Typography>
       <div className={classes.chip}>
-        {statusChip.map((item, index) => {
+        {playerSheet.statusDesc.map((item, index) => {
           return <Chip key={index} label={item} variant='outlined' />
         })}
       </div>
-      <StyledRating readOnly name='customized-icons' max={3} value={status} IconContainerComponent={IconContainer} />
+      <StyledRating readOnly name='customized-icons' max={3} value={playerSheet.status} IconContainerComponent={IconContainer} />
     </div>
+  ) : (
+    'Loading...'
   )
 }
 

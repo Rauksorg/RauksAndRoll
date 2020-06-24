@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import firebase from 'gatsby-plugin-firebase'
 
-const gameName = 'ljasPdwsI7BvnCo38TmJ'
+// const gameName = 'ljasPdwsI7BvnCo38TmJ'
 
 const Copy = () => {
   useEffect(() => {

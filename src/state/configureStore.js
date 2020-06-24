@@ -2,27 +2,19 @@ import { createSlice, configureStore as rtkConfigureStore } from '@reduxjs/toolk
 
 const playersSlice = createSlice({
   name: 'players',
-  initialState: {},
+  initialState: { playersList: {}, loading: 'pending' },
   reducers: {
-    update(_, action) {
-      return action.payload
+    update(state, action) {
+      state.playersList = action.payload
+    },
+    loaded(state) {
+      state.loading = 'idle'
     },
   },
 })
 
-export const players = [
-  { id: 'athos', name: 'Baurice Maltheiser-Targu' },
-  { id: 'porthos', name: 'José Altuve' },
-  { id: 'aramis', name: 'Francis Dubourg' },
-]
-export const gameMaster = { id: 'gameMaster', name: 'Maître du jeu' }
-
-player = {
-  athos:{name:'Baurice Maltheiser-Targu' }
-}
-
 const { actions, reducer } = playersSlice
-export const { update } = actions
+export const { update, loaded } = actions
 
 const configureStore = () => rtkConfigureStore({ reducer: reducer })
 export default configureStore

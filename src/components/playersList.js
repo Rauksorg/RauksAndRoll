@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const avatarList = { porthos: joseClose, athos: beauriceClose, aramis: francisClose, gamemaster: gameMasterClose }
+const avatarList = { porthos: joseClose, athos: beauriceClose, aramis: francisClose, gameMaster: gameMasterClose }
 
 const ResultToFace = (props) => {
   const facesObject = { '✓': SuccessIcon, '2': TwoIcon, '3!': ThreeEpicIcon, '4': FourIcon, S: SkillIcon, '✘': FailIcon, '✘!': EpicFailIcon, '💀': SkullIcon, '☯': NeutralIcon, '🍀': CloverIcon, '💥': ExplosivIcon }
@@ -36,15 +36,11 @@ const ResultToFace = (props) => {
   return <TagName {...props} />
 }
 
-// Results structure
-// const results = { NvysJ1bND6X1RONVG3Yu: { diceResult: "3", dice: "blue",rerolled:false } }
-
-const PlayersList = ({ location, players, gameMaster, results }) => {
+const PlayersList = ({ location, results }) => {
   const timer = useRef([])
   const [isNew, setIsnew] = useReducer((state, newState) => ({ ...state, ...newState }), {})
   const playerId = location.pathname.split('/')[2]
   const classes = useStyles()
-  console.log(playerId)
 
   const setUpdate = (id, i) => {
     timer.current[i] = setTimeout(() => {
@@ -81,7 +77,7 @@ const PlayersList = ({ location, players, gameMaster, results }) => {
       <ListItemPatched button to={`/12345/${playerId}/players/${player.id}`}>
         <ListItemAvatar style={{ margin: '0px 5px 0px 0px' }}>
           <div style={{ position: 'relative' }}>
-            <Avatar variant={player.id === 'NvysJ1bND6X1RONVG3Yu' ? 'rounded' : 'circle'} className={classes.large} src={avatarList[player.id]}>
+            <Avatar variant={player.id === 'gameMaster' ? 'rounded' : 'circle'} className={classes.large} src={avatarList[player.id]}>
               {player.name.charAt(0)}
             </Avatar>
             {/* To add an image overlay on avatar */}
@@ -103,12 +99,12 @@ const PlayersList = ({ location, players, gameMaster, results }) => {
   return (
     <div className={classes.root}>
       <List>
-        <PlayerItem player={gameMaster} />
+        <PlayerItem player={{ name: results.gameMaster.identification, id: 'gameMaster' }} />
       </List>
       <Divider variant='inset' />
       <List>
-        {players.map((player) => {
-          return <PlayerItem player={player} key={player.id} />
+        {Object.keys(results).filter(id => id!== 'gameMaster').map((id) => {
+          return <PlayerItem player={{ name: results[id].identification, id: id }} key={id} />
         })}
       </List>
     </div>

@@ -3,9 +3,9 @@ import firebase from 'gatsby-plugin-firebase'
 import { ResponsiveSwarmPlot } from '@nivo/swarmplot'
 import { ResponsivePie } from '@nivo/pie'
 import groupBy from 'lodash/groupBy'
-import { playerById } from '../index'
 import Slider from '@material-ui/core/Slider'
 import Typography from '@material-ui/core/Typography'
+import { useSelector } from 'react-redux'
 
 const Stats = () => {
   const [rawStats, setRawStats] = useState([])
@@ -14,6 +14,7 @@ const Stats = () => {
   const [filterCursorValue, setFilterCursorValue] = useState([])
   const [zoomCursorValue, setZoomCursorValue] = useState(1)
   const [timeOrigin, setTimeOrigin] = useState([])
+  const playerById = useSelector((state) => state.playersList)
 
   const handleFilterChange = (event, newValue) => {
     const [oldStart, oldEnd] = filterCursorValue
@@ -51,7 +52,7 @@ const Stats = () => {
         setRawStats(dataFromServer)
       })
     return unsubscribe
-  }, [])
+  }, [playerById])
 
   useEffect(() => {
     if (!rawStats[0]) return
