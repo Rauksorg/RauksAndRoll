@@ -57,8 +57,8 @@ const IconContainer = (props) => {
 const Sheet = ({ sheetId }) => {
   const classes = useStyles()
 
-  const playerSheet = useSelector((state) => state.playersList[sheetId])
-  const loading = useSelector((state) => state.loading)
+  const playerSheet = useSelector((state) => state.players.playersList[sheetId])
+  const loading = useSelector((state) => state.players.loading)
 
     return loading === 'idle' ? (
     <div>

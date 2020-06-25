@@ -11,7 +11,7 @@ import AppBar from '@material-ui/core/AppBar'
 import { BottomNavigationAction } from 'gatsby-theme-material-ui'
 import MapContext from '../components/state'
 import { useDispatch } from 'react-redux'
-import { update, loaded } from '../state/configureStore'
+import { playersUpdate, playersLoaded, markersUpdate, markersLoaded } from '../state/configureStore'
 
 const useStyles = makeStyles({
   paper: {
@@ -30,8 +30,23 @@ const FirebaseRedux = ({ gameId }) => {
       .onSnapshot((querySnapshot) => {
         // eslint-disable-next-line no-sequences
         const playerObj = querySnapshot.docs.reduce((obj, doc) => ((obj[doc.id] = doc.data()), obj), {})
-        dispatch(update(playerObj))
-        dispatch(loaded())
+        dispatch(playersUpdate(playerObj))
+        dispatch(playersLoaded())
+      })
+    return unsubscribe
+  }, [dispatch, gameId])
+
+  useEffect(() => {
+    const unsubscribe = firebase
+      .firestore()
+      .collection(`games`)
+      .doc(gameId)
+      .collection('markers')
+      .onSnapshot((querySnapshot) => {
+           // eslint-disable-next-line no-sequences
+           const markersObj = querySnapshot.docs.reduce((obj, doc) => ((obj[doc.id] = doc.data()), obj), {})
+        dispatch(markersUpdate(markersObj))
+        dispatch(markersLoaded())
       })
     return unsubscribe
   }, [dispatch, gameId])

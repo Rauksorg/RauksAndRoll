@@ -94,7 +94,7 @@ const updateFieldInDb = debounce(
 
 const CaracText = ({ title, field, gameId, playerId, style }) => {
   const dispatch = useDispatch()
-  const fieldValue = useSelector((state) => state.playersList[playerId][field])
+  const fieldValue = useSelector((state) => state.players.playersList[playerId][field])
 
   const handleChange = (evt) => {
     const newValue = evt.target.value
@@ -107,7 +107,7 @@ const CaracText = ({ title, field, gameId, playerId, style }) => {
 
 const RerollSlider = ({ title, field, gameId, playerId }) => {
   const dispatch = useDispatch()
-  const fieldValue = useSelector((state) => state.playersList[playerId][field])
+  const fieldValue = useSelector((state) => state.players.playersList[playerId][field])
 
   const handleChange = (_, newValue) => {
     if (fieldValue === newValue) return
@@ -125,7 +125,7 @@ const RerollSlider = ({ title, field, gameId, playerId }) => {
 
 const StatusDesc = ({ title, field, gameId, playerId }) => {
   const dispatch = useDispatch()
-  const fieldValue = useSelector((state) => state.playersList[playerId][field])
+  const fieldValue = useSelector((state) => state.players.playersList[playerId][field])
 
   // Not in redux only local state
   const [statusText, setStatusText] = useState('')
@@ -169,7 +169,7 @@ const StatusDesc = ({ title, field, gameId, playerId }) => {
 
 const Status = ({ field, gameId, playerId }) => {
   const dispatch = useDispatch()
-  const fieldValue = useSelector((state) => state.playersList[playerId][field])
+  const fieldValue = useSelector((state) => state.players.playersList[playerId][field])
 
   const handleChange = (_, newValue) => {
     if (newValue === null) return
@@ -182,7 +182,7 @@ const Status = ({ field, gameId, playerId }) => {
 
 const Character = ({ location }) => {
   const classes = useStyles()
-  const loading = useSelector((state) => state.loading)
+  const loading = useSelector((state) => state.players.loading)
   const playerId = location.pathname.split('/')[2]
   const search = location.search
   const urlParams = new URLSearchParams(search)

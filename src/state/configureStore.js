@@ -4,10 +4,10 @@ const playersSlice = createSlice({
   name: 'players',
   initialState: { playersList: {}, loading: 'pending' },
   reducers: {
-    update(state, action) {
+    playersUpdate(state, action) {
       state.playersList = action.payload
     },
-    loaded(state) {
+    playersLoaded(state) {
       state.loading = 'idle'
     },
     modifyField(state, action) {
@@ -19,8 +19,21 @@ const playersSlice = createSlice({
   },
 })
 
-const { actions, reducer } = playersSlice
-export const { update, loaded, modifyField } = actions
+const markersSlice = createSlice({
+  name: 'markers',
+  initialState: { markersList: {}, loading: 'pending' },
+  reducers: {
+    markersUpdate(state, action) {
+      state.markersList = action.payload
+    },
+    markersLoaded(state) {
+      state.loading = 'idle'
+    },
+  },
+})
 
-const configureStore = () => rtkConfigureStore({ reducer: reducer })
+export const { playersUpdate, playersLoaded, modifyField } = playersSlice.actions
+export const { markersUpdate, markersLoaded } = markersSlice.actions
+
+const configureStore = () => rtkConfigureStore({ reducer: { players: playersSlice.reducer, markers: markersSlice.reducer } })
 export default configureStore

@@ -4,12 +4,12 @@ import { useSelector } from 'react-redux'
 
 export default ({ location }) => {
   const search = location.search
-  const playersList = useSelector((state) => state.playersList)
-  const loading = useSelector((state) => state.loading)
+  const playersList = useSelector((state) => state.players.playersList)
+  const loading = useSelector((state) => state.players.loading)
   return loading === 'idle' ? (
     <div>
       <div>
-        <Link to={`/games/gamemaster/players${search}`}>Play as {playersList.gameMaster.identification}</Link>
+        <Link to={`/games/gameMaster/players${search}`}>Play as {playersList.gameMaster.identification}</Link>
       </div>
       <div>
         <Link to={`/games/athos/players${search}`}>Play as {playersList.athos.identification}</Link>

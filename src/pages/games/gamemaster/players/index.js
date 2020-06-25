@@ -12,8 +12,8 @@ const PlayersListPage = ({ location }) => {
   const urlParams = new URLSearchParams(search)
   const gameId = urlParams.get('g')
 
-  const playersList = useSelector((state) => state.playersList)
-  const loading = useSelector((state) => state.loading)
+  const playersList = useSelector((state) => state.players.playersList)
+  const loading = useSelector((state) => state.players.loading)
 
   return loading === 'idle' ? (
     <div style={{ margin: '5px 15px 5px 15px' }}>

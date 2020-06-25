@@ -13,6 +13,12 @@ const useStyles = makeStyles({
 })
 
 const MyMap = () => {
+
+  return 'Map'
+}
+
+
+const MyMap2 = () => {
   const classes = useStyles()
 
   const [mapOptions] = useContext(MapContext)
