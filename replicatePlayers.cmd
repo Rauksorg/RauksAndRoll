@@ -1,4 +1,4 @@
-REM Delete players and copy over player 0Ujzu57VXWwJTB5erTUp
+REM Delete players and copy over player aramis
 rmdir /s /q src\pages\games\athos
 rmdir /s /q src\pages\games\porthos
 rmdir /s /q src\pages\games\gameMaster

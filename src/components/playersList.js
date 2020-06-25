@@ -40,6 +40,7 @@ const PlayersList = ({ location, results }) => {
   const timer = useRef([])
   const [isNew, setIsnew] = useReducer((state, newState) => ({ ...state, ...newState }), {})
   const playerId = location.pathname.split('/')[2]
+  const search = location.search
   const classes = useStyles()
 
   const setUpdate = (id, i) => {
@@ -74,7 +75,7 @@ const PlayersList = ({ location, results }) => {
     const playerDice = results[player.id].dice
     const injured = results[player.id].status < 3 ? false : true
     return (
-      <ListItemPatched button to={`/12345/${playerId}/players/${player.id}`}>
+      <ListItemPatched button to={`/games/${playerId}/players/${player.id}/${search}`}>
         <ListItemAvatar style={{ margin: '0px 5px 0px 0px' }}>
           <div style={{ position: 'relative' }}>
             <Avatar variant={player.id === 'gameMaster' ? 'rounded' : 'circle'} className={classes.large} src={avatarList[player.id]}>

@@ -11,10 +11,16 @@ import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied'
 import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied'
 import Chip from '@material-ui/core/Chip'
 import Autocomplete from '@material-ui/lab/Autocomplete'
+import debounce from 'lodash/debounce'
+import { useSelector, useDispatch } from 'react-redux'
+import { modifyField } from '../../../state/configureStore'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
+  },
+  top10px: {
+    marginTop: '10px',
   },
 }))
 
@@ -64,17 +70,135 @@ const marks = [
 ]
 // find a way to include identification field without mnessing with render
 const inputsFields = [
-  { name: 'attributes', title: '' },
-  { name: 'skills', title: 'Skills' },
-  { name: 'perks', title: 'Traits' },
-  { name: 'traumas', title: 'Traumas' },
-  { name: 'notes', title: 'Notes' },
+  { field: 'attributes', title: '' },
+  { field: 'skills', title: 'Skills' },
+  { field: 'perks', title: 'Traits' },
+  { field: 'traumas', title: 'Traumas' },
+  { field: 'notes', title: 'Notes' },
 ]
+
+const updateFieldInDb = debounce(
+  // Can it goes in the reducer ?
+  (gameId, playerId, field, value) => {
+    console.log('deb')
+    firebase
+      .firestore()
+      .doc(`games/${gameId}/players/${playerId}`)
+      .update({
+        [field]: value,
+      })
+  },
+  500,
+  { leading: false }
+)
+
+const CaracText = ({ title, field, gameId, playerId, style }) => {
+  const dispatch = useDispatch()
+  const fieldValue = useSelector((state) => state.playersList[playerId][field])
+
+  const handleChange = (evt) => {
+    const newValue = evt.target.value
+    dispatch(modifyField({ value: newValue, field: field, playerId: playerId }))
+    updateFieldInDb(gameId, playerId, field, newValue)
+  }
+
+  return <TextField label={title} multiline value={fieldValue} onChange={handleChange} variant='outlined' fullWidth />
+}
+
+const RerollSlider = ({ title, field, gameId, playerId }) => {
+  const dispatch = useDispatch()
+  const fieldValue = useSelector((state) => state.playersList[playerId][field])
+
+  const handleChange = (_, newValue) => {
+    if (fieldValue === newValue) return
+    dispatch(modifyField({ value: newValue, field: field, playerId: playerId }))
+    updateFieldInDb(gameId, playerId, field, newValue)
+  }
+
+  return (
+    <React.Fragment>
+      <Typography gutterBottom>{title}</Typography>
+      <Slider value={fieldValue} onChange={handleChange} step={1} valueLabelDisplay='auto' marks={marks} max={9} />
+    </React.Fragment>
+  )
+}
+
+const StatusDesc = ({ title, field, gameId, playerId }) => {
+  const dispatch = useDispatch()
+  const fieldValue = useSelector((state) => state.playersList[playerId][field])
+
+  // Not in redux only local state
+  const [statusText, setStatusText] = useState('')
+  const handleInputChange = (event) => {
+    setStatusText(event.target.value)
+  }
+
+  const handleChange = (_, newValue) => {
+    dispatch(modifyField({ value: newValue, field: field, playerId: playerId }))
+    setStatusText('')
+    firebase
+      .firestore()
+      .doc(`games/${gameId}/players/${playerId}`)
+      .update({ [field]: newValue })
+  }
+
+  const handleBlur = () => {
+    if (!statusText) return
+    dispatch(modifyField({ value: [...fieldValue, statusText], field: field, playerId: playerId }))
+    setStatusText('')
+    firebase
+      .firestore()
+      .doc(`games/${gameId}/players/${playerId}`)
+      .update({ [field]: [...fieldValue, statusText] })
+  }
+
+  return (
+    <Autocomplete
+      multiple
+      id='tags-filled'
+      style={{ marginTop: '10px' }}
+      options={[]}
+      value={fieldValue}
+      onChange={handleChange}
+      freeSolo
+      renderTags={(value, getTagProps) => value.map((option, index) => <Chip variant='outlined' label={option} {...getTagProps({ index })} />)}
+      renderInput={(params) => <TextField value={statusText} onChange={handleInputChange} onBlur={handleBlur} variant='outlined' {...params} label={title} placeholder='Ajouter...' />}
+    />
+  )
+}
 
 const Character = ({ location }) => {
   const classes = useStyles()
+  const loading = useSelector((state) => state.loading)
+  const playerId = location.pathname.split('/')[2]
+  const search = location.search
+  const urlParams = new URLSearchParams(search)
+  const gameId = urlParams.get('g')
+  return loading === 'idle' ? (
+    <Paper style={{ padding: '15px', margin: '5px 15px 5px 15px' }}>
+      <form noValidate autoComplete='off'>
+        <CaracText title='Id' field='identification' playerId={playerId} gameId={gameId} />
+        <div className={classes.top10px}>
+          <RerollSlider title='Relances' field='reroll' playerId={playerId} gameId={gameId} />
+        </div>
+        {inputsFields.map((element) => (
+          <div key={element.field} className={classes.top10px}>
+            <CaracText title={element.title} field={element.field} playerId={playerId} gameId={gameId} />
+          </div>
+        ))}
+        <StatusDesc title='Etats' field='statusDesc' playerId={playerId} gameId={gameId} />
+      </form>
+    </Paper>
+  ) : (
+    'Loading...'
+  )
+}
+
+const CharacterOld = ({ location }) => {
+  const classes = useStyles()
   const timer = useRef(null)
   const playerId = location.pathname.split('/')[2]
+
   const [reroll, setReroll] = useState(null)
   const [status, setStatus] = useState(null)
   const [statusText, setStatusText] = useState('')
@@ -89,6 +213,7 @@ const Character = ({ location }) => {
     notes: null,
   })
 
+  // underscor debounce
   const handleChange = (evt) => {
     clearTimeout(timer.current)
     const name = evt.target.name

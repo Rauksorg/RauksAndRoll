@@ -10,11 +10,17 @@ const playersSlice = createSlice({
     loaded(state) {
       state.loading = 'idle'
     },
+    modifyField(state, action) {
+      const field = action.payload.field
+      const value = action.payload.value
+      const playerId = action.payload.playerId
+      state.playersList[playerId][field] = value
+    },
   },
 })
 
 const { actions, reducer } = playersSlice
-export const { update, loaded } = actions
+export const { update, loaded, modifyField } = actions
 
 const configureStore = () => rtkConfigureStore({ reducer: reducer })
 export default configureStore
