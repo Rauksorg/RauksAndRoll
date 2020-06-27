@@ -13,8 +13,30 @@ const useStyles = makeStyles({
 })
 
 const MyMap = () => {
+  const classes = useStyles()
+  const [isLoaded, setIsLoaded] = useState(false)
+  
+  const mapRef = useRef(null)
+  useEffect(() => {
+    const map = new Map({
+      attributionControl: false,
+      container: 'map',
+      style: 'https://api.maptiler.com/maps/26d5835c-e2ed-4494-bf8d-2fd2d97b787c/style.json?key=PS6lrXSMa4E9FzduhwA2',
+      center: [10, 10],
+      zoom: [5],
+    })
+    map.on('load', () => {
+      setIsLoaded(true)
+    })
+    mapRef.current = map
+    return () => {
+      mapRef.current.off()
+      mapRef.current.remove()
+    }
+  }, [])
 
-  return 'Map'
+
+  return <div className={classes.height100} style={{ width: '100%' }} id='map'></div>
 }
 
 

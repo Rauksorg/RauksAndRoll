@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import firebase from 'gatsby-plugin-firebase'
 import { makeStyles, withStyles } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
 import Typography from '@material-ui/core/Typography'
@@ -11,9 +10,8 @@ import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied'
 import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied'
 import Chip from '@material-ui/core/Chip'
 import Autocomplete from '@material-ui/lab/Autocomplete'
-import debounce from 'lodash/debounce'
 import { useSelector, useDispatch } from 'react-redux'
-import { modifyField } from '../../../state/configureStore'
+import { modifyFieldDb, modifyFieldDbDebounced } from '../../../state/playersSlice'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,29 +75,13 @@ const inputsFields = [
   { field: 'notes', title: 'Notes' },
 ]
 
-const updateFieldInDb = debounce(
-  // Can it goes in the reducer ?
-  (gameId, playerId, field, value) => {
-    console.log('deb')
-    firebase
-      .firestore()
-      .doc(`games/${gameId}/players/${playerId}`)
-      .update({
-        [field]: value,
-      })
-  },
-  500,
-  { leading: false }
-)
-
-const CaracText = ({ title, field, gameId, playerId, style }) => {
+const CaracText = ({ title, field, gameId, playerId }) => {
   const dispatch = useDispatch()
   const fieldValue = useSelector((state) => state.players.playersList[playerId][field])
 
   const handleChange = (evt) => {
     const newValue = evt.target.value
-    dispatch(modifyField({ value: newValue, field: field, playerId: playerId }))
-    updateFieldInDb(gameId, playerId, field, newValue)
+    dispatch(modifyFieldDbDebounced({ value: newValue, field: field, playerId: playerId, gameId: gameId }))
   }
 
   return <TextField label={title} multiline value={fieldValue} onChange={handleChange} variant='outlined' fullWidth />
@@ -111,8 +93,7 @@ const RerollSlider = ({ title, field, gameId, playerId }) => {
 
   const handleChange = (_, newValue) => {
     if (fieldValue === newValue) return
-    dispatch(modifyField({ value: newValue, field: field, playerId: playerId }))
-    updateFieldInDb(gameId, playerId, field, newValue)
+    dispatch(modifyFieldDbDebounced({ value: newValue, field: field, playerId: playerId, gameId: gameId }))
   }
 
   return (
@@ -134,22 +115,14 @@ const StatusDesc = ({ title, field, gameId, playerId }) => {
   }
 
   const handleChange = (_, newValue) => {
-    dispatch(modifyField({ value: newValue, field: field, playerId: playerId }))
+    dispatch(modifyFieldDb({ value: newValue, field: field, playerId: playerId, gameId: gameId }))
     setStatusText('')
-    firebase
-      .firestore()
-      .doc(`games/${gameId}/players/${playerId}`)
-      .update({ [field]: newValue })
   }
 
   const handleBlur = () => {
     if (!statusText) return
-    dispatch(modifyField({ value: [...fieldValue, statusText], field: field, playerId: playerId }))
+    dispatch(modifyFieldDb({ value: [...fieldValue, statusText], field: field, playerId: playerId, gameId: gameId }))
     setStatusText('')
-    firebase
-      .firestore()
-      .doc(`games/${gameId}/players/${playerId}`)
-      .update({ [field]: [...fieldValue, statusText] })
   }
 
   return (
@@ -173,8 +146,7 @@ const Status = ({ field, gameId, playerId }) => {
 
   const handleChange = (_, newValue) => {
     if (newValue === null) return
-    dispatch(modifyField({ value: newValue, field: field, playerId: playerId }))
-    updateFieldInDb(gameId, playerId, field, newValue)
+    dispatch(modifyFieldDbDebounced({ value: newValue, field: field, playerId: playerId, gameId: gameId }))
   }
 
   return <StyledRating name='customized-icons' max={3} value={fieldValue} onChange={handleChange} getLabelText={(value) => customIcons[value].label} IconContainerComponent={IconContainer} />
