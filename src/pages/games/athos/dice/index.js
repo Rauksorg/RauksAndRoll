@@ -57,6 +57,7 @@ const GreyButton = withStyles((theme) => ({
 
 const ActionDiceSelect = ({ location }) => {
   const playerId = location.pathname.split('/')[2]
+  const search = location.search
   const classes = useStyles()
 
   const resize = () => {
@@ -75,18 +76,18 @@ const ActionDiceSelect = ({ location }) => {
   return (
     <div className={classes.height100}>
       <div style={{ height: '50%' }}>
-        <BlueButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/12345/${playerId}/dice/blue/`}>
+        <BlueButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/games/${playerId}/dice/blue/${search}`}>
           <CasinoOutlinedIcon />
         </BlueButton>
-        <OrangeButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/12345/${playerId}/dice/orange/`}>
+        <OrangeButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/games/${playerId}/dice/orange/${search}`}>
           <CasinoOutlinedIcon />
         </OrangeButton>
       </div>
       <div style={{ height: '50%' }}>
-        <RedButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/12345/${playerId}/dice/red/`}>
+        <RedButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/games/${playerId}/dice/red/${search}`}>
           <CasinoOutlinedIcon />
         </RedButton>
-        <GreyButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/12345/${playerId}/dice/grey/`}>
+        <GreyButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/games/${playerId}/dice/grey/${search}`}>
           <CasinoOutlinedIcon />
         </GreyButton>
       </div>

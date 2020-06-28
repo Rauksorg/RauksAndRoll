@@ -108,7 +108,6 @@ const StatusDesc = ({ title, field, gameId, playerId }) => {
   const dispatch = useDispatch()
   const fieldValue = useSelector((state) => state.players.playersList[playerId][field])
 
-  // Not in redux only local state
   const [statusText, setStatusText] = useState('')
   const handleInputChange = (event) => {
     setStatusText(event.target.value)

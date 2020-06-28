@@ -27,6 +27,7 @@ const GreyButton = withStyles((theme) => ({
 const DestinyDiceSelect = ({ location }) => {
   const playerId = location.pathname.split('/')[2]
   const classes = useStyles()
+  const search = location.search
 
   const resize = () => {
     let vh = window.innerHeight * 0.01
@@ -44,18 +45,18 @@ const DestinyDiceSelect = ({ location }) => {
   return (
     <div className={classes.height100} >
       <div style={{height:'50%'}}>
-        <GreyButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/12345/${playerId}/dice/grey/D2A/`}>
+        <GreyButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/games/${playerId}/dice/grey/D2A/${search}`}>
           -2
         </GreyButton>
-        <GreyButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/12345/${playerId}/dice/grey/D1/`}>
+        <GreyButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/games/${playerId}/dice/grey/D1/${search}`}>
           1
         </GreyButton>
       </div>
       <div style={{height:'50%'}}>
-        <GreyButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/12345/${playerId}/dice/grey/D2/`}>
+        <GreyButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/games/${playerId}/dice/grey/D2/${search}`}>
           2
         </GreyButton>
-        <GreyButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/12345/${playerId}/dice/grey/D3/`}>
+        <GreyButton className={classes.diceButton} disableElevation size='large' variant='contained' color='primary' to={`/games/${playerId}/dice/grey/D3/${search}`}>
           3
         </GreyButton>
       </div>
