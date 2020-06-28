@@ -52,7 +52,7 @@ const playersSlice = createSlice({
     modifyFieldV2(state, action) {
       const data = action.payload.data
       const playerId = action.payload.playerId
-      state.playersList[playerId] = data
+      state.playersList[playerId] = { ...state.playersList[playerId], ...data }
     },
   },
 })

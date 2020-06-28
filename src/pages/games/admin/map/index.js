@@ -15,8 +15,18 @@ import Paper from '@material-ui/core/Paper'
 import InputAdornment from '@material-ui/core/InputAdornment'
 import { Map, Popup, Marker } from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
+import { useSelector, useDispatch } from 'react-redux'
+import clsx from 'clsx'
+import { markersUpdateField, markersDelete, markersCreate } from '../../../../state/markersSlice'
+import { paramsUpdateField } from '../../../../state/paramsSlice'
 
 const useStyles = makeStyles((theme) => ({
+  height70: {
+    height: '70vh',
+  },
+  width100: {
+    width: '100%',
+  },
   small: {
     width: theme.spacing(2),
     height: theme.spacing(2),
@@ -28,27 +38,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-// TODO : add firebase actions
-
-const ColorSelect = ({ markerId, color }) => {
+const ColorSelect = ({ gameId, color, markerId }) => {
   const classes = useStyles()
+  const dispatch = useDispatch()
   // default value {color='blue'} doesn't works if color is empty string
   const correctColor = color ? color : 'blue'
-  const [menuColor, setMenuColor] = useState(correctColor)
 
   const handleChange = (event) => {
     const color = event.target.value
     const name = event.target.name
     // blue is default in db used for geojson export
     const dbColor = color === 'blue' ? '' : color
-    firebase.firestore().collection(`markersv2`).doc(name).update({
-      color: dbColor,
-    })
-    setMenuColor(color)
+    dispatch(markersUpdateField({ gameId, markerId: name, data: { color: dbColor } }))
   }
 
   return (
-    <Select value={menuColor} onChange={handleChange} name={markerId} disableUnderline>
+    <Select value={correctColor} onChange={handleChange} name={markerId} disableUnderline>
       <MenuItem value={'blue'}>
         <Avatar style={{ backgroundColor: 'blue' }} className={classes.small}>
           {' '}
@@ -69,7 +74,8 @@ const ColorSelect = ({ markerId, color }) => {
 }
 
 const EditableChip = (props) => {
-  const { label = '', color, markerId, edit, popupRefKey, ...other } = props
+  const dispatch = useDispatch()
+  const { label = '', color, markerId, edit, gameId, ...other } = props
   const [statusText, setStatusText] = useState(label)
   const [statusTextWidth, setStatusTextWidth] = useState('')
   const [editing, setEditing] = useState(false)
@@ -78,42 +84,27 @@ const EditableChip = (props) => {
     const newValue = event.target.value
     setStatusText(newValue)
   }
+
   const setEditTrue = () => {
     setEditing(true)
   }
 
-  const saveMarkerTextInDb = (id, text) => {
-    firebase.firestore().collection(`markersv2`).doc(id).update({
-      name: text,
-    })
-  }
-
   const handleClickAway = () => {
     setEditing(false)
-    saveMarkerTextInDb(markerId, statusText)
+    dispatch(markersUpdateField({ gameId, markerId, data: { name: statusText } }))
   }
 
   const enterPressed = (event) => {
     if (event.key === 'Enter') {
       setEditing(false)
-      saveMarkerTextInDb(markerId, statusText)
+      dispatch(markersUpdateField({ gameId, markerId, data: { name: statusText } }))
     }
   }
-  const deleteMarker = (markerId) => {
-    firebase
-      .firestore()
-      .collection(`markersv2`)
-      .doc(markerId)
-      .delete()
-      .catch((error) => {
-        console.error('Error removing document: ', error)
-      })
-  }
 
-  useEffect(() => {
-    if (editing) edit(popupRefKey, true)
-    if (!editing) edit(popupRefKey, false)
-  }, [editing, edit, popupRefKey])
+  // useEffect(() => {
+  //   if (editing) edit(markerId, true)
+  //   if (!editing) edit(markerId, false)
+  // }, [editing, edit, markerId])
 
   useEffect(() => {
     setStatusTextWidth(statusText.length * 0.5 + 7 + 'em')
@@ -138,7 +129,7 @@ const EditableChip = (props) => {
           <InputAdornment position='end'>
             <IconButton
               onClick={() => {
-                deleteMarker(markerId)
+                dispatch(markersDelete({ gameId, markerId }))
               }}
             >
               <DeleteIcon />
@@ -151,29 +142,24 @@ const EditableChip = (props) => {
   return editing ? myText : myChip
 }
 
-const NewChipInput = ({ mapCenter }) => {
+const NewChipInput = ({ gameId }) => {
+  const dispatch = useDispatch()
+  const LngLat = useSelector((state) => state.params.paramsList.map.LngLat)
   const [newChipText, setNewChipText] = useState('')
-  const [newChipTextWidth, setNewChipTextWidth] = useState('')
 
-  const createMarkerInDb = (text, center) => {
-    const newMarkerRef = firebase.firestore().collection('markersv2').doc()
-    const newOrder = Date.now()
-    const payload = { name: text, LngLat: center, order: newOrder, color: '' }
-    newMarkerRef.set(payload).catch((error) => {
-      console.error('Error adding document: ', error)
-    })
-  }
+  // Does it needs useState ?
+  const [newChipTextWidth, setNewChipTextWidth] = useState('')
 
   const handleBlur = () => {
     if (newChipText) {
-      createMarkerInDb(newChipText, mapCenter)
+      dispatch(markersCreate({ gameId, data: { name: newChipText, LngLat } }))
       setNewChipText('')
     }
   }
 
   const enterPressed = (event) => {
     if (event.key === 'Enter' && newChipText) {
-      createMarkerInDb(newChipText, mapCenter)
+      dispatch(markersCreate({ gameId, data: { name: newChipText, LngLat } }))
       setNewChipText('')
     }
   }
@@ -201,8 +187,226 @@ const NewChipInput = ({ mapCenter }) => {
     />
   )
 }
+const resize = () => {
+  let vh = window.innerHeight * 0.01
+  document.documentElement.style.setProperty('--vh', `${vh}px`)
+}
 
-const MyMapModif = () => {
+const MyMapModif = ({ location }) => {
+  const classes = useStyles()
+  const dispatch = useDispatch()
+
+  const search = location.search
+  const urlParams = new URLSearchParams(search)
+  const gameId = urlParams.get('g')
+
+  const [mapLoaded, setMapLoaded] = useState(false)
+
+  const mapRef = useRef(null)
+  const markerRef = useRef({})
+  const popupRef = useRef({})
+
+  const markers = useSelector((state) => state.markers.markersList)
+  const markersLoading = useSelector((state) => state.markers.loading)
+  const mapParams = useSelector((state) => state.params.paramsList.map)
+  const paramsLoading = useSelector((state) => state.params.loading)
+  const generalLayer = useSelector((state) => state.layers.layersList.general)
+  const layersLoading = useSelector((state) => state.layers.loading)
+
+  const showHidePopup = (popupId, edit) => {
+    if (edit) popupRef.current[popupId].addTo(mapRef.current)
+    if (!edit) popupRef.current[popupId].remove()
+  }
+
+  const downloadJsonMarkers = () => {
+    const features = Object.keys(markers).map((key) => {
+      const current = markers[key]
+      return {
+        type: 'Feature',
+        geometry: {
+          type: 'Point',
+          coordinates: current.LngLat,
+        },
+        properties: {
+          title: current.name,
+          'marker-color': current.color,
+        },
+      }
+    })
+    const geojson = {
+      type: 'FeatureCollection',
+      features,
+    }
+    // Create the file to save
+    const element = document.createElement('a')
+    const file = new Blob([JSON.stringify(geojson)], { type: 'text/plain' })
+    element.href = URL.createObjectURL(file)
+    element.download = 'markers.geojson'
+    document.body.appendChild(element) // Required for FireFox
+    element.click()
+  }
+
+  const updateCenter = () => {
+    const zoom = mapRef.current.getZoom()
+    const { lng, lat } = mapRef.current.getCenter()
+    dispatch(paramsUpdateField({ gameId, param: 'map', data: { LngLat: [lng, lat], zoom } }))
+  }
+
+  useEffect(() => {
+    resize()
+    window.addEventListener('resize', resize)
+    return () => {
+      window.removeEventListener('resize', resize)
+    }
+  }, [])
+
+  useEffect(() => {
+    const map = new Map({
+      attributionControl: false,
+      container: 'map',
+      style: 'https://api.maptiler.com/maps/26d5835c-e2ed-4494-bf8d-2fd2d97b787c/style.json?key=PS6lrXSMa4E9FzduhwA2',
+      center: [0, 0],
+      zoom: [1],
+    })
+    map.on('load', () => {
+      setMapLoaded(true)
+    })
+    mapRef.current = map
+    return () => {
+      setMapLoaded(false)
+      mapRef.current.off()
+      mapRef.current.remove()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (paramsLoading !== 'idle') return
+    const { zoom, LngLat } = mapParams
+    mapRef.current.setZoom(zoom)
+    mapRef.current.setCenter(LngLat)
+  }, [paramsLoading, mapParams])
+
+  useEffect(() => {
+    if (!mapLoaded || layersLoading !== 'idle') return
+    const generalGeojson = JSON.parse(generalLayer.geojson)
+    if (mapRef.current.getLayer('zone')) mapRef.current.removeLayer('zone')
+    if (mapRef.current.getLayer('points')) mapRef.current.removeLayer('points')
+    if (mapRef.current.getLayer('lines')) mapRef.current.removeLayer('lines')
+    if (mapRef.current.getSource('general')) mapRef.current.removeSource('general')
+
+    mapRef.current.addSource('general', {
+      type: 'geojson',
+      data: generalGeojson,
+    })
+    mapRef.current.addLayer({
+      id: 'zone',
+      type: 'fill',
+      source: 'general',
+      paint: {
+        'fill-color': ['case', ['to-boolean', ['get', 'fill']], ['get', 'fill'], 'grey'],
+        'fill-opacity': ['case', ['to-boolean', ['get', 'fill-opacity']], ['get', 'fill-opacity'], 0.4],
+      },
+      filter: ['==', '$type', 'Polygon'],
+    })
+    mapRef.current.addLayer({
+      id: 'points',
+      type: 'symbol',
+      minzoom: 10,
+      source: 'general',
+      paint: {
+        'text-color': '#404040',
+      },
+      layout: {
+        'icon-image': 'circle-11',
+        'text-field': ['get', 'title'],
+        'text-font': ['Roboto sans-serif', 'Arial Unicode MS Regular'],
+        'text-offset': [0, 0.6],
+        'text-anchor': 'top',
+        'text-size': 12,
+      },
+      filter: ['==', '$type', 'Point'],
+    })
+    mapRef.current.addLayer({
+      id: 'lines',
+      type: 'line',
+      source: 'general',
+      layout: {
+        'line-join': 'round',
+        'line-cap': 'round',
+      },
+      paint: {
+        'line-color': ['case', ['to-boolean', ['get', 'stroke']], ['get', 'stroke'], 'grey'],
+        'line-width': ['case', ['to-boolean', ['get', 'stroke-width']], ['get', 'stroke-width'], 1],
+        'line-opacity': ['case', ['to-boolean', ['get', 'stroke-opacity']], ['get', 'stroke-opacity'], 1],
+      },
+      filter: ['==', '$type', 'LineString'],
+    })
+  }, [mapLoaded, layersLoading, generalLayer])
+
+  useEffect(() => {
+    if (!mapLoaded || markersLoading !== 'idle') return
+
+    const savePosition = (e) => {
+      const markerId = e.target.feature.id
+      const { lng, lat } = e.target.getLngLat()
+      dispatch(markersUpdateField({ gameId, markerId, data: { LngLat: [lng, lat] } }))
+    }
+
+    Object.keys(markerRef.current).forEach((key) => {
+      markerRef.current[key].remove()
+    })
+    Object.keys(markers).forEach((key) => {
+      const current = markers[key]
+      const color = current.color ? current.color : 'blue'
+      const newPopup = new Popup().setText(current.name)
+      const newMarker = new Marker({ draggable: true, color }).setLngLat(current.LngLat).addTo(mapRef.current).setPopup(newPopup)
+      // what is name for ?
+      newMarker.feature = { id: key, name: current.name }
+      newMarker.on('dragend', savePosition)
+      popupRef.current[key] = newPopup
+      markerRef.current[key] = newMarker
+    })
+  }, [mapLoaded, markersLoading, markers, dispatch, gameId])
+
+  return (
+    <div>
+      <div className={clsx(classes.height70, classes.width100)} id='map'></div>
+      <div style={{ marginBottom: '15px' }} className={classes.buttonSpacing}>
+        <Button onClick={updateCenter} variant='outlined'>
+          Update Center
+        </Button>
+        <Button to={`/12345/admin/map/geojson/`} variant='outlined'>
+          Geojson Layer
+        </Button>
+        <Button onClick={downloadJsonMarkers} variant='outlined'>
+          Download Markers
+        </Button>
+      </div>
+      <div>
+        {markersLoading === 'idle' ? (
+          <Paper variant='outlined' style={{ margin: '10px 0px 10px 0px', padding: '10px', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: -10, left: 12, backgroundColor: 'white' }}>Marqueurs</div>
+            <Grid container spacing={1} alignItems='flex-end'>
+              {Object.keys(markers).map((key) => {
+                const current = markers[key]
+                return (
+                  <Grid item key={key}>
+                    <EditableChip variant='outlined' gameId={gameId} markerId={key} label={current.name} color={current.color} edit={showHidePopup} />
+                  </Grid>
+                )
+              })}
+              <Grid item>{paramsLoading === 'idle' ? <NewChipInput gameId={gameId} /> : 'Loading...'}</Grid>
+            </Grid>
+          </Paper>
+        ) : (
+          'Loading...'
+        )}
+      </div>
+    </div>
+  )
+}
+
+const MyMapModifOld = () => {
   const classes = useStyles()
   const mapRef = useRef(null)
   const markerRef = useRef([])

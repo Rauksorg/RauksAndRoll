@@ -22,15 +22,18 @@ const resize = () => {
 
 const MyMap = () => {
   const classes = useStyles()
+
   const [mapLoaded, setMapLoaded] = useState(false)
+
+  const mapRef = useRef(null)
+  const markerRef = useRef([])
+
   const mapParams = useSelector((state) => state.params.paramsList.map)
   const paramsLoading = useSelector((state) => state.params.loading)
   const generalLayer = useSelector((state) => state.layers.layersList.general)
   const layersLoading = useSelector((state) => state.layers.loading)
   const markers = useSelector((state) => state.markers.markersList)
   const markersLoading = useSelector((state) => state.markers.loading)
-  const mapRef = useRef(null)
-  const markerRef = useRef([])
 
   useEffect(() => {
     resize()
@@ -45,8 +48,8 @@ const MyMap = () => {
       attributionControl: false,
       container: 'map',
       style: 'https://api.maptiler.com/maps/26d5835c-e2ed-4494-bf8d-2fd2d97b787c/style.json?key=PS6lrXSMa4E9FzduhwA2',
-      center: [10, 10],
-      zoom: [10],
+      center: [0, 0],
+      zoom: [1],
     })
     map.on('load', () => {
       setMapLoaded(true)
@@ -61,9 +64,9 @@ const MyMap = () => {
 
   useEffect(() => {
     if (paramsLoading !== 'idle') return
-    const { zoom, center } = mapParams
+    const { zoom, LngLat } = mapParams
     mapRef.current.setZoom(zoom)
-    mapRef.current.setCenter(center)
+    mapRef.current.setCenter(LngLat)
   }, [paramsLoading, mapParams])
 
   useEffect(() => {
