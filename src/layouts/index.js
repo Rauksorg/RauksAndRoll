@@ -11,7 +11,10 @@ import AppBar from '@material-ui/core/AppBar'
 import { BottomNavigationAction } from 'gatsby-theme-material-ui'
 import MapContext from '../components/state'
 import { useDispatch } from 'react-redux'
-import { playersUpdate, playersLoaded} from '../state/playersSlice'
+import { playersUpdate, playersLoaded } from '../state/playersSlice'
+import { markersUpdate, markersLoaded } from '../state/markersSlice'
+import { paramsUpdate, paramsLoaded } from '../state/paramsSlice'
+import { layersUpdate, layersLoaded } from '../state/layersSlice'
 
 const useStyles = makeStyles({
   paper: {
@@ -19,39 +22,29 @@ const useStyles = makeStyles({
   },
 })
 
-const FirebaseRedux = ({ gameId }) => {
+const useListner = (gameId, collection, update, loaded) => {
   const dispatch = useDispatch()
   useEffect(() => {
     const unsubscribe = firebase
       .firestore()
       .collection(`games`)
       .doc(gameId)
-      .collection('players')
+      .collection(collection)
       .onSnapshot((querySnapshot) => {
         // eslint-disable-next-line no-sequences
-        const playerObj = querySnapshot.docs.reduce((obj, doc) => ((obj[doc.id] = doc.data()), obj), {})
-        dispatch(playersUpdate(playerObj))
-        dispatch(playersLoaded())
+        const arrayToObj = querySnapshot.docs.reduce((obj, doc) => ((obj[doc.id] = doc.data()), obj), {})
+        dispatch(update(arrayToObj))
+        dispatch(loaded())
       })
     return unsubscribe
-  }, [dispatch, gameId])
+  }, [dispatch, gameId, collection, update, loaded])
+}
 
-  // useEffect(() => {
-  //   const unsubscribe = firebase
-  //     .firestore()
-  //     .collection(`games`)
-  //     .doc(gameId)
-  //     .collection('markers')
-  //     .orderBy('order')
-  //     .onSnapshot((querySnapshot) => {
-  //          // eslint-disable-next-line no-sequences
-  //          const markersObj = querySnapshot.docs.reduce((obj, doc) => ((obj[doc.id] = doc.data()), obj), {})
-  //       dispatch(markersUpdate(markersObj))
-  //       dispatch(markersLoaded())
-  //     })
-  //   return unsubscribe
-  // }, [dispatch, gameId])
-
+const FirestoreRedux = ({ gameId }) => {
+  useListner(gameId, 'players', playersUpdate, playersLoaded)
+  useListner(gameId, 'markers', markersUpdate, markersLoaded)
+  useListner(gameId, 'params', paramsUpdate, paramsLoaded)
+  useListner(gameId, 'layers', layersUpdate, layersLoaded)
   return null
 }
 
@@ -84,7 +77,7 @@ const BottomNav = ({ children, location }) => {
 }
 
 const Layout = ({ children, location, pageContext }) => {
-  const [mapOptions, setMapOptions] = useState(null)
+  const [mapOptions, setMapOptions] = useState({ LngLat: [10,10], zoom: [5] })
 
   const search = location.search
   const urlParams = new URLSearchParams(search)
@@ -94,16 +87,16 @@ const Layout = ({ children, location, pageContext }) => {
     setMapOptions({ LngLat: center, zoom: zoom })
   }
 
-  useEffect(() => {
-    const unsubscribe = firebase
-      .firestore()
-      .collection(`params`)
-      .doc('mapCenter')
-      .onSnapshot((querySnapshot) => {
-        setMapOptions(querySnapshot.data())
-      })
-    return unsubscribe
-  }, [])
+  // useEffect(() => {
+  //   const unsubscribe = firebase
+  //     .firestore()
+  //     .collection(`params`)
+  //     .doc('map')
+  //     .onSnapshot((querySnapshot) => {
+  //       setMapOptions(querySnapshot.data())
+  //     })
+  //   return unsubscribe
+  // }, [])
 
   // if (pageContext.layout === 'setup') {
   //   return (
@@ -116,23 +109,23 @@ const Layout = ({ children, location, pageContext }) => {
   if (pageContext.layout === 'noLayout') {
     return (
       <MapContext.Provider value={[mapOptions, changeMap]}>
-        <FirebaseRedux gameId={gameId} />
         {children}
+        <FirestoreRedux gameId={gameId} />
       </MapContext.Provider>
     )
   }
   if (pageContext.layout === 'admin') {
     return (
       <Container maxWidth='xl'>
-        <FirebaseRedux gameId={gameId} />
         {children}
+        <FirestoreRedux gameId={gameId} />
       </Container>
     )
   }
   return (
     <MapContext.Provider value={[mapOptions, changeMap]}>
-      <FirebaseRedux gameId={gameId} />
       <BottomNav children={children} location={location} />
+      <FirestoreRedux gameId={gameId} />
     </MapContext.Provider>
   )
 }
