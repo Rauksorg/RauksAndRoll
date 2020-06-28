@@ -1,16 +1,17 @@
-import React, { useEffect, useRef, useContext, useState } from 'react'
-import firebase from 'gatsby-plugin-firebase'
+import React, { useEffect, useRef, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { Map, Popup, Marker } from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
 import { useSelector } from 'react-redux'
-
-import MapContext from '../../../components/state'
+import clsx from 'clsx'
 
 const useStyles = makeStyles({
   height100: {
     // height: '100vh', /* Fallback for browsers that do not support Custom Properties */
     height: 'calc(var(--vh, 1vh) * 100 - 56px)',
+  },
+  width100: {
+    width: '100%',
   },
 })
 
@@ -134,7 +135,7 @@ const MyMap = () => {
     })
   }, [mapLoaded, markersLoading, markers])
 
-  return <div className={classes.height100} style={{ width: '100%' }} id='map'></div>
+  return <div className={clsx(classes.height100, classes.width100)} id='map'></div>
 }
 
 export default MyMap
