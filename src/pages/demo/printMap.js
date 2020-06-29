@@ -1,14 +1,12 @@
-import React, { useEffect, useRef, useContext, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import firebase from 'gatsby-plugin-firebase'
 import { Map } from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css'
-import MapContext from '../../components/state'
 import { Button } from 'gatsby-theme-material-ui'
 
 // add a modal for loading to hide scrollbar
 
 const PrintMap = () => {
-  const [mapOptions] = useContext(MapContext)
   const mapRef = useRef(null)
   const [mapLayer, setMapLayer] = useState(null)
   const [mapMarkers, setMapMarkers] = useState(null)
@@ -33,12 +31,7 @@ const PrintMap = () => {
     }
   }, [])
 
-  useEffect(() => {
-    if (mapOptions) {
-      mapRef.current.setZoom(mapOptions.zoom)
-      mapRef.current.setCenter(mapOptions.LngLat)
-    }
-  }, [mapOptions])
+
 
   useEffect(() => {
     firebase

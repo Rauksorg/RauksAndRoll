@@ -9,7 +9,6 @@ import Container from '@material-ui/core/Container'
 import BottomNavigation from '@material-ui/core/BottomNavigation'
 import AppBar from '@material-ui/core/AppBar'
 import { BottomNavigationAction } from 'gatsby-theme-material-ui'
-import MapContext from '../components/state'
 import { useDispatch } from 'react-redux'
 import { playersUpdate, playersLoaded } from '../state/playersSlice'
 import { markersUpdate, markersLoaded } from '../state/markersSlice'
@@ -40,9 +39,28 @@ const useListner = (gameId, collection, update, loaded) => {
   }, [dispatch, gameId, collection, update, loaded])
 }
 
+const useListnerOrder = (gameId, collection, update, loaded, order) => {
+  const dispatch = useDispatch()
+  useEffect(() => {
+    const unsubscribe = firebase
+      .firestore()
+      .collection(`games`)
+      .doc(gameId)
+      .collection(collection)
+      .orderBy(order)
+      .onSnapshot((querySnapshot) => {
+        // eslint-disable-next-line no-sequences
+        const arrayToObj = querySnapshot.docs.reduce((obj, doc) => ((obj[doc.id] = doc.data()), obj), {})
+        dispatch(update(arrayToObj))
+        dispatch(loaded())
+      })
+    return unsubscribe
+  }, [dispatch, gameId, collection, update, loaded, order])
+}
+
 const FirestoreRedux = ({ gameId }) => {
   useListner(gameId, 'players', playersUpdate, playersLoaded)
-  useListner(gameId, 'markers', markersUpdate, markersLoaded)
+  useListnerOrder(gameId, 'markers', markersUpdate, markersLoaded, 'order')
   useListner(gameId, 'params', paramsUpdate, paramsLoaded)
   useListner(gameId, 'layers', layersUpdate, layersLoaded)
   return null
@@ -77,41 +95,16 @@ const BottomNav = ({ children, location }) => {
 }
 
 const Layout = ({ children, location, pageContext }) => {
-  const [mapOptions, setMapOptions] = useState({ LngLat: [10,10], zoom: [5] })
-
   const search = location.search
   const urlParams = new URLSearchParams(search)
   const gameId = urlParams.get('g')
 
-  const changeMap = (center, zoom) => {
-    setMapOptions({ LngLat: center, zoom: zoom })
-  }
-
-  // useEffect(() => {
-  //   const unsubscribe = firebase
-  //     .firestore()
-  //     .collection(`params`)
-  //     .doc('map')
-  //     .onSnapshot((querySnapshot) => {
-  //       setMapOptions(querySnapshot.data())
-  //     })
-  //   return unsubscribe
-  // }, [])
-
-  // if (pageContext.layout === 'setup') {
-  //   return (
-  //     <Container maxWidth='md'>
-  //       <FirebaseRedux gameId={gameId} />
-  //       {children}
-  //     </Container>
-  //   )
-  // }
   if (pageContext.layout === 'noLayout') {
     return (
-      <MapContext.Provider value={[mapOptions, changeMap]}>
+      <div>
         {children}
         <FirestoreRedux gameId={gameId} />
-      </MapContext.Provider>
+      </div>
     )
   }
   if (pageContext.layout === 'admin') {
@@ -123,10 +116,10 @@ const Layout = ({ children, location, pageContext }) => {
     )
   }
   return (
-    <MapContext.Provider value={[mapOptions, changeMap]}>
+    <div>
       <BottomNav children={children} location={location} />
       <FirestoreRedux gameId={gameId} />
-    </MapContext.Provider>
+    </div>
   )
 }
 export default Layout
