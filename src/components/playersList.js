@@ -8,10 +8,14 @@ import ListItemAvatar from '@material-ui/core/ListItemAvatar'
 import Avatar from '@material-ui/core/Avatar'
 import Badge from '@material-ui/core/Badge'
 import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon, CloverIcon, SkullIcon, BrockenGlass } from '../components/diceIcons'
-import joseClose from '../images/joseClose.jpg'
-import beauriceClose from '../images/BeauriceClose.jpg'
-import francisClose from '../images/FrancisClose.jpg'
-import gameMasterClose from '../images/GameMasterClose.jpg'
+import jose from '../images/joseClose.jpg'
+import beaurice from '../images/BeauriceClose.jpg'
+import francis from '../images/FrancisClose.jpg'
+import gameMaster1 from '../images/GameMasterClose.jpg'
+import vihel from '../images/Vihel.png'
+import song from '../images/Song.png'
+import arakel from '../images/Arakel.png'
+import gameMaster2 from '../images/GameMaster2.png'
 import Divider from '@material-ui/core/Divider'
 
 // Fix listItemButton
@@ -28,7 +32,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const avatarList = { porthos: joseClose, athos: beauriceClose, aramis: francisClose, gameMaster: gameMasterClose }
+const avatar = (gameId, playerId) => {
+  if (gameId === 'ljasPdwsI7BvnCo38TmJ') return { porthos: jose, athos: beaurice, aramis: francis, gameMaster: gameMaster1 }[playerId]
+  if (gameId === 'NUDpmg1FZRp7fkha2Yvr') return { porthos: song, athos: arakel, aramis: vihel, gameMaster: gameMaster2 }[playerId]
+}
 
 const ResultToFace = (props) => {
   const facesObject = { '✓': SuccessIcon, '2': TwoIcon, '3!': ThreeEpicIcon, '4': FourIcon, S: SkillIcon, '✘': FailIcon, '✘!': EpicFailIcon, '💀': SkullIcon, '☯': NeutralIcon, '🍀': CloverIcon, '💥': ExplosivIcon }
@@ -41,6 +48,9 @@ const PlayersList = ({ location, results }) => {
   const [isNew, setIsnew] = useReducer((state, newState) => ({ ...state, ...newState }), {})
   const playerId = location.pathname.split('/')[2]
   const search = location.search
+  const urlParams = new URLSearchParams(search)
+  const gameId = urlParams.get('g')
+
   const classes = useStyles()
 
   const setUpdate = (id, i) => {
@@ -78,7 +88,7 @@ const PlayersList = ({ location, results }) => {
       <ListItemPatched button to={`/games/${playerId}/players/${player.id}/${search}`}>
         <ListItemAvatar style={{ margin: '0px 5px 0px 0px' }}>
           <div style={{ position: 'relative' }}>
-            <Avatar variant={player.id === 'gameMaster' ? 'rounded' : 'circle'} className={classes.large} src={avatarList[player.id]}>
+            <Avatar variant={player.id === 'gameMaster' ? 'rounded' : 'circle'} className={classes.large} src={avatar(gameId, player.id)}>
               {player.name.charAt(0)}
             </Avatar>
             {/* To add an image overlay on avatar */}
@@ -104,9 +114,11 @@ const PlayersList = ({ location, results }) => {
       </List>
       <Divider variant='inset' />
       <List>
-        {Object.keys(results).filter(id => id!== 'gameMaster').map((id) => {
-          return <PlayerItem player={{ name: results[id].identification, id: id }} key={id} />
-        })}
+        {Object.keys(results)
+          .filter((id) => id !== 'gameMaster')
+          .map((id) => {
+            return <PlayerItem player={{ name: results[id].identification, id: id }} key={id} />
+          })}
       </List>
     </div>
   )

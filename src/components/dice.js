@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography'
 import { useSelector, useDispatch } from 'react-redux'
 import { modifyFieldDbV2 } from '../state/playersSlice'
 import { EpicFailIcon, FailIcon, SuccessIcon, TwoIcon, FourIcon, ThreeEpicIcon, ExplosivIcon, SkillIcon, NeutralIcon, SkullIcon, CloverIcon } from '../components/diceIcons'
+import firebase from 'gatsby-plugin-firebase'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -59,21 +60,21 @@ const resize = () => {
   document.documentElement.style.setProperty('--vh', `${vh}px`)
 }
 // TODO Reimplemant diceLogs in Dice
-// useEffect(() => {
-//   firebase
-//     .firestore()
-//     .collection('dicesLogs')
-//     .add({
-//       playerId: playerId,
-//       diceResult: result,
-//       dice: diceProperties.color,
-//       rerolled: rerolled,
-//       timeRolled: Date.now(),
-//     })
-//     .catch((error) => {
-//       console.error('Error adding document: ', error)
-//     })
-// }, [playerId, rerolled, result, diceProperties.color])
+const storeLogs = (gameId, playerId, result, dice, rerolled) => {
+  firebase
+    .firestore()
+    .collection(`games/${gameId}/dicesLogs`)
+    .add({
+      playerId: playerId,
+      diceResult: result,
+      dice: dice,
+      rerolled: rerolled,
+      timeRolled: Date.now(),
+    })
+    .catch((error) => {
+      console.error('Error adding document: ', error)
+    })
+}
 
 const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
   const classes = useStyles()
@@ -93,7 +94,9 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
   const rerollDice = () => {
     if (playerSheet.reroll === 0) return
     const newRerollCount = playerSheet.reroll - 1
-    dispatch(modifyFieldDbV2({ playerId, gameId, data: { diceResult: diceFormula(), dice: diceProperties.color, rerolled: true, reroll: newRerollCount, timeRolled: Date.now() } }))
+    const diceResult = diceFormula()
+    dispatch(modifyFieldDbV2({ playerId, gameId, data: { diceResult: diceResult, dice: diceProperties.color, rerolled: true, reroll: newRerollCount, timeRolled: Date.now() } }))
+    storeLogs(gameId, playerId, diceResult, diceProperties.color, true)
   }
 
   useEffect(() => {
@@ -106,7 +109,9 @@ const Dice = ({ diceFormula, diceProperties, location, rerollable = true }) => {
 
   useEffect(() => {
     // need to modify action to accept serverTimestamp : const timestamp = firebase.firestore.FieldValue.serverTimestamp()
-    dispatch(modifyFieldDbV2({ playerId, gameId, data: { diceResult: diceFormula(), dice: diceProperties.color, rerolled: false, timeRolled: Date.now() } }))
+    const diceResult = diceFormula()
+    dispatch(modifyFieldDbV2({ playerId, gameId, data: { diceResult: diceResult, dice: diceProperties.color, rerolled: false, timeRolled: Date.now() } }))
+    storeLogs(gameId, playerId, diceResult, diceProperties.color, false)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

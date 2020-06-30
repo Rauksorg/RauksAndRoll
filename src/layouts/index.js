@@ -103,7 +103,7 @@ const Layout = ({ children, location, pageContext }) => {
     return (
       <div>
         {children}
-        <FirestoreRedux gameId={gameId} />
+        {/* <FirestoreRedux gameId={gameId} /> */}
       </div>
     )
   }
